@@ -1,0 +1,65 @@
+{"quizspec":"dkruger.qspec", "name":"Number Theoretic"}
+{def comp=["O(n)","O(n^2)","O(n^3)","O(n^4)","O(log2(n))","O(log3(n)","O(√(n))","O(2^n)","O(3^n)","O(10^n)","O(n!)","O(n^n)","O(1)","O(n*log2(n)","O(n*√n)"]}
+{"qt":"pcode", "name":"gcd"}
+gcd(a,b)       // Complexity: $%comp$
+  if $b$ = 0
+    return a
+  end
+  return $gcd$(b, a mod b)
+end
+
+{"qt":"pcode", "name":"gcd"}
+gcd(a,b)       // Complexity: $%comp$
+  while $b$ ≠ 0
+    temp ← a
+    a ← b
+    b ← a mod b
+  end
+  return a
+end
+
+{"qt":"pcode", "name":"lcm"}
+lcm(a,b) ← a * b / $gcd$(a,b)
+
+{"qt":"pcode", "name":"powermod"}
+powermod(x,n,m)	// Complexity: $%comp$
+  prod ← 1
+  while $n$ > 0
+    if $n$ mod 2 ≠ 0
+      prod ← $prod$ * $prod$ mod $m$
+    end
+    x ← $x$ * $x$ mod $m$
+    n ← n / 2
+  end
+  return prod
+end
+
+{"qt":"pcode", "name":"Fermat"}
+Fermat(p, k)	// Complexity: $%comp$
+  for i  ← 1 to k
+    a  ← random(2, $p-1$)
+    if powermod($a$, p-1, $p$) ≠ 1
+      return false
+    end
+  end
+  return true // probably!
+end
+
+{"qt":"pcode", "name":"Miller-Rabin"}
+MillerRabin(p, k)	// Complexity: $%comp$
+  for i ← 1 to k
+    a ← random(2, $p-2$)
+    s ← number of zeros of p-1
+    d ← leading non-zero digits of p-1
+    x ← d
+    for i ← 1 to s
+      if powermod($a$, x, $p$) ≠ 1
+        return false
+      end
+      x ← x*x mod n
+    end
+    if powermod($a$, x,)  ≠ 1
+    end
+  end
+  return true // probably!
+end

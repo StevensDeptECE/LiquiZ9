@@ -1,0 +1,83 @@
+#header {
+    background-color: #b01010;
+    color: #d0d0d0;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.title {
+    font-family: Times;
+    font-size: 24pt;
+    font-weight: bold;
+}
+.inst {
+    font-size: 18pt;
+}
+.time {
+    font-family: Courier;
+    font-size: 18pt;
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: Times;
+    font-size: 16pt;
+}
+
+.code {
+    background-color: black;
+    color: #00d010;
+    font-family: Courier;
+    font-size: 16pt;
+    font-weight: 900;
+}
+
+input {
+    background-color: #202020;
+    color: #fff;
+    border-color: #ff0000;
+    border-width: 1;
+    border-style: solid;
+}
+
+div.q {
+    background-color: #444;
+    border-color: #ff0;
+    border-width: 1;
+    width: 80%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 20px;
+}
+
+td.orig {
+    border-color: #fff;
+    border-width: 1;
+    border-style: solid;
+}
+.qh {
+    font-size: 14pt;
+}
+.pts {
+    font-size: 12pt;
+}
+
+.headtext {
+    font-family: Times;
+    font-size: 16pt;
+}
+.ctrl {
+    font-family: Times;
+    font-size: 16pt;
+    border-radius: 5px;
+    background-color: #888;
+}
+
+video {
+    width: 320;
+    height: 240;
+    padding: 10px;
+    margin: 10px;
+    background-color: red;
+}
