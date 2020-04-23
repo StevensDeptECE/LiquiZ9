@@ -73,6 +73,7 @@ inline std::string to_string(char c) {
 template<typename... Args>
 void buildString(std::string& dest, const Args&... args)
 {
+	dest.clear();
 	using ::to_string;
 	using std::to_string;
 	int unpack[]{0, (dest += to_string(args), 0)...};
@@ -145,18 +146,20 @@ void CodeQuestion::print(ostream& s) const {
 				buildString(replace, "<audio controls><source src='", url, "' type='audio/ogg'></audio>");
 			} 
 		} else if (m[1] == BLANK) {
+			cout << "BLANK\n";
   		partNum++;
-      buildString(replace, "<input type='text' id='q", questionNum, '_', partNum, "' size='6'/>");
+      buildString(replace, "<input type='text' id='q", questionNum, "_", partNum, "' size='6'/>");
 	  } else if (m[1] == REGEX) {
   		partNum++;
-      buildString(replace, "<input type='text' id='q", questionNum, '_', partNum, "' size='6'/>");
+      buildString(replace, "<input type='text' id='q", questionNum, "_", partNum, "' size='6'/>");
 		} else if (m[1] == SELECT) {
 			partNum++;
 			buildSelect(replace, temp, m[2]); //TODO: this is simplified. It does not allow commas in the individual options													
 		} else if (m[1] == TEXTAREA) {
 			partNum++;
-			buildString(replace, "<textarea id='q", questionNum, '_', partNum, "'>", m[2], "</textarea>");
+			buildString(replace, "<textarea id='q", questionNum, "_", partNum, "'>", m[2], "</textarea>");
 		} else if (m[1] == LOOKUP) {
+			cout << "LOOKUP\n";
 			unordered_map<string, string>::iterator i = definitions.find(m[2]);
 			if (i == definitions.end()) {
 				cerr << "undefined definition " << m[1] << '\n';
@@ -236,8 +239,9 @@ void generateQuestion(ostream& out,
 											nlohmann::json& q,
 											const string& questionText) {
 	double points = 10;
+	string quizName = q.at("name");
 	out << "<div class='q' id='q" << questionNum <<
-		" <span class='pts'>(" << points << ")</span></p>";
+		"'>" << questionNum << ". " << quizName << "<span class='pts'>(" << points << ")</span></p>";
 	string qtype = (q.find("type") == q.end()) ? "code" : q["type"];
 	Question* question = questionType[qtype];
 	if (question != nullptr) {
@@ -290,6 +294,7 @@ void generateLiquizHTML(const char liquizFile[], const char htmlFile[]) {
 			nlohmann::json question;
 			s >> question;
 			cout << "question: " << question << '\n';
+			cout << question.at("name") << '\n';
 			getline(f, line);
 			questionText = line + '\n';
 			while (getline(f, line), !f.eof() && line != blank) {
