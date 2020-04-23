@@ -1,5 +1,6 @@
 #include "json.hpp"
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <regex>
 #include <exception>
@@ -45,14 +46,19 @@ void buildStringSplitDelimiter(string& dest, const string& in, const char delimi
 			if (in[endIndex] == '"')
 				endIndex--;
 			dest += pre;
-			for (int j = startIndex; j < endIndex; j++)
+			for (int j = startIndex; j <= endIndex; j++)
 				dest += in[j];
 			dest += post;
 			startIndex = i+1;
+			if (in[startIndex] == '"')
+				startIndex++;
 		}
 	}
 	dest += pre;
-	for (int j = startIndex; j < in.length(); j++)
+	endIndex = in.length()-1;
+	if (in[endIndex] == '"')
+		endIndex--;
+	for (int j = startIndex; j < endIndex; j++)
 		dest += in[j];
 	dest += post;
 	dest += end;
@@ -262,7 +268,9 @@ void generateLiquizHTML(const char liquizFile[], const char htmlFile[]) {
 	ofstream out(htmlFile);
 	string line;
   getline(f, line);
-	nlohmann::json header = line;
+	istringstream s(line);
+	nlohmann::json header;
+	s >> header;
 	cout << header << "\n\n";
 	regex def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}");
 	regex jsonObj("^\\{");
@@ -278,7 +286,9 @@ void generateLiquizHTML(const char liquizFile[], const char htmlFile[]) {
       buildSelect(defSelect, temp, m[2]);
       definitions[m[1]] = defSelect;
 		} else if (regex_search(line, m, jsonObj)) {
-			nlohmann::json question = line;
+			istringstream s(line);
+			nlohmann::json question;
+			s >> question;
 			cout << "question: " << question << '\n';
 			getline(f, line);
 			questionText = line + '\n';

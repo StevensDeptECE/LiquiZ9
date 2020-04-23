@@ -1,5 +1,6 @@
 BIN	:= ${LIQUIZ}/bin
 DATA	:= ${LIQUIZ}/data
+CXX	:= g++ -g
 
 all: $(BIN)/liquiz
 
