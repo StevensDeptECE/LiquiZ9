@@ -11,7 +11,7 @@ end
 {"qt":"pcode", "name":"gcd"}
 gcd(a,b)       // Complexity: $%comp$
   while $b$ ≠ 0
-    temp ← a
+    $temp$ ← a
     a ← b
     b ← a mod b
   end
@@ -26,7 +26,7 @@ powermod(x,n,m)	// Complexity: $%comp$
   prod ← 1
   while $n$ > 0
     if $n$ mod 2 ≠ 0
-      prod ← $prod$ * $prod$ mod $m$
+      prod ← prod * $prod$ mod $m$
     end
     x ← $x$ * $x$ mod $m$
     n ← n / 2
@@ -35,9 +35,9 @@ powermod(x,n,m)	// Complexity: $%comp$
 end
 
 {"qt":"pcode", "name":"Fermat"}
-Fermat(p, k)	// Complexity: $%comp$
-  for i  ← 1 to k
-    a  ← random(2, $p-1$)
+Fermat(p, k)	// Complexity: k* $%comp$
+  for i ← 1 to k
+    a ← random(2, $p-1$)
     if powermod($a$, p-1, $p$) ≠ 1
       return false
     end
@@ -46,19 +46,20 @@ Fermat(p, k)	// Complexity: $%comp$
 end
 
 {"qt":"pcode", "name":"Miller-Rabin"}
-MillerRabin(p, k)	// Complexity: $%comp$
+MillerRabin(n, k)	// Complexity: k*$%comp$
   for i ← 1 to k
-    a ← random(2, $p-2$)
-    s ← number of zeros of p-1
-    d ← leading non-zero digits of p-1
+    a ← random(2, $n-2$)
+    s ← number of zeros of n-1
+    d ← leading non-zero digits of n-1
     x ← d
     for i ← 1 to s
-      if powermod($a$, x, $p$) ≠ 1
+      if powermod($a$, x, $n$) ≠ 1
         return false
       end
-      x ← x*x mod n
+      x ← x*$x$ mod $n$
     end
-    if powermod($a$, x,)  ≠ 1
+    if powermod($a$, x-1, x)  ≠ 1
+      return $false$
     end
   end
   return true // probably!

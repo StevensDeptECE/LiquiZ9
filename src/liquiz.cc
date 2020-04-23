@@ -93,23 +93,44 @@ void buildSelect(string& select, string& temp, const string& input) {
 	buildStringSplitDelimiter(select, input, ',', temp, "</select>", "<option>", "</option>");
 }
 
+void buildMCH(string& multipleChoice, string& temp, const string& input) {
+	buildString(temp, "<td><input type='radio' name='q", questionNum, "_",
+							partNum, "'>");
+	buildStringSplitDelimiter(multipleChoice, input, ',',
+														"<table><tr>", "</tr></table>",
+														temp, "</input></td>");
+}
+
+void buildMCV(string& multipleChoice, string& temp, const string& input) {
+	buildString(temp, "<tr><td><input type='radio' name='q", questionNum, "_",
+							partNum, "'>");
+	buildStringSplitDelimiter(multipleChoice, input, ',',
+														"<table>", "</table>",
+														temp, "</input></td></tr>");
+}
+
 class CodeQuestion : public Question {
 public:
 	void print(ostream& s) const override;
 };
 
 
-const regex specials("(\\$[\\[\\{%\\(\\$]?)(.*)[\\]\\}\\)\\$]?\\$");
-const string BLANK = "$";
-const string MEDIA = "$[";
+const regex specials("(\\$[a-z]*[\\[\\{%\\(\\$]?)(.*)\\$");
+const string BLANK = "$"; // fill in the blank
 const string REGEX = "${";
-const string SELECT = "$(";
+const string SELECT = "$("; // selection (dropdown menu)
+const string IMAGE = "$img("; // a picture
+const string IMAGEMAP = "$map("; // an image map (interactive)
+const string AUDIO = "$aud("; // an audio file
+const string VIDEO = "$vid("; // a video
+const string TEXTAREA = "$ta(";
 const string MCH = "$mch("; //Multiple Choice Horizontal Layout
 const string MCV = "$mcv("; //Multiple Choice Vertical Layout
+const string MAH = "$mah("; //Multiple Answer Horizontal Layout
+const string MAV = "$mav("; //Multiple Answer Vertical Layout
 const string LOOKUP = "$%"; // lookup a previously defined select
 //TODO: support select, MCH, and MCV for lookup. Right now it's just select
 //TODO: remove "" from stinking lookup!
-const string TEXTAREA = "$(";
 const string SUFFIXES[] = {"png", "jpg", "mp3", "mp4"};
 const string PNG = "png";
 const string JPG = "jpg";
@@ -133,18 +154,15 @@ void CodeQuestion::print(ostream& s) const {
 	string temp;
 	temp.reserve(1024);
 	while (regex_search(outText, m, specials)) { // if special pattern found
-		if (m[1] == MEDIA) {
-		  const string& url = m[2];
-			const string suffix = url.substr(url.length()-3);
-			if (suffix == PNG || suffix == JPG) {
-				buildString(replace, "<img src='", url, "'></img>");
-			} else if (suffix == MP4) {
-				buildString(replace, "<video controls width='320' height='240'><source src='", url, "' type='video/mp4'></video>");
-			} else if (suffix == MP3) {
-				buildString(replace, "<audio controls><source src='", url, "' type='audio/mp3'></audio>");
-			} else if (suffix == OGG) {
-				buildString(replace, "<audio controls><source src='", url, "' type='audio/ogg'></audio>");
-			} 
+		if (m[1] == IMAGE) {
+				buildString(replace, "<img src='", m[2], "'></img>");
+		} else if (m[1] == AUDIO) {
+			string url = m[1];
+			string audioType = url.substr(url.length()-3);
+			buildString(replace, "<audio controls><source src='", m[1], "' type='audio/", audioType, "'></audio>");
+		} else if (m[1] == VIDEO) {
+			string videoType = ""; // TODO: use this
+			buildString(replace, "<video controls width='320' height='240'><source src='", m[2], "' type='video/mp4'></video>");
 		} else if (m[1] == BLANK) {
 			cout << "BLANK\n";
   		partNum++;
@@ -155,18 +173,25 @@ void CodeQuestion::print(ostream& s) const {
 		} else if (m[1] == SELECT) {
 			partNum++;
 			buildSelect(replace, temp, m[2]); //TODO: this is simplified. It does not allow commas in the individual options													
-		} else if (m[1] == TEXTAREA) {
+		} else if (m[1] == MCH) {
 			partNum++;
-			buildString(replace, "<textarea id='q", questionNum, "_", partNum, "'>", m[2], "</textarea>");
+			buildMCH(replace, temp, m[2]); //TODO: this is simplified. It does not 
+		} else if (m[1] == MCV) {
+			partNum++;
+			buildMCV(replace, temp, m[2]); //TODO: this is simplified. It does not 
+		}else if (m[1] == TEXTAREA) {
+			partNum++;
+			buildString(replace, "<textarea rows='20' cols='80' id='q", questionNum, "_", partNum, "'>", m[2], "</textarea>");
 		} else if (m[1] == LOOKUP) {
 			cout << "LOOKUP\n";
 			unordered_map<string, string>::iterator i = definitions.find(m[2]);
 			if (i == definitions.end()) {
 				cerr << "undefined definition " << m[1] << '\n';
-				continue;
+				replace="";
+			} else {
+				partNum++;
+				replace = definitions[m[2]];
 			}
-			partNum++;
-			replace = definitions[m[2]];
 		}
 		cout << "m[1]=" << m[1] << '\n';
 		cout << "m[2]=" << m[2] << '\n';
@@ -241,7 +266,7 @@ void generateQuestion(ostream& out,
 	double points = 10;
 	string quizName = q.at("name");
 	out << "<div class='q' id='q" << questionNum <<
-		"'>" << questionNum << ". " << quizName << "<span class='pts'>(" << points << ")</span></p>";
+		"'>" << questionNum << ". " << quizName << "<span class='pts'> (" << points << " points)</span></p>";
 	string qtype = (q.find("type") == q.end()) ? "code" : q["type"];
 	Question* question = questionType[qtype];
 	if (question != nullptr) {
@@ -256,10 +281,10 @@ void generateQuestion(ostream& out,
 void generateFooter(ostream& out) {
   out <<
 R"(
-    <div class="controls">
-      <div style="position: flow">Time Remaining</div>
-      <div id="bottomTime" class="time"></div>
-      <input class="controls" type="button" value="Submit Quiz" onClick="checkAndSubmit()\"/>
+    <div class='controls'>
+      <div style='position: flow'>Time Remaining</div>
+      <div id='bottomTime' class='time'></div>
+      <input class='controls' type='button' value='Submit Quiz' onClick='checkAndSubmit()'/>
     </div>
     </form>
   </body>

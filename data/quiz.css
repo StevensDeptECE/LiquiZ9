@@ -81,3 +81,10 @@ video {
     margin: 10px;
     background-color: red;
 }
+
+textarea {
+    font-family: Times, serif;
+    font-size: 14pt;
+    width: 100%;
+    height: 50%;
+}

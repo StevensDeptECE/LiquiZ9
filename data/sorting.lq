@@ -1,0 +1,43 @@
+{"quizspec":"datastruct.qspec", "name":"Sorting"}
+{"qt":"pcode", "name":"Quicksort"}
+Given the pivot = (x[start] + x[end])/2
+What is the pivot for the data below? $4$
+Show the array after the first pass
+<table>
+<tr><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td></tr>
+<tr><td>$1$</td><td>$2$</td><td>$3$</td><td>$4$</td><td>$5$</td><td>$6$</td><td>$7$</td><td>$8$</td></tr>
+</table>
+
+{"qt":"pcode", "name":"Insertion Sort"}
+Complete the pseudocode for insertion sort of array x of length n
+insertionsort(x[], n)     // Complexity: $%comp$
+for i = 1 to n-1
+  if $x[i-1]$ > x[i] then // insert
+    temp = $x[i]$
+    do
+      $x[i]$ = x[i-1]
+      i--
+    while i > 0 and $x[i]$ > temp
+    x[i] = $temp$
+  end
+end
+
+{"qt":"pcode", "name":"Insertion Sort"}
+<table>
+Show the table after the first pass
+<tr><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td></tr>
+<tr><td>$7$</td><td>$8$</td><td>$6$</td><td>$5$</td><td>$4$</td><td>$3$</td><td>$2$</td><td>$1$</td></tr>
+</table>
+
+{"qt":"pcode", "name":"Complexity"}
+What is the complexity of quiksort $%comp$
+What is the complexity of insertion sort $%comp$
+What is the complexity of insertion sort of a sorted array? $%comp$
+
+What is the complexity of heapsort $%comp$
+What is the complexity of heapsort of a sorted array? $%comp$
+When is mergesort advantageous?
+$mcv(The data is already sorted,*The data is larger than memory,The data is integer,The data is in random order$
+When is insertion sort advantageous?
+$mav(*The data is already sorted,*The data is mostly sorted,The data is larger than memory,The data is integer,The data is in random order,*The size is small$
+
