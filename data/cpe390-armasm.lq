@@ -1,0 +1,230 @@
+{"quizspec":"cpe390.qspec", "name":"Final Study Questions"}
+{"qt":"code", "name":"Fill in the missing code"}
+author: Samuel Ciocca
+With r0 pointing at an array of integers and r1 the value of the desired element
+return the position of the desired element in r0.
+For example, with r0 pointing to {1,2,3,5,7,9,12} and r1=7, the value returned
+should be 4 since 7 is in position 4.
+_Z15countTillNumberPii:
+        push    {$r4$}
+        mov     r4, #0
+1:
+        ldr     r3, $[r0]$
+        $add$   r0, #4
+        add     r4, #1
+        cmp     r3, $r1$
+        $bne$  1b
+        $sub$  r0, r4, #1
+        pop     {r4}
+        bx      $lr$
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Zachary Fazal
+Divide all even elements by 2
+(starting at the zeroth location, ie the first one)
+Example, given r0 pointing to {3, 4, 6, 9, 1} r1=5
+the resulting array should be {1, 4, 3, 9, 0}
+_Z8althalvePii:
+1:
+        $ldr$   r2, [r0]
+        lsr     r2, $#1$        @divide this element by 2
+        $str$   r2, $[r0]$      @write back into memory
+        add     r0, $#8$        @skip two elements
+        subs    r1, $#2$        @count down
+        $bgt$   1b              @jump back and do it all again
+        $bx$    lr              @return to the caller
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Joshua Hornilla
+@r0 points to array, r1 = number of elements
+@return the sum of the array in r0
+_Z8sumArrayPii:
+        $mov$   r3, #0          @set register to zero
+1:
+        $ldr$   r2, [r0]        @read the first element from the array
+        add     r3, $r2$        @add to running total
+        $add$   r0, $#4$        
+        $subs$  r1, $#1$
+        $bne$   1b              @branch back and do it until the array is done
+        $mov$   r0, r3
+        bx      lr
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Chloe Sharpe
+r0 points to an array of integers, r1 contains the length of the array
+_Z1fPii:
+1:
+        ldr     r2, $[r0]$
+        add     r0, $#4$
+        $subs$  r1, #1
+        $bne$   1b
+        bx      lr
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Dov Kruger
+Read in a string until the last character which has a value 0
+and add each letter onto a sum, then shift left by 1
+Example "ABC"  sum = 0 + 65 then shift left by 1 (130) then add 66 (196) then
+shift left by 1 (392) then add 67 (459) then shift left by 2 
+_Z1fPii:
+        mov     r3, #0
+1:
+        $ldrb$  r2, [r0]
+        $cmp$   r2, #0
+        beq     2f
+        add     $r3$, r2
+        lsl     r3, $#1$
+        add     r0, $#1$
+        $subs$  r1, #1
+        $bne$   1b
+2:
+        mov     $r0$, r3
+        bx      lr
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Anisha Shin
+r0 points to an array, r1 = length of the array
+Fill in the missing assembler instructions and parameters.
+The function is supposed to read in all elements of the array, compute
+2 to the power of each element, and writ the number back.
+Example:  If the array r0 = {1,3,5},
+the function should compute 2^1, 2^3, 2^5 and upon return the array should be
+{2,8,32}.
+_Z5powerPii:
+1:
+        $ldr$  r2, [r0]
+        mov    r3, $#1$
+        $lsl$  r3, $r2$
+        str    $r3$,[r0]
+        add    r0,  $#4$
+        subs   $r1$, #1
+        $bgt$  1b
+        $bx$   lr
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Andrew Desanti and Dov Kruger
+given r0 = a number, return true (1) if the number is a multiple of 4
+and false (0) if the number is NOT a multiple of 4
+_Z7isMult4i:
+        ands     r0, $#3$        @test only last two bits
+        $movne$  r0, #0          @if it's not zero, put a zero in r0
+        $moveq$  r0, #1          @if it is zero, put a 1 in r0
+        bx       lr
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Tyler Wright and Andrew Desanti
+Complete this function where r0 points to an array and r1 is the length
+Return the sum of all elements that are multiples of 4.
+_Z13summultiples4:
+        mov     r3, #0
+1:
+        $ldr$   r2, [r0]
+        tst     r2, $#3$        @check whether multiple of 4
+        $addeq$ r3, r2          @sum if exact multiple
+        add     r0, $#4$        @advance to next element
+        $subs$  r1, $#1$        @count down
+        $bne$   1b              @branch back until we process the whole array
+        mov     $r0$, r3        @mov the answer into the desired register
+        $bx$    lr              @return
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Serafin Fernandez and Dov Kruger
+This function computes the difference between the squares of two numbers.
+It uses this formula, X^2 - Y^2 =(X-Y)*(X+Y).
+Fill in the missing assembler instructions and parameters.
+r0 = X, r1 = Y
+_Z5DifSqii:
+        $add$   r2, r0, $r1$
+        sub     r3, $r0$, r1
+        mul     $r0$, r3, r2    @compute the answer and store in the right reg
+        $bx$    lr              @return
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Serafin Fernandez and Dov Kruger
+Given r0=x and r1=y, two numbers compute (x+y)^3 * (x-y)^3
+Fill in the missing assembler instructions and parameters, all in lowercase.
+_Z6cubish:
+          push  {$r4$,$r5$}
+          add   r2, r0, r1
+          sub   r3, r0, r1
+          $mul$ r4, r2, r2
+          mul   r5, r3, r3
+          mul   r0, $r4$, r2
+          mla   $r0$, $r5$, r3
+          pop   {$r4$, $r5$}
+          bx    lr
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Nathan Renner
+_Z9squareSumPii:
+        mov     r2, #0
+1:
+        $ldr$   r3, [r0]
+        $mul$   r3, r3
+        $add$   r0, #4
+        add     $r2$, r3
+        $subs$  r1, #1
+        bne     1b
+        mov     $r0$, r2
+        bx      $lr$
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Princeton Nwosu:
+Fill in the missing assembler instructions and parameters.
+This function has four parameters.
+r0 = pointer to destination array (C)
+r1 = pointer to array A
+r2 = pointer to array B
+r3 is the number of elements in each array
+Compute each element c[i] = A[i] * B[i]
+Example:  r1 = {5,7}, r2 = {3,2}, r3 = 2
+The function should return r0 = {15,14}.
+_Z3mulPiPKiS1_i:
+1:
+        $ldr$    r5, [r1]
+        ldr      r6, [r2]
+        mul      $r5$,r5,r6
+        str      r5, [r0]
+        add      r0, $#4$
+        add      r1, $#4$
+        add      r2, $#4$
+        subs     $r3$, #1
+        bne      1b
+        bx       lr
+
+{"qt":"code", "name":"Fill in the missing code"}
+author: Dov Kruger
+Given
+r0 = pointer to an array of double
+r1 = number of elements
+The array contains coordinates x1,y1,z1,x2,y2,z2, ... etc
+Go through the array setting every third (Z) coordinate to zero
+_Z3mulPiPKiS1_i:
+        $vldr.f64$    d1, .ZERO
+        mov           r2, #24
+1:
+        $vstr.f64$    d1, [r0]
+        add           r0, $r2$
+        subs          $r1$, #1
+        bne           1b
+        bx            lr
+.ZERO:
+        .word 0x00000000
+        .word 0x00000000
+
+{"qt":"code", "name":"Write a Function"}
+author: Andrew Desanti
+In C++, write the function:
+bool isLeap(int year);
+that returns true if the year is a leap year and false if it is not.
+A year is a leap year if it is divisible by 4 but not divisible by 100, OR
+if it is divisible by 400. Recall that && is logical AND and || is logical OR.
+Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)
+$ta( $
+
+{"qt":"code", "name":"Write a Function"}
+author: Andrew Desanti
+Using the above isLeap function, write the following function that counts how many leap years between 2020 and the year:
+$ta(int countLeap(int year) {   $
+
+

@@ -1,0 +1,18 @@
+{
+  "quizspec":   "cpe390.qspec",
+  "author":     "Dov Kruger",
+  "copyright":  "copyright (c) 2020 Dov Kruger",
+  "license":    "Gnu 3.0 see license.txt",
+  "parent":     "DovKruger.qspec",
+
+  "defaults": {
+     "numberOfTries":   4,
+     "timeLimit":       0,
+     "fillInTheBlankSize": 4,
+     "openDate":            "2020-05-01 23:59:59",
+     "closeDate":           "+0 00:30:00",
+  },
+  "def": {
+
+}
+}

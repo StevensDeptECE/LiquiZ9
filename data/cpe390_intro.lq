@@ -12,7 +12,7 @@ $ta( Type your essay here $
 
 {"qt":"pcode", "name":"Simple Math"}
 What is 2+2?
-$mch(2,3,*4,5,19)
+$mch(2,3,*4,5,19$
 
 
 
