@@ -1,4 +1,23 @@
 {"quizspec":"cpe390.qspec", "name":"Final Study Questions"}
+{"qt":"text", "name":"Basic Knowledge"}
+Please enter all answers in lowercase until we add the case insensitive question.
+How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? $16$ <br/>
+Some of the registers are special and cannot be used as general registers.<br/>
+For example register r15 is the $pc$, r14 is the $sp$, and r13 is $lr$.<br/>
+The range of registers available for use is generally considered to be r0 to $r11$.<br/>
+There are $16$ double precision registers starting from $d0$ to $d15$.<br/>
+There are $32$ single precision registers starting from $s0$ to $s31$.<br/>
+We can say that register d1 and s2 $(can be used independently,cannot be used at the same time,should never be used because they are reserved,are not valid in the arm architecture$.<br/>
+
+{"qt":"code", "name":"Overflow"}
+Given that the maximum value for a 16 bit unsigned number is 65535
+uint16_t x = 65533;
+x += 3;
+The result in x is $0$.
+A value is being computed:
+<pre class="code">int seconds = age * 365 * 24 * 60 * 60;</pre>
+How might you detect that overflow is occurring? $mav(answer is negative,answer grows smaller with increasing number,answer ends in a digit that is not zero,answer contains the digit 7 $.
+
 {"qt":"code", "name":"Fill in the missing code"}
 author: Samuel Ciocca
 With r0 pointing at an array of integers and r1 the value of the desired element
@@ -200,10 +219,10 @@ r1 = number of elements
 The array contains coordinates x1,y1,z1,x2,y2,z2, ... etc
 Go through the array setting every third (Z) coordinate to zero
 _Z3mulPiPKiS1_i:
-        $vldr.f64$    d1, .ZERO
+        $vldr.f64$    d0, .ZERO
         mov           r2, #24
 1:
-        $vstr.f64$    d1, [r0]
+        $vstr.f64$    d0, [r0]
         add           r0, $r2$
         subs          $r1$, #1
         bne           1b
@@ -212,7 +231,7 @@ _Z3mulPiPKiS1_i:
         .word 0x00000000
         .word 0x00000000
 
-{"qt":"code", "name":"Write a Function"}
+{"qt":"text", "name":"Write a Function"}
 author: Andrew Desanti
 In C++, write the function:
 bool isLeap(int year);
@@ -222,7 +241,7 @@ if it is divisible by 400. Recall that && is logical AND and || is logical OR.
 Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)
 $ta( $
 
-{"qt":"code", "name":"Write a Function"}
+{"qt":"text", "name":"Write a Function"}
 author: Andrew Desanti
 Using the above isLeap function, write the following function that counts how many leap years between 2020 and the year:
 $ta(int countLeap(int year) {   $

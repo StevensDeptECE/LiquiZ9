@@ -1,18 +1,103 @@
-q1_1		
-q2_2		
-q2_3		
-q2_4		
-q2_5		
-q3_6		
-q3_7		
-q4_8		
-q4_9		
-q5_10		
-q5_11		
-q6_12		
-q6_13		
-q7_14		
-q8_15		
-q8_16		
-q8_17		
-q13_18		
+q1_1	16	
+q1_2	pc	
+q1_3	sp	
+q1_4	lr	
+q1_5	r11	
+q1_6	16	
+q1_7	d0	
+q1_8	d15	
+q1_9	32	
+q1_10	s0	
+q1_11	s31	
+q1_12	can be used independently,cannot be used at the same time,should never be used because they are reserved,are not valid in the arm architecture	
+q2_13	0	
+q2_14	answer is negative,answer grows smaller with increasing number,answer ends in a digit that is not zero,answer contains the digit 7 	
+q3_15	r4	
+q3_16	[r0]	
+q3_17	add	
+q3_18	r1	
+q3_19	bne	
+q3_20	sub	
+q3_21	lr	
+q4_22	ldr	
+q4_23	#1	
+q4_24	str	
+q4_25	[r0]	
+q4_26	#8	
+q4_27	#2	
+q4_28	bgt	
+q4_29	bx	
+q5_30	mov	
+q5_31	ldr	
+q5_32	r2	
+q5_33	add	
+q5_34	#4	
+q5_35	subs	
+q5_36	#1	
+q5_37	bne	
+q5_38	mov	
+q6_39	[r0]	
+q6_40	#4	
+q6_41	subs	
+q6_42	bne	
+q7_43	ldrb	
+q7_44	cmp	
+q7_45	r3	
+q7_46	#1	
+q7_47	#1	
+q7_48	subs	
+q7_49	bne	
+q7_50	r0	
+q8_51	ldr	
+q8_52	#1	
+q8_53	lsl	
+q8_54	r2	
+q8_55	r3	
+q8_56	#4	
+q8_57	r1	
+q8_58	bgt	
+q8_59	bx	
+q9_60	#3	
+q9_61	movne	
+q9_62	moveq	
+q10_63	ldr	
+q10_64	#3	
+q10_65	addeq	
+q10_66	#4	
+q10_67	subs	
+q10_68	#1	
+q10_69	bne	
+q10_70	r0	
+q10_71	bx	
+q11_72	add	
+q11_73	r1	
+q11_74	r0	
+q11_75	r0	
+q11_76	bx	
+q12_77	r4	
+q12_78	r5	
+q12_79	mul	
+q12_80	r4	
+q12_81	r0	
+q12_82	r5	
+q12_83	r4	
+q12_84	r5	
+q13_85	ldr	
+q13_86	mul	
+q13_87	add	
+q13_88	r2	
+q13_89	subs	
+q13_90	r0	
+q13_91	lr	
+q14_92	ldr	
+q14_93	r5	
+q14_94	#4	
+q14_95	#4	
+q14_96	#4	
+q14_97	r3	
+q15_98	vldr.f64	
+q15_99	vstr.f64	
+q15_100	r2	
+q15_101	r1	
+q16_102	 	
+q17_103	int countLeap(int year) {   	

@@ -9,12 +9,14 @@ using namespace std;
 
 int questionNum = 1;
 int partNum; // the subnumber within each question
+ofstream answers;
 
 class Question {
 protected:
 	string text;
 public:
 	void setText(const string& t) { text = t; }
+	void printCore(ostream& s) const;
 	virtual void print(ostream& s) const = 0;
 	virtual ~Question() {}
 };
@@ -80,6 +82,28 @@ void buildString(std::string& dest, const Args&... args)
 	static_cast<void>(unpack);
 }
 
+void buildInput(string& qid, const string& ans) {
+	partNum++;
+	buildString(qid, "q", questionNum, "_", partNum);
+  answers << qid << '\t' << ans << '\t' << '\n';
+}
+
+void buildSurvey(string& survey, string& temp, const string& qid,
+								 const string& input) {
+	string question = "test";
+	// TODO: quick and dirty, hardcode for now
+	buildString(survey,
+							"<table class='survey'>\n",
+							"<tr><td>", question, "</td>\n",
+							"<td>Strongly disagree <input type='radio' name='", qid, "'/></td>\n"
+							"<td>Disagree <input type='radio' name='", qid, "'/></td>\n"
+							"<td>unsure <input type='radio' name='", qid, "'/></td>\n"
+							"<td>Agree <input type='radio' name='", qid, "'/></td>\n"
+							"<td>Strongly Agree <input type='radio' name='", qid, "'/></td>",
+              "</tr>");
+
+	survey += "</table>";
+}
 /*
 	Build a select from a string current delimited with ','
   TODO: This needs to be more sophisticated. Right now no element may
@@ -88,24 +112,41 @@ void buildString(std::string& dest, const Args&... args)
 	For efficiency, this function takes two strings to build
   The first is for the entire string, the second is a temporary used to build it
  */
-void buildSelect(string& select, string& temp, const string& input) {
-	buildString(temp, "<select id='q", questionNum, "_", partNum, "'>");
+void buildSelect(string& select, string& temp, const string& qid, const string& input) {
+	buildString(temp, "<select id='", qid, "'>\n" "<option></option>");
 	buildStringSplitDelimiter(select, input, ',', temp, "</select>", "<option>", "</option>");
 }
 
-void buildMCH(string& multipleChoice, string& temp, const string& input) {
-	buildString(temp, "<td><input type='radio' name='q", questionNum, "_",
-							partNum, "'>");
+
+void buildMCH(string& multipleChoice, string& temp,
+							const string& qid, const string& input) {
+	buildString(temp, "<td><input class='mc' type='radio' name='", qid, "'>");
 	buildStringSplitDelimiter(multipleChoice, input, ',',
-														"<table><tr>", "</tr></table>",
+														"<table class='mch'><tr>", "</tr></table>",
 														temp, "</input></td>");
 }
 
-void buildMCV(string& multipleChoice, string& temp, const string& input) {
-	buildString(temp, "<tr><td><input type='radio' name='q", questionNum, "_",
-							partNum, "'>");
+void buildMCV(string& multipleChoice, string& temp,
+							const string& qid, const string& input) {
+	buildString(temp, "<tr><td><input class='mc' type='radio' name='", qid, "'>");
 	buildStringSplitDelimiter(multipleChoice, input, ',',
-														"<table>", "</table>",
+														"<table class='mcv'>", "</table>",
+														temp, "</input></td></tr>");
+}
+
+void buildMAH(string& multipleChoice, string& temp,
+							const string& qid, const string& input) {
+	buildString(temp, "<td><input class='ma' type='checkbox' name='", qid, "'>");
+	buildStringSplitDelimiter(multipleChoice, input, ',',
+														"<table class='mch'><tr>", "</tr></table>",
+														temp, "</input></td>");
+}
+
+void buildMAV(string& multipleChoice, string& temp,
+							const string& qid, const string& input) {
+	buildString(temp, "<tr><td><input class='ma' type='checkbox' name='", qid, "'>");
+	buildStringSplitDelimiter(multipleChoice, input, ',',
+														"<table class='mcv'>", "</table>",
 														temp, "</input></td></tr>");
 }
 
@@ -114,21 +155,29 @@ public:
 	void print(ostream& s) const override;
 };
 
+class TextQuestion : public Question {
+public:
+	void print(ostream& s) const override;
+};
 
-const regex specials("(\\$[a-z]*[\\[\\{%\\(\\$]?)(.*)\\$");
-const string BLANK = "$"; // fill in the blank
-const string REGEX = "${";
-const string SELECT = "$("; // selection (dropdown menu)
-const string IMAGE = "$img("; // a picture
-const string IMAGEMAP = "$map("; // an image map (interactive)
-const string AUDIO = "$aud("; // an audio file
-const string VIDEO = "$vid("; // a video
-const string TEXTAREA = "$ta(";
-const string MCH = "$mch("; //Multiple Choice Horizontal Layout
-const string MCV = "$mcv("; //Multiple Choice Vertical Layout
-const string MAH = "$mah("; //Multiple Answer Horizontal Layout
-const string MAV = "$mav("; //Multiple Answer Vertical Layout
+const regex specials("\\$([a-z]*\\()?([^\\$]+)\\$");
+const string BLANK = ""; // fill in the blank
+const string REGEX = "re(";
+// $re(  $i( ignore case
+const string SELECT = "("; // selection (dropdown menu)
+const string IMAGE = "img("; // a picture
+const string IMAGEMAP = "map("; // an image map (interactive)
+const string AUDIO = "aud("; // an audio file
+const string VIDEO = "vid("; // a video
+const string TEXTAREA = "ta(";
+const string SURVEY = "sur("; // survey style, one line table including question
+const string MCH = "mch("; //Multiple Choice Horizontal Layout
+const string MCV = "mcv("; //Multiple Choice Vertical Layout
+const string MAH = "mah("; //Multiple Answer Horizontal Layout
+const string MAV = "mav("; //Multiple Answer Vertical Layout
 const string LOOKUP = "$%"; // lookup a previously defined select
+const string MAT = "mat("; //Matrix question
+const string EQ = "eq("; //Matrix question
 //TODO: support select, MCH, and MCV for lookup. Right now it's just select
 //TODO: remove "" from stinking lookup!
 const string SUFFIXES[] = {"png", "jpg", "mp3", "mp4"};
@@ -137,6 +186,8 @@ const string JPG = "jpg";
 const string MP4 = "mp4";
 const string MP3 = "mp3";
 const string OGG = "ogg";
+
+Question* defaultQuestionType;
 unordered_map<string, Question*> questionType;
 unordered_map<string, string> definitions;
 
@@ -145,15 +196,30 @@ unordered_map<string, string> definitions;
  */
 regex fillInDelimiters("\\$[^\\$]+\\$");
 //regex selectDelimiters("%([^%]+)%");
+
 void CodeQuestion::print(ostream& s) const {
-	s << "<pre>";
+	s << "<pre>\n";
+  printCore(s);
+  s << "</pre>\n";
+}
+
+void TextQuestion::print(ostream& s) const {
+	s << "<p class='text'>\n";
+  printCore(s);
+	s << "</p>\n";
+}
+
+void Question::printCore(ostream& s) const {
 	smatch m;
 	string replace;
 	replace.reserve(4096);
 	string outText = text;
 	string temp;
+  string qid;
 	temp.reserve(1024);
 	while (regex_search(outText, m, specials)) { // if special pattern found
+    string delim = m[1], value= m[2];
+		cerr << delim << "==>" << value << '\n';
 		if (m[1] == IMAGE) {
 				buildString(replace, "<img src='", m[2], "'></img>");
 		} else if (m[1] == AUDIO) {
@@ -165,23 +231,50 @@ void CodeQuestion::print(ostream& s) const {
 			buildString(replace, "<video controls width='320' height='240'><source src='", m[2], "' type='video/mp4'></video>");
 		} else if (m[1] == BLANK) {
 			cout << "BLANK\n";
-  		partNum++;
-      buildString(replace, "<input type='text' id='q", questionNum, "_", partNum, "' size='6'/>");
+      buildInput(qid, m[2]);
+      buildString(replace, "<input class='' type='text' id='", qid, "' size='6'/>");
 	  } else if (m[1] == REGEX) {
-  		partNum++;
-      buildString(replace, "<input type='text' id='q", questionNum, "_", partNum, "' size='6'/>");
+      buildInput(qid, m[2]);
+      buildString(replace, "<input type='text' id='", qid, "' size='6'/>");
 		} else if (m[1] == SELECT) {
-			partNum++;
-			buildSelect(replace, temp, m[2]); //TODO: this is simplified. It does not allow commas in the individual options													
+      buildInput(qid, m[2]);
+			buildSelect(replace, temp, qid, m[2]); //TODO: this is simplified. It does not allow commas in the individual options													
 		} else if (m[1] == MCH) {
-			partNum++;
-			buildMCH(replace, temp, m[2]); //TODO: this is simplified. It does not 
+      buildInput(qid, m[2]);
+			buildMCH(replace, temp, qid, m[2]); //TODO: this is simplified. It does not 
 		} else if (m[1] == MCV) {
-			partNum++;
-			buildMCV(replace, temp, m[2]); //TODO: this is simplified. It does not 
-		}else if (m[1] == TEXTAREA) {
-			partNum++;
-			buildString(replace, "<textarea rows='20' cols='80' id='q", questionNum, "_", partNum, "'>", m[2], "</textarea>");
+      buildInput(qid, m[2]);
+			buildMCV(replace, temp, qid, m[2]); //TODO: this is simplified. It does not 
+		} else if (m[1] == MAH) {
+      buildInput(qid, m[2]);
+			buildMAH(replace, temp, qid, m[2]); //TODO: this is simplified. It does not 
+		} else if (m[1] == MAV) {
+      buildInput(qid, m[2]);
+			buildMAV(replace, temp, qid, m[2]); //TODO: this is simplified. It does not 
+		} else if (m[1] == SURVEY) {
+      buildInput(qid, m[2]);
+   		buildSurvey(replace, temp, qid, m[2]);
+    } else if (m[1] == MAT) {
+      const string& s = m[2];
+      int rows = atoi(&s[0]), cols;
+      int i;
+      for (i = 0; s[i] != '('; i++)
+        if (s[i] == ',') {
+          cols = atoi(&s[i]+1);
+        }
+      replace.reserve(rows * cols * 50 + 100); // preallocate approx. right capacity
+      replace = "<table class='mat'>";
+      for (int r = 0; r < rows; r++) {
+        replace += "<tr>";
+        for (int c = 0; c < cols; c++) {
+          replace += "<td><input class='mat' type='text' size='6'></td>";
+        }
+        replace += "</tr>";
+       }
+       replace += "</table>";
+    }else if (m[1] == TEXTAREA) {
+      buildInput(qid, m[2]);
+			buildString(replace, "<textarea rows='20' cols='80' id='", qid, "'>", m[2], "</textarea>");
 		} else if (m[1] == LOOKUP) {
 			cout << "LOOKUP\n";
 			unordered_map<string, string>::iterator i = definitions.find(m[2]);
@@ -205,7 +298,6 @@ void CodeQuestion::print(ostream& s) const {
 	}
 	
 	s << outText;
-	s << "</pre>";
 }
 
 void generateHeader(ostream& out, nlohmann::json& header) {
@@ -267,8 +359,9 @@ void generateQuestion(ostream& out,
 	string quizName = q.at("name");
 	out << "<div class='q' id='q" << questionNum <<
 		"'>" << questionNum << ". " << quizName << "<span class='pts'> (" << points << " points)</span></p>";
-	string qtype = (q.find("type") == q.end()) ? "code" : q["type"];
-	Question* question = questionType[qtype];
+	string qtype = q.at("qt");// ? "code" : q["type"];
+	Question* question = (questionType.find(qtype) != questionType.end())
+		? questionType[qtype] : defaultQuestionType;
 	if (question != nullptr) {
 		question->setText(questionText);
 		question->print(out);
@@ -291,15 +384,26 @@ R"(
 </html>
 )";
 }
-
-void generateLiquizHTML(const char liquizFile[], const char htmlFile[]) {
+string removeFileExtension(const char filename[]) {
+	int i;
+	for (i = 0; filename[i] != '\0'; i++)
+		;
+	for (; i >= 0 && filename[i] != '.'; i--)
+		;
+	return string(filename, i+1);
+}
+	
+void generateLiquizHTML(const char liquizFile[]) {
+	string baseFilename = removeFileExtension(liquizFile);
+  string outFile = baseFilename + "html";
+	string ansFile = baseFilename + "ans";
 	ifstream f(liquizFile);
-	ofstream out(htmlFile);
+	ofstream out(outFile);
+  answers.open(ansFile);
+
 	string line;
   getline(f, line);
-	istringstream s(line);
-	nlohmann::json header;
-	s >> header;
+	nlohmann::json header = nlohmann::json::parse(line);
 	cout << header << "\n\n";
 	regex def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}");
 	regex jsonObj("^\\{");
@@ -308,11 +412,12 @@ void generateLiquizHTML(const char liquizFile[], const char htmlFile[]) {
 	const string blank = "";
 	questionText.reserve(1024);
 	generateHeader(out, header);
-  string defSelect, temp;
+  string defSelect, temp, qid;
 	while (getline(f, line), !f.eof()) {
 		if (regex_search(line, m, def)) {
 			cout << m[1] << '\n';
-      buildSelect(defSelect, temp, m[2]);
+			buildInput(qid, m[2]);
+      buildSelect(defSelect, temp, qid, m[2]);
       definitions[m[1]] = defSelect;
 		} else if (regex_search(line, m, jsonObj)) {
 			istringstream s(line);
@@ -333,18 +438,16 @@ void generateLiquizHTML(const char liquizFile[], const char htmlFile[]) {
 }
 
 int main(int argc, char* argv[]) {
-questionType["code"] = new CodeQuestion();
-//questionType["pcode"] = new PseudocodeQuestion();
+	questionType["text"] = defaultQuestionType = new TextQuestion();
+  questionType["code"] = new CodeQuestion();
+	//  questionType["pcode"] = new PseudocodeQuestion();
 //questionType["mc"]
 	try {
     if (argc < 2)
-		  generateLiquizHTML("datastruct_numbertheoretic.lq", "datastruct_numbertheoretic.html");
+		  generateLiquizHTML("datastruct_numbertheoretic.lq");
     else
      for (int i = 1; i < argc; i++) {
-       string outFile = argv[i];
-       outFile = outFile.substr(0,outFile.length()-2);
-       outFile += "html";
-		   generateLiquizHTML(argv[i], outFile.c_str());
+		   generateLiquizHTML(argv[i]);
      }
 
 	} catch (std::exception& e) {

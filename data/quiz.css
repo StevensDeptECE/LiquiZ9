@@ -115,3 +115,7 @@ textarea {
     table-layout: fixed;
     width: 100%;
 }
+.text {
+    font-family: Arial;
+    font-size: 14pt;
+}
