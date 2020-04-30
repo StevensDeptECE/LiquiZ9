@@ -160,7 +160,7 @@ public:
 	void print(ostream& s) const override;
 };
 
-const regex specials("\\$([a-z]*\\()?([^\\$]+)\\$");
+const regex specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
 const string BLANK = ""; // fill in the blank
 const string REGEX = "re(";
 // $re(  $i( ignore case
@@ -285,7 +285,13 @@ void Question::printCore(ostream& s) const {
 				partNum++;
 				replace = definitions[m[2]];
 			}
-		}
+		} else if (isdigit(outText[m.position(1)])) {
+      string sizedFillin = m[1];
+      int size = stoi(sizedFillin);
+      buildInput(qid, m[2]);
+      buildString(replace, "<input class='' type='text' id='", qid, "' size='", size, "'/>");
+
+    }
 		cout << "m[1]=" << m[1] << '\n';
 		cout << "m[2]=" << m[2] << '\n';
 		outText.replace(m.position(), m.length(), replace);
