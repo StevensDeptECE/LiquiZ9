@@ -20,36 +20,34 @@ How might you detect that overflow is occurring? $mav(answer is negative,answer 
 
 {"qt":"code", "name":"Basic Instructions"}
 After each of the following assembler instruction show the values in the registers
-000102b4: mov  r0, #4    @r0=$00000000$   pc=$000102b8$
-000102b8: sub  r0, #5    @r0=$ffffffff$   pc=$000102bc$
-000102bc: adds r0, #1    @r0=$00000000$   V=$1$ Z=$1$ N=$0$
-000102bc: adds r0, #1    @r0=$00000000$   V=$0$ Z=$0$ N=$0$
-000102bc: subs r0, #1    @r0=$ffffffff$   V=$1$ Z=$0$ N=$1$
+000102b4: mov  r0, #4    @r0=$8{00000000$   pc=$8{000102b8$
+000102b8: sub  r0, #5    @r0=$8{ffffffff$   pc=$8{000102bc$
+000102bc: adds r0, #1    @r0=$8{00000000$   V=$1{1$ Z=$1{1$ N=$1{0$
+000102bc: adds r0, #1    @r0=$8{00000000$   V=$1{0$ Z=$1{0$ N=$1{0$
+000102bc: subs r0, #1    @r0=$8{ffffffff$   V=$1{1$ Z=$1{0$ N=$1{1$
 
 {"qt":"code", "name":"Push and Pop"}
+Enter all values as 8-digit hex in lower case. If there is not enough information
+to determine a digit, write a question mark (?) for that digit
 assume sp = 7fff1c10
 
 000102b8: mov  r4, #7
-000102bc: push {r4}    @sp=$7fff1c0c$
-000102c0: mov  r4, #5  @r4=$00000005$
-000102c4: push {r5}    @sp=$7fff1c08$
+000102bc: push {r4}    @sp=$8{7fff1c0c$
+000102c0: mov  r4, #5  @r4=$8{00000005$
+000102c4: push {r5}    @sp=$8{7fff1c08$
 000102c8: mov  r5, #2
-000102cc: pop  {r5}    @r5=$????????$ sp=$7fff1c0c$
-000102d0: pop  {r4}    @r4=$00000007$ sp=$7fff1c10$ mem[7fff1c10]=$00000005$
+000102cc: pop  {r5}    @r5=$8{????????$ sp=$8{7fff1c0c$
+000102d0: pop  {r4}    @r4=$8{00000007$ sp=$8{7fff1c10$ mem[7fff1c10]=$00000005$
 000102d4: push {r4,r5} @
 
-
-
-
-
 {"qt":"code", "name":"Branching Instructions"}
-000104c8: mov  r0, #0    @r0=$00000000$   pc=$000104cc$
-000104cc: add  r0, #4    @r0=$00000004$   pc=$000104d0$
-000104d0: subs r0, #3    @Z=$0$ N=$0$     pc=$000104d4$
-000104d4: beq  000104e8  @pc=$000104d8$
-000104d8: bgt  000104e8  @pc=$000104e8$
-000104dc: bl   000104f0  @lr=$000104e0$   pc=$104f0
-000104e0: cmp  r0, #3    @Z=$0$ N=$1$
+000104c8: mov  r0, #0    @r0=$8{00000000$   pc=$8{000104cc$
+000104cc: add  r0, #4    @r0=$8{00000004$   pc=$8{000104d0$
+000104d0: subs r0, #3    @Z=$1{0$ N=$1{0$ pc=$8{000104d4$
+000104d4: beq  000104e8  @pc=$8{000104d8$
+000104d8: bgt  000104e8  @pc=$8{000104e8$
+000104dc: bl   000104f0  @lr=$8{000104e0$   pc=$8{000104f0$
+000104e0: cmp  r0, #3    @Z=$1{0$ N=$1{1$
 000104e4: blt  000104ec
 000104e8:
 000104ec:

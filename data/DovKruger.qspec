@@ -1,6 +1,8 @@
 {
   "quizspec":   "DovKruger.qspec",
   "author":     "Dov Kruger",
+  "email":	"Dov.Kruger@stevens.edu",
+  "UUID":	"auth123",
   "copyright":  "copyright (c) 2020 Dov Kruger",
   "license":    "Gnu 3.0 see license.txt",
 
@@ -17,6 +19,7 @@
   "def": {
     "tf": ["true", "false"],
     "yn": ["yes", "no"],
+    "likert": ["strongly disagree", "disagree", "neutral", "agree", "strongly agree"],
     
-}
+  }
 }
