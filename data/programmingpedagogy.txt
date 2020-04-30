@@ -1,0 +1,104 @@
+Terminology
+
+computational thinking is learning to think about algorithms with the hope that this will translate into good habits as a programmer. Computational thinking usually implies not thinking about a specific computer, and exercises can involve planning routes for efficiency, computing with paper and physical objects.
+
+computer programming involving a real computer is not only about the intellectual grasp of algorithms but involves a knowledge of how a particular language works. Many high-level languages are similar. Most ordinary computer languages have variables, if statements (branching), loops, and functions.
+
+In this paper, we will focus on the pedagogy of a single high-level language (C++) and a low-level assembler language (ARM assembler). We will show that a significant part of learning each language is understanding all the effects of each operation. There are many much side effects in the low-level language, and this coupled with the fact that each instruction does less is why machine language is not only more cumbersome, but more complex to learn.
+
+At the lowest level, the computer itself is a complex machine with a
+lot of state. When teaching what happens when a machine language
+instructions is executed, the key is that each instruction has
+multiple effects, and understanding all of them is crucial because a
+program in that language can only be constructed by these primitives
+which each have multiple effects.
+
+Teaching programming is therefore not just about computational
+thinking. It is first and foremost about understanding what the
+computer does, so that the human can construct a sequence of
+instructions to perform a goal. Computational thinking is an abstract,
+idealized version of programming in an environment designed for
+simplicity to offer as little cognitive overhead as possible.
+
+A large part of learning to program on a computer is learning the kind
+of things that can go wrong. When the programmer executes a correct
+sequence of instructions and everything works, they do not really have
+to understand how their code works. But when the code does not work,
+and the question is what could have happened to make the code work
+other than the way it should, a beginner flounders because they have
+no idea what could have happened and their search is necessarily
+random and undirected.
+
+In this paper, we discuss methods of teaching C++, and ARM
+assembler. This article is limited to integer computation, loops, and
+arrays, so really in this regard C++ can be considered in a family
+with C, Java, C#, objective C, although there are specific differences
+in areas such as parameter passing.
+
+Machine language, has more primitives, but the real reason it is
+pedagogically more difficult is that machine language exposes the way
+the machine really works, and even in a semi-low level language like
+C++, there is significant abstraction hiding the details of the
+machine from the programmer. By using assembly language, students learn what is actually happening at that level. And what is happening is complicated. Modern computers simultaneously decode the next instruction while executing the current one, they can simultaneously transfer data between multiple registers while executing a multiply-add. They can even execute a floating point operation while performing an integer one. As the assembly level, understanding the machine model becomes important and even
+
+Just as above, we made the claim that programmers do not need to understand what is really happening until there is an error, based on the facts of assembly language programming we can say that programmers do not need to know how the machine works as long as it is working efficiently. Even if the program executes correctly, and even though languages like C++ do not expose details of pipelining and execution units, a programmer who understands the underlying computer can write much higher-performance code.
+
+When a machine language instruction is executed, the machine has a
+known state.  The program counter is set to a particular location, in
+this case 00010468 The computer is ready to execute the instruction at
+this location. In this simplest of ARM assembler instructions, two
+things happen. First, register r0 is set to the number 4, stored
+internally as bits: 00000000 00000000 00000000 00000100 In addition,
+however, the CPU also advances the program counter to the next instruction, at location 0001046c
+
+00010468: mov       r0, #4
+0001046c: sub       r0, #3
+
+A more complicated instruction may check the status codes, and if the right combination is set, store the current location of the PC so that control may return, and branch to a subroutine. The machine language instruction:
+
+00010500: blgt       0x00010510
+00010504
+executes:
+
+if Z = 0 AND N = 0
+  LR = 00010504
+  PC = 00010510
+
+The common pedagogical features of all programming languages, from low
+to high, are that the student must know the basics facts of their
+environment. They can be protected only if shielding them from
+knowledge will be internally consistent in the programs they are
+expected to write.
+
+One example of this problem is in courses where students are taught to
+do integer operations, yet not taught about overflow. Since overflow happens all the time, when a student computes:
+
+int a = 1000000 * 1000000;
+
+and gets a horrible negative number as an answer, they may reasonably
+assume that their computer is broken, that the IDE in which they are
+programming is broken, and in any case they get horribly confused. The
+only efficient way out for them is education, or a help site where
+they can ask which amounts to the same thing. Left to their own
+devices with a problem involving underlying knowledge they do not
+have, most beginners will simply give up.
+
+Overflow then, is a critical cognitive fact of which they must be
+aware since it is so easy to happen. Beginning students do not have to
+be aware of some of the bizarre pointer bugs that can happen in the C
+family of languages until such time as they manipulate memory. But
+right from the beginning, this class of error creates trouble. And any
+language that has fixed size integers behaves the same way.
+
+Examples of this include:
+
+I am 69 years old. How many seconds old am I?
+
+int ageInSeconds = age * 365 * 24 * 60 * 60;
+
+answer is negative (obviously wrong).
+
+
+The solution is to use automated tools at home to drill on the
+critical rules, while in class we focus on programming problems. The
+two togehter cover the needed information.

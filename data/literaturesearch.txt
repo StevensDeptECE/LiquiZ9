@@ -1,0 +1,25 @@
+computational thinking
+scaffolding for learning programming
+
+CS50 critique
+
+
+Design assessments
+Scaffolding formative assessments for homework, 4x
+
+formative assessment with different questions to measure understanding
+
+If students get questions wrong professor reviews with them
+100% required
+
+In order to make the teacher's life easier, designign a better assessment tool
+
+
+Reliability = consistency. given a set of problems, how reliable is the metric in measuring the underlying student knowledge
+
+Validity? Is this measuring what we think it's measuring
+
+
+Final assessment of programming:
+      write a program.
+      in person: analyze a program and tell me what it does

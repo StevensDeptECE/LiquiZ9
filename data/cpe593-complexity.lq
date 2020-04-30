@@ -1,0 +1,97 @@
+{"quizspec":"cpe593.qspec", "name":"Complexity"}
+{"qt":"code", "name":"complexity of c code"}
+for (int i = 0; i < n; i++)
+{}
+
+for (int j = 5; j < 2*n; j++)
+{}
+
+for (int k = 3; k < n; k += 7)
+{}
+
+for (int i = 0; i < n; i += n/10)
+{}
+
+{"qt":"code", "name":"complexity of pseudocode"}
+<pre style="font-size:14pt" >
+f() {     // complexity of the whole function: O($n^2$)
+  for (int i = 0; i < n; i++)       //O($n$)
+    for (int j = 0; j < n; j++)     //O($n$)
+      {}
+}
+</pre>
+f() { // O($n^2$)
+  for (int i = 0; i < n; i++)         //O($n$)
+    for (int j = 0; j < i; j++)       //O($n$)
+      {}
+}
+f() { // O($nlogn$)
+  for (int i = 0; i < n; i++)     //O($n$)
+    for (int j = 0; j < i; j*=i)  //O($logn$)
+      {}
+}
+f() { // O($n$)
+  for (int i = 0; i < n; i*=2)
+    for (int j = 0; j < i; j++)
+      {}
+}
+
+f() { // O($n*sqrt(n)$)
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < sqrt(i); j++)
+      {}
+}
+
+f() { // O($n^2$)
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < n-sqrt(n); j++)
+      {}
+}
+
+f() { // O($nsqrt(n)$)
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < n/sqrt(n); j++)
+      {}
+}
+
+f() { // O($n^3$)
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < n; j++)
+      for (int k = 0; k < n; k++)
+        {}
+}
+
+f() { // O($n^2$)
+  for (int i = 0; i < n; i++)          //O($n$)
+    for (int j = 0; j < n; j++)        //O($n$)
+      for (int k = j-1; k <= j+1; k++) //O($1$)
+        {}
+}
+
+{"qt":"pcode", "name":""}
+f() { // O($n^2$)
+  for i <-- 1 to n          //O($n$)
+    for j <-- 3 to n/2      //O($n$)
+      for j<-- j-1 to j+1   //O($1$)
+      end
+    end
+  end
+end
+}
+
+{"qt":"pcode", "name":""}
+gcd(a,b)
+  if b == 0
+    return $a$
+  end
+  return $gcd$($b$, a mod b)
+end
+
+{"qt":"pcode", "name":""}
+lcm(a,b) = a*b*$gcd$(a,b)
+
+Boyer-Moore
+complexity
+This is a test. this is a test.
+         y         y          y
+
