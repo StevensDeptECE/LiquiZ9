@@ -52,6 +52,11 @@ function checkAndSubmit() {
     var pledge = document.getElementById("pledge");
     console.log(userid + ", " + passwd);
     console.log(name + ", " + pledge);
+    var submission = [];
+    var f = forms[0];
+    for (var i = 0; i < f.elements.length; i++)
+	submission.push([f.elements[i].id, f.elements[i].value]);
+    console.log(submission);
     document.forms[0].submit();
 }
 
