@@ -155,6 +155,12 @@ public:
 	void print(ostream& s) const override;
 };
 
+class PCodeQuestion : public Question {
+public:
+	void print(ostream& s) const override;
+};
+
+
 class TextQuestion : public Question {
 public:
 	void print(ostream& s) const override;
@@ -202,6 +208,13 @@ void CodeQuestion::print(ostream& s) const {
   printCore(s);
   s << "</pre>\n";
 }
+
+void PCodeQuestion::print(ostream& s) const {
+	s << "<pre class='pcode'>\n";
+  printCore(s);
+  s << "</pre>\n";
+}
+
 
 void TextQuestion::print(ostream& s) const {
 	s << "<p class='text'>\n";
@@ -362,9 +375,9 @@ void generateQuestion(ostream& out,
 											nlohmann::json& q,
 											const string& questionText) {
 	double points = 10;
-	string quizName = q.at("name");
+	string questionName = q.at("name");
 	out << "<div class='q' id='q" << questionNum <<
-		"'>" << questionNum << ". " << quizName << "<span class='pts'> (" << points << " points)</span></p>";
+		"'>" << questionNum << ". " << questionName << "<span class='pts'> (" << points << " points)</span></p>";
 	string qtype = q.at("qt");// ? "code" : q["type"];
 	Question* question = (questionType.find(qtype) != questionType.end())
 		? questionType[qtype] : defaultQuestionType;
@@ -445,6 +458,7 @@ void generateLiquizHTML(const char liquizFile[]) {
 
 int main(int argc, char* argv[]) {
 	questionType["text"] = defaultQuestionType = new TextQuestion();
+	questionType["pcode"] = new PCodeQuestion();
   questionType["code"] = new CodeQuestion();
 	//  questionType["pcode"] = new PseudocodeQuestion();
 //questionType["mc"]
