@@ -8,10 +8,157 @@
 using namespace std;
 
 
+
+const regex specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
+const string BLANK = ""; // fill in the blank
+const string REGEX = "re(";
+// $re(  $i( ignore case
+const string SELECT = "("; // selection (dropdown menu)
+const string IMAGE = "img("; // a picture
+const string IMAGEMAP = "map("; // an image map (interactive)
+const string AUDIO = "aud("; // an audio file
+const string VIDEO = "vid("; // a video
+const string TEXTAREA = "ta(";
+const string SURVEY = "sur("; // survey style, one line table including question
+const string MCH = "mch("; //Multiple Choice Horizontal Layout
+const string MCV = "mcv("; //Multiple Choice Vertical Layout
+const string MAH = "mah("; //Multiple Answer Horizontal Layout
+const string MAV = "mav("; //Multiple Answer Vertical Layout
+const string LOOKUP = "$%"; // lookup a previously defined select
+const string MAT = "mat("; //Matrix question
+const string EQ = "eq("; //Matrix question
+//TODO: support select, MCH, and MCV for lookup. Right now it's just select
+//TODO: remove "" from stinking lookup!
+const string SUFFIXES[] = {"png", "jpg", "mp3", "mp4"};
+const string PNG = "png";
+const string JPG = "jpg";
+const string MP4 = "mp4";
+const string MP3 = "mp3";
+const string OGG = "ogg";
+
+
+
+inline const std::string& to_string(const std::string& s) {return s;}
+inline std::string to_string(char c) {
+	char s[2] = {c, '\0'};
+	return std::string(s);
+}
+
+template<typename... Args>
+void buildString(std::string& dest, const Args&... args) {
+    dest.clear();
+    int unpack[]{0, (dest += to_string(args), 0)...};
+    static_cas<void>(unpack);
+}
+
+void buildStringSplitDelimiter(string& dest, const string& in, const char delimit, const string& start, const string& end, 
+                                            const string& pre, const string& post) {
+    dest = start;
+    int startIndex = 0, endIndex;
+    if (in[startIndex]=='"')
+        startIndex++; // skip surrounding quotes
+    for (int i = 0; i < in.length(); i++) {
+        if (in[i] == delimit) {
+            endIndex = i-1;
+            if (in[endIndex] == '"')
+                endIndex--;
+            dest += pre;
+            for (int j = startIndex; j <= endIndex; j++)
+                dest += in[j];
+            dest += post;
+            startIndex = i+1;
+            if (in[startIndex] == '"')
+                startIndex++;
+        }
+    }
+    dest += pre;
+    endIndex = in.length()-1;
+    if (in[endIndex] == '"')
+        endIndex--;
+    for (int j = startIndex; j < endIndex; j++)
+        dest += in[j];
+    dest += post;
+    dest += end;
+}
+
+/*
+Build a select from a string current delimited with ','
+TODO: This needs to be more sophisticated. Right now no element may
+contain a comma.
+
+For efficiency, this function takes two strings to build
+The first is for the entire string, the second is a temporary used to build it
+*/
+void buildSelect(string& select, string& temp, const string& qid, const string& input) {
+    buildString(temp, "<select id='", qid, "'>\n" "<option></option>");
+    buildStringSplitDelimiter(select, input, ',', temp, "</select>", "<option>", "</option>");
+}
+
+
+
+class QuestionType {
+    private:
+        string text;
+        string replace, qID;
+
+        void static contentPrint(const string& type, const string& value) {
+            if(type == IMAGE) {
+                buildString(replace, "<img src='", value, "'></img>");
+            } else if(type == AUDIO) {
+                string url = type;
+                string audioType = url.substr(url.length()-3);
+                buildString(replace, "<audio controls><source src='", type, "' type='audio/", audioType, "'></audio>");
+            } else if(type == VIDEO) {
+                string videoType = ""; // TODO: use this
+			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
+            } else if(type == BLANK) {
+                buildInput(qID, value);
+                buildString(replace, "<input class='' type='text' id='", qID, "' size='6'/>");
+            }
+        }
+
+    public:
+        void setText(const string& t) { text = t; }
+        void printCore(ostream& s) const;
+        virtual void print(ostream& s) const = 0;
+        virtual ~QuestionType() {}
+};
+
+
+class MulitipleChoice : public QuestionType {
+    private:
+    public:
+        void build()
+};
+
+
+void QuestionType::printCore(ostream& s) const {
+    smatch m;
+    string outText = text;
+    replace.reserve(4096);
+    while (regex_search(outText, m, specials)) { // if special pattern found
+        string delim = m[1], value= m[2];
+        contentPrint(delim, value);
+    // questionTypePrint()
+    //
+    }
+}
+
+class CodeQuestion {};
+class PCodeQuestion {};
+class TextQuestion {};
+class MatrixQuestion {};
+class MultipleAnswer {};
+class NumericQuestion {};
+
+
+
+
 class LiQuiz {
     private:
         int questionNum;
         int partNum;
+        string questionText;
         ofstream html;
         ofstream ans;
         ifstream liquizFile;
@@ -21,7 +168,7 @@ class LiQuiz {
         static unordered_map<string, string> definitions;
 
         static QuestionType* findQuestionType(const string& type, const string& questionText) {
-            QuestionType* question = (questionType.find(type) != questionType.end())
+            QuestionType* question = (questionTypes.find(type) != questionTypes.end())
                 ? questionType[type] : defaultQuestionType;
             if (question != nullptr) {
                 // TODO: part of Question class
@@ -40,7 +187,9 @@ class LiQuiz {
         }
 
     public:
-        LiQuiz(const char liquizFileName[]) : questionNum(1) {}
+        LiQuiz(const char liquizFileName[]) : questionNum(1) {
+            questionText.reserve(1024);
+        }
 
         void openFile(const char liquizFileName[]) {
             liquizFile.open(liquizFileName);
@@ -109,65 +258,14 @@ class LiQuiz {
             cout << "</div>";   // ?
         }
 
-        inline const std::string& to_string(const std::string& s) {return s;}
-        template<typename... Args>
-        void buildString(std::string& dest, const Args&... args) {
-            dest.clear();
-            int unpack[]{0, (dest += to_string(args), 0)...};
-        }
-
         void addAnswer(string& qid, const string& ans) {
             partNum++;
             buildString(qid, "q", questionNum, "_", partNum);
             ans << qid << '\t' << ans << '\t' << '\n';
         }
 
-        void buildStringSplitDelimiter(string& dest, const string& in, const char delimit, const string& start, const string& end, 
-                                                    const string& pre, const string& post) {
-            dest = start;
-            int startIndex = 0, endIndex;
-            if (in[startIndex]=='"')
-                startIndex++; // skip surrounding quotes
-            for (int i = 0; i < in.length(); i++) {
-                if (in[i] == delimit) {
-                    endIndex = i-1;
-                    if (in[endIndex] == '"')
-                        endIndex--;
-                    dest += pre;
-                    for (int j = startIndex; j <= endIndex; j++)
-                        dest += in[j];
-                    dest += post;
-                    startIndex = i+1;
-                    if (in[startIndex] == '"')
-                        startIndex++;
-                }
-            }
-            dest += pre;
-            endIndex = in.length()-1;
-            if (in[endIndex] == '"')
-                endIndex--;
-            for (int j = startIndex; j < endIndex; j++)
-                dest += in[j];
-            dest += post;
-            dest += end;
-        }
-
-        /*
-        Build a select from a string current delimited with ','
-        TODO: This needs to be more sophisticated. Right now no element may
-        contain a comma.
-
-        For efficiency, this function takes two strings to build
-        The first is for the entire string, the second is a temporary used to build it
-        */
-        void buildSelect(string& select, string& temp, const string& qid, const string& input) {
-            buildString(temp, "<select id='", qid, "'>\n" "<option></option>");
-            buildStringSplitDelimiter(select, input, ',', temp, "</select>", "<option>", "</option>");
-        }
-
         void grabQuestions() {
-            string line, qID, temp, defSelect, questionText;
-            questionText.reserve(1024);
+            string line, qID, temp, defSelect;
             const string blank = "";
             smatch m;
             while (getline(liquizFile, line), !liquizFile.eof()) {
@@ -192,7 +290,7 @@ class LiQuiz {
 
         }
 
-        void generateQuestion(nlohmann::json& question, const string& questionText) {
+        void generateQuestion(nlohmann::json& question) {
             double points = 10;
             string questionName = question.at("name");
             html << "<div class='q' id='q" << questionNum <<
