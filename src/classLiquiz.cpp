@@ -102,6 +102,8 @@ class QuestionType {
         string replace, qID;
 
         void static contentPrint(const string& type, const string& value) {
+            replace.reserve(4096);
+
             if(type == IMAGE) {
                 buildString(replace, "<img src='", value, "'></img>");
             } else if(type == AUDIO) {
@@ -116,6 +118,8 @@ class QuestionType {
                 buildString(replace, "<input class='' type='text' id='", qID, "' size='6'/>");
             }
         }
+    protected:
+        string delim, value;
 
     public:
         void setText(const string& t) { text = t; }
@@ -125,17 +129,25 @@ class QuestionType {
 };
 
 
-class MulitipleChoice : public QuestionType {
+class MulitipleChoiceHorizontal : public QuestionType {
     private:
     public:
-        void build()
+        void build() {
+            buildString(qID, value);
+        }
+        void buildMCH(string& multipleChoice, string& temp,
+							const string& qid, const string& input) {
+            buildString(temp, "<td><input class='mc' type='radio' name='", qid, "'>");
+            buildStringSplitDelimiter(multipleChoice, input, ',',
+                                                                "<table class='mch'><tr>", "</tr></table>",
+                                                                temp, "</input></td>");
+        }
 };
 
 
 void QuestionType::printCore(ostream& s) const {
     smatch m;
     string outText = text;
-    replace.reserve(4096);
     while (regex_search(outText, m, specials)) { // if special pattern found
         string delim = m[1], value= m[2];
         contentPrint(delim, value);
