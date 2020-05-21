@@ -55,18 +55,18 @@ function checkAndSubmit() {
     var submission = [];
     var f = document.forms[0];
     for (var i = 0; i < f.elements.length; i++)
-	submission.push([f.elements[i].id, f.elements[i].value]);
+	     submission.push([f.elements[i].id, f.elements[i].value]);
     console.log(submission);
     var json = new XMLHttpRequest();
     json.open('post', 'gradquiz.jsp', true);
-    json.setRequestHeader("Content-Type", "application/json");   
-    // Create a state change callback 
-    json.onreadystatechange = function () { 
-       if (json.readyState === 4 && json.status === 200) { 
-           // Print received data from server 
-           document.body.innerHTML = this.responseText; 
-       } 
-    }; 
+    json.setRequestHeader("Content-Type", "application/json");
+    // Create a state change callback
+    json.onreadystatechange = function () {
+       if (json.readyState === 4 && json.status === 200) {
+           // Print received data from server
+           document.body.innerHTML = this.responseText;
+       }
+    };
     json.send(JSON.stringify(submission));
 //    document.forms[0].submit();
 }
