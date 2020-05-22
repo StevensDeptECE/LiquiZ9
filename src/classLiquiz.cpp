@@ -99,7 +99,6 @@ void buildSelect(string& select, string& temp, const string& qid, const string& 
 class QuestionType {
     private:
         string text;
-        string replace, qID;
 
         void static contentPrint(const string& type, const string& value) {
             replace.reserve(4096);
@@ -114,12 +113,14 @@ class QuestionType {
                 string videoType = ""; // TODO: use this
 			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
             } else if(type == BLANK) {
-                buildInput(qID, value);
+                LiQuiz::addAnswer(qID, value);
                 buildString(replace, "<input class='' type='text' id='", qID, "' size='6'/>");
             }
         }
+
+    // is this the correct way?
     protected:
-        string delim, value;
+        string delim, value, qID, replace;
 
     public:
         void setText(const string& t) { text = t; }
@@ -131,16 +132,12 @@ class QuestionType {
 
 class MulitipleChoiceHorizontal : public QuestionType {
     private:
+        string temp;
     public:
         void build() {
             buildString(qID, value);
-        }
-        void buildMCH(string& multipleChoice, string& temp,
-							const string& qid, const string& input) {
-            buildString(temp, "<td><input class='mc' type='radio' name='", qid, "'>");
-            buildStringSplitDelimiter(multipleChoice, input, ',',
-                                                                "<table class='mch'><tr>", "</tr></table>",
-                                                                temp, "</input></td>");
+            buildString(temp, "<td><input class='mc' type='radio' name='", qID, "'>");
+            buildStringSplitDelimiter(replace, value, ',', "<table class='mch'><tr>", "</tr></table>", temp, "</input></td>");
         }
 };
 
@@ -151,8 +148,6 @@ void QuestionType::printCore(ostream& s) const {
     while (regex_search(outText, m, specials)) { // if special pattern found
         string delim = m[1], value= m[2];
         contentPrint(delim, value);
-    // questionTypePrint()
-    //
     }
 }
 
@@ -270,7 +265,7 @@ class LiQuiz {
             cout << "</div>";   // ?
         }
 
-        void addAnswer(string& qid, const string& ans) {
+        static void addAnswer(string& qid, const string& ans) {
             partNum++;
             buildString(qid, "q", questionNum, "_", partNum);
             ans << qid << '\t' << ans << '\t' << '\n';
@@ -282,7 +277,7 @@ class LiQuiz {
             smatch m;
             while (getline(liquizFile, line), !liquizFile.eof()) {
                 if(regex_search(line, m, def)) {
-                    buildInput(qID, m[2]);
+                    // buildInput(qID, m[2]);  needed?
                     buildSelect(defSelect, temp, qID, m[2]);
                     definitions[m[1]] = defSelect;
                 } else if (regex_search(line, m, questionStart)) {
