@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>
+        "Intro"
+    </title>
+    <link rel="stylesheet" href="quiz.css" type="text/css"/>
+    <script src='quiz.js'></script>
+</head>
+
+<body onload='startTime()'>
+<form method="post" action="loginTest">
+    <div id='header' class='header'>
+        <div style='background-color: #ccc;text-align: center;border-radius: 10px; width: 240px; float: left'>
+            <img src='pictures/StevensLogo380x326.png' width='190' height='163'/>
+        </div>
+        <div style='margin-left: 250px'>
+            <table>
+                <tr><td class='headtext'>Userid</div></td><td><input class='ctrl' id='userid' type='text' name='userid'/></td><td></td></tr>
+        <tr><td class='headtext'>Passwd</td><td><input class='ctrl' id='passwd' type='password' name='passwd'/></td></tr>
+        <tr><td class='headtext'>Name</td><td><input class='ctrl' id='name' type='text' name='name'/></td></tr>
+        <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledge'/></td>
+            <td class='headtext' colspan='2'>I pledge my honor that I have abided by the Stevens Honor System</td></tr>
+        <tr><td class='headtext'>Time Remaining</td><td id='topTime' class='time'></td><td><input id='audioControl' class='controls' type='button' value='turn audio ON' onClick='scheduleAudio()' >
+        </td></tr>
+        </table>
+        <audio id="alert25"><source src="pictures/25min.ogg" type="audio/ogg"/></audio>
+        <audio id="alert20"><source src="pictures/20min.ogg" type="audio/ogg"></audio>
+        <audio id="alert15"><source src="pictures/15min.ogg" type="audio/ogg"></audio>
+        <audio id="alert10"><source src="pictures/10min.ogg" type="audio/ogg"></audio>
+        <audio id="alert5"><source src="pictures/5min.ogg" type="audio/ogg"></audio>
+        <audio id="alertover"><source src="pictures/over.ogg" type="audio/ogg"></audio>
+        <audio id="classical">
+            <source src="pictures/JohnLewisGrant_BachPrelude_01.mp3" type="audio/mp3"/>
+            <source src="pictures/JohnLewisGrant_BachPrelude_02.mp3" type="audio/mp3"/>
+            <source src="pictures/JohnLewisGrant_BachPrelude_03.mp3" type="audio/mp3"/>
+        </audio>
+
+    </div>
+    </div>
+
+    <div style="margin:50px 10px 10px 10px;background-color:#ccc;">
+        <div class='q' id='q1'>" 1. select all odds(mutiple choice)?<span class='pts'> (10 points)</span></p><pre>
+            <table class='mch'><tr>
+              <td><input class='mc' type="checkbox" name='q1' value="2">2</input></td>
+              <td><input class='mc' type="checkbox" name='q1' value="3">*3</input></td>
+              <td><input class='mc' type="checkbox" name='q1' value="4">4</input></td>
+              <td><input class='mc' type="checkbox" name='q1' value="5">*5</input></td>
+              <td><input class='mc' type="checkbox" name='q1' value="1">*1</input></td></tr></table>
+         </pre></div>
+        <div class='q' id='q2'>2. what is 2 + 2?(fill in the blank)<span class='pts'> (10 points)</span></p><pre>Watch the movie on the Tacoma Narrows Bridge.
+            <video controls width='320' height='240'><source src='Tpictures/acomaNarrowsBridge.mp4' type='video/mp4'></video>
+                <textarea rows='20' cols='80' id='q2_1' name='textAns'> type your answer here </textarea>
+            </pre></div>
+        <div class='q' id='q3'>3. Simple Math(single choice)<span class='pts'> (10 points)</span></p><pre>What is 2+2?
+            <table class='mch'><tr>
+              <td><input class='mc' type='radio' name='q3' value="2">2</input></td>
+              <td><input class='mc' type='radio' name='q3' value="3">3</input></td>
+              <td><input class='mc' type='radio' name='q3' value="4">*4</input></td>
+              <td><input class='mc' type='radio' name='q3' value="5">5</input></td>
+              <td><input class='mc' type='radio' name='q3' value="1">1</input></td></tr></table>
+            </pre></div>
+    </div>
+
+    <div class='controls'>
+        <div style='position: flow'>Time Remaining</div>
+        <div id='bottomTime' class='time'></div>
+        <input class='controls' type='submit' value='Submit Quiz'/>
+    </div>
+</form>
+</form>
+</body>
+</html>
