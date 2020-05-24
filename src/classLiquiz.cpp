@@ -8,7 +8,6 @@
 using namespace std;
 
 
-
 const regex specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
 const string BLANK = ""; // fill in the blank
 const string REGEX = "re(";
@@ -48,7 +47,13 @@ template<typename... Args>
 void buildString(std::string& dest, const Args&... args) {
     dest.clear();
     int unpack[]{0, (dest += to_string(args), 0)...};
-    static_cas<void>(unpack);
+    static_cast<void>(unpack);
+}
+
+void buildInput(int& partNum, int& questionNum, string& qid, const string& ans, ostream& answers) {
+	partNum++;
+	buildString(qid, "q", questionNum, "_", partNum);
+    answers << qid << '\t' << ans << '\t' << '\n';
 }
 
 void buildStringSplitDelimiter(string& dest, const string& in, const char delimit, const string& start, const string& end, 
@@ -100,23 +105,23 @@ class QuestionType {
     private:
         string text;
 
-        void static contentPrint(const string& type, const string& value) {
-            replace.reserve(4096);
+        // void contentPrint(string& type, string& value) {
+        //     replace.reserve(4096);
 
-            if(type == IMAGE) {
-                buildString(replace, "<img src='", value, "'></img>");
-            } else if(type == AUDIO) {
-                string url = type;
-                string audioType = url.substr(url.length()-3);
-                buildString(replace, "<audio controls><source src='", type, "' type='audio/", audioType, "'></audio>");
-            } else if(type == VIDEO) {
-                string videoType = ""; // TODO: use this
-			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
-            } else if(type == BLANK) {
-                LiQuiz::addAnswer(qID, value);
-                buildString(replace, "<input class='' type='text' id='", qID, "' size='6'/>");
-            }
-        }
+        //     if(type == IMAGE) {
+        //         buildString(replace, "<img src='", value, "'></img>");
+        //     } else if(type == AUDIO) {
+        //         string url = type;
+        //         string audioType = url.substr(url.length()-3);
+        //         buildString(replace, "<audio controls><source src='", type, "' type='audio/", audioType, "'></audio>");
+        //     } else if(type == VIDEO) {
+        //         string videoType = ""; // TODO: use this
+		// 	    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
+        //     } else if(type == BLANK) {
+        //         //  LiQuiz::addAnswer(qID, value); TODO: is adding answer needed?
+        //         buildString(replace, "<input class='' type='text' id='", qID, "' size='6'/>");
+        //     }
+        // }
 
     // is this the correct way?
     protected:
@@ -124,39 +129,48 @@ class QuestionType {
 
     public:
         void setText(const string& t) { text = t; }
-        void printCore(ostream& s) const;
+        //void printCore(ostream& s) const;
         virtual void print(ostream& s) const = 0;
         virtual ~QuestionType() {}
-};
 
-
-class MulitipleChoiceHorizontal : public QuestionType {
-    private:
-        string temp;
-    public:
-        void build() {
-            buildString(qID, value);
-            buildString(temp, "<td><input class='mc' type='radio' name='", qID, "'>");
-            buildStringSplitDelimiter(replace, value, ',', "<table class='mch'><tr>", "</tr></table>", temp, "</input></td>");
+        void printCore(ostream& s) const {
+            smatch m;
+            string outText = text;
+            while (regex_search(outText, m, specials)) { // if special pattern found
+                string delim = m[1], value= m[2];
+                //contentPrint(delim, value);
+                //this->print(delim, value);
+            }
         }
 };
 
+QuestionType* defaultQuestionType;
 
-void QuestionType::printCore(ostream& s) const {
-    smatch m;
-    string outText = text;
-    while (regex_search(outText, m, specials)) { // if special pattern found
-        string delim = m[1], value= m[2];
-        contentPrint(delim, value);
-    }
-}
+// class MulitipleChoiceHorizontal : public QuestionType {
+//     private:
+//         string temp;
+//     public:
+//         void print(string& delim, string& value) {
+//             if(delim == MCH) {
+//                 buildString(qID, value);
+//                 buildString(temp, "<td><input class='mc' type='radio' name='", qID, "'>");
+//                 buildStringSplitDelimiter(replace, value, ',', "<table class='mch'><tr>", "</tr></table>", temp, "</input></td>");
+//             }
+//         }
+// };
 
-class CodeQuestion {};
-class PCodeQuestion {};
-class TextQuestion {};
-class MatrixQuestion {};
-class MultipleAnswer {};
-class NumericQuestion {};
+// class MultipleChoiceVerticle : public QuestionType {
+//     private: 
+//         string temp;
+//     public:
+//         void print(string& delim, string& value) {
+//             if(delim == MCV) {
+//                 buildString(qID, value);
+//                 buildString(temp, "<td><input class='mc' type='radio' name='", qID, "'>");
+//                 buildStringSplitDelimiter(replace, value, ',', "<table class='mcv'><tr>", "</tr></table>", temp, "</input></td>");
+//             }
+//         }
+// };
 
 
 
@@ -169,18 +183,18 @@ class LiQuiz {
         ofstream html;
         ofstream ans;
         ifstream liquizFile;
-        regex def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}");
-	    regex questionStart("^\\{");
+        regex def;
+	    regex questionStart;
         static unordered_map<string, QuestionType*> questionTypes;
         static unordered_map<string, string> definitions;
 
-        static QuestionType* findQuestionType(const string& type, const string& questionText) {
+        void findQuestionType(const string& type, const string& questionText) {
             QuestionType* question = (questionTypes.find(type) != questionTypes.end())
-                ? questionType[type] : defaultQuestionType;
+                ? questionTypes[type] : defaultQuestionType;
             if (question != nullptr) {
                 // TODO: part of Question class
                 question->setText(questionText);
-                question->print(html);
+                question->printCore(html);
             }	
         }
 
@@ -194,7 +208,7 @@ class LiQuiz {
         }
 
     public:
-        LiQuiz(const char liquizFileName[]) : questionNum(1) {
+        LiQuiz(const char liquizFileName[]) : questionNum(1), def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}"), questionStart("^\\{") {
             questionText.reserve(1024);
         }
 
@@ -262,39 +276,6 @@ class LiQuiz {
                 </div>
 
                 )";
-            cout << "</div>";   // ?
-        }
-
-        static void addAnswer(string& qid, const string& ans) {
-            partNum++;
-            buildString(qid, "q", questionNum, "_", partNum);
-            ans << qid << '\t' << ans << '\t' << '\n';
-        }
-
-        void grabQuestions() {
-            string line, qID, temp, defSelect;
-            const string blank = "";
-            smatch m;
-            while (getline(liquizFile, line), !liquizFile.eof()) {
-                if(regex_search(line, m, def)) {
-                    // buildInput(qID, m[2]);  needed?
-                    buildSelect(defSelect, temp, qID, m[2]);
-                    definitions[m[1]] = defSelect;
-                } else if (regex_search(line, m, questionStart)) {
-                    istringstream s(line);
-                    nlohmann::json question;
-                    s >> question;
-                    cout << "question: " << question << '\n';   // need couts?
-                    cout << question.at("name") << '\n';
-                    getline(liquizFile, line);
-                    questionText = line + '\n';
-                    while (getline(liquizFile, line), !liquizFile.eof() && line != blank) {
-                        questionText += line;
-                        questionText += '\n';
-                    }
-                }
-            }
-
         }
 
         void generateQuestion(nlohmann::json& question) {
@@ -305,8 +286,34 @@ class LiQuiz {
             string qType = question.at("qt");
             findQuestionType(qType, questionText);
             html << "</div>\n";
-            cout << "questionText: " << questionText << '\n';
             questionNum++;
+        }
+
+        friend void buildInput(int& partNum, int& questionNum, string& qid, const string& ans, ostream& answers);
+
+        void grabQuestions() {
+            string line, qID, temp, defSelect;
+            const string blank = "";
+            smatch m;
+            while (getline(liquizFile, line), !liquizFile.eof()) {
+                if(regex_search(line, m, def)) {
+                    buildInput(partNum, questionNum, qID, m[2], ans);
+                    buildSelect(defSelect, temp, qID, m[2]);
+                    definitions[m[1]] = defSelect;
+                } else if (regex_search(line, m, questionStart)) {
+                    istringstream s(line);
+                    nlohmann::json question;
+                    s >> question;
+                    getline(liquizFile, line);
+                    questionText = line + '\n';
+                    while (getline(liquizFile, line), !liquizFile.eof() && line != blank) {
+                        questionText += line;
+                        questionText += '\n';
+                    }
+                    generateQuestion(question);
+                }
+            }
+
         }
 
         void generateFooter() {
@@ -324,7 +331,7 @@ class LiQuiz {
         }
 
         void closeFile() {
-            liquizeFile.close();
+            liquizFile.close();
             html.close();
             ans.close();
         }
@@ -333,15 +340,27 @@ class LiQuiz {
             openFile(fileName);
             generateHeader();
             grabQuestions();
-            generateQuestion();
             generateFooter(); 
             closeFile();
         }
 };
 
 
+int main(int argc, char* argv[]) {
+	// questionType["text"] = defaultQuestionType = new TextQuestion();
+	// questionType["pcode"] = new PCodeQuestion();
+    // questionType["code"] = new CodeQuestion();
+	//  questionType["pcode"] = new PseudocodeQuestion();
+    //questionType["mc"]
+	// try {
+    // if (argc < 2)
+	// 	  generateLiquizHTML("datastruct_numbertheoretic.lq");
+    // else
+    //  for (int i = 1; i < argc; i++) {
+	// 	   generateLiquizHTML(argv[i]);
+    //  }
 
-
-int main() {
-
+	// } catch (std::exception& e) {
+	// 	cerr << e.what() << '\n';
+	// }
 }
