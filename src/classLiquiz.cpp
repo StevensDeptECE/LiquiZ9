@@ -7,6 +7,10 @@
 #include <unordered_map>
 using namespace std;
 
+int questionNum = 1;
+int partNum; // the subnumber within each question
+ofstream answers;
+
 
 const regex specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
 const string BLANK = ""; // fill in the blank
@@ -50,7 +54,7 @@ void buildString(std::string& dest, const Args&... args) {
     static_cast<void>(unpack);
 }
 
-void buildInput(int& partNum, int& questionNum, string& qid, const string& ans, ostream& answers) {
+void buildInput(string& qid, const string& ans) {
 	partNum++;
 	buildString(qid, "q", questionNum, "_", partNum);
     answers << qid << '\t' << ans << '\t' << '\n';
@@ -102,62 +106,110 @@ void buildSelect(string& select, string& temp, const string& qid, const string& 
 
 
 class QuestionType {
-    private:
-        string text;
-
-        // void contentPrint(string& type, string& value) {
-        //     replace.reserve(4096);
-
-        //     if(type == IMAGE) {
-        //         buildString(replace, "<img src='", value, "'></img>");
-        //     } else if(type == AUDIO) {
-        //         string url = type;
-        //         string audioType = url.substr(url.length()-3);
-        //         buildString(replace, "<audio controls><source src='", type, "' type='audio/", audioType, "'></audio>");
-        //     } else if(type == VIDEO) {
-        //         string videoType = ""; // TODO: use this
-		// 	    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
-        //     } else if(type == BLANK) {
-        //         //  LiQuiz::addAnswer(qID, value); TODO: is adding answer needed?
-        //         buildString(replace, "<input class='' type='text' id='", qID, "' size='6'/>");
-        //     }
-        // }
-
     // is this the correct way?
     protected:
-        string delim, value, qID, replace;
+        string qID, replace, text;
+
+    private:
+        //string text;
 
     public:
         void setText(const string& t) { text = t; }
         //void printCore(ostream& s) const;
-        virtual void print(ostream& s) const = 0;
+        virtual void print(ostream& s) = 0;
         virtual ~QuestionType() {}
 
-        void printCore(ostream& s) const {
-            smatch m;
-            string outText = text;
-            while (regex_search(outText, m, specials)) { // if special pattern found
-                string delim = m[1], value= m[2];
-                //contentPrint(delim, value);
-                //this->print(delim, value);
+        void contentPrint(string& type, string& value) {
+            replace.reserve(4096);
+
+            if(type == IMAGE) {
+                buildString(replace, "<img src='", value, "'></img>");
+            } else if(type == AUDIO) {
+                string url = type;
+                string audioType = url.substr(url.length()-3);
+                buildString(replace, "<audio controls><source src='", type, "' type='audio/", audioType, "'></audio>");
+            } else if(type == VIDEO) {
+                string videoType = ""; // TODO: use this
+			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
+            } else if(type == BLANK) {
+                buildInput(qID, value);
+                buildString(replace, "<input class='' type='text' id='", qID, "' size='6'/>");
             }
         }
 };
 
 QuestionType* defaultQuestionType;
 
-// class MulitipleChoiceHorizontal : public QuestionType {
-//     private:
-//         string temp;
-//     public:
-//         void print(string& delim, string& value) {
-//             if(delim == MCH) {
-//                 buildString(qID, value);
-//                 buildString(temp, "<td><input class='mc' type='radio' name='", qID, "'>");
-//                 buildStringSplitDelimiter(replace, value, ',', "<table class='mch'><tr>", "</tr></table>", temp, "</input></td>");
-//             }
-//         }
-// };
+class MulitipleChoiceHorizontal : public QuestionType {
+    private:
+        string temp;
+    public:
+        void print(ostream& htmlFile) {
+            string outText = text;
+            smatch m;
+            while (regex_search(outText, m, specials)) {
+                string delim = m[1], value = m[2];
+                contentPrint(delim, value);
+                if(delim == MCH) {
+                    buildString(qID, value);
+                    buildString(temp, "<td><input class='mc' type='radio' name='", qID, "'>");
+                    buildStringSplitDelimiter(replace, value, ',', "<table class='mch'><tr>", "</tr></table>", temp, "</input></td>");
+                }
+            }
+            outText.replace(m.position(), m.length(), replace);
+            htmlFile << outText;
+        }
+};
+
+class CodeQuestion : public QuestionType {
+    private:
+        string temp;
+    public:
+        void print(ostream& htmlFile) {
+            string outText = text;
+            smatch m;
+            htmlFile << "<pre>\n";
+            while (regex_search(outText, m, specials)) {
+                string delim = m[1], value = m[2];
+                contentPrint(delim, value);
+
+                if (isdigit(outText[m.position(1)])) {
+                    string sizedFillin = m[1];
+                    int size = stoi(sizedFillin);
+                    buildInput(qID, m[2]);
+                    buildString(replace, "<input class='' type='text' id='", qID, "' size='", size, "'/>");
+                }
+            }
+            outText.replace(m.position(), m.length(), replace);
+            htmlFile << outText << "</pre>\n";
+        }
+};
+
+class PCodeQuestion : public QuestionType {
+    private:
+        string temp;
+    public:
+        void print(ostream& htmlFile) {
+            string outText = text;
+            smatch m;
+            htmlFile << "<pre class='pcode'>\n";
+            while (regex_search(outText, m, specials)) {
+                string delim = m[1], value = m[2];
+                contentPrint(delim, value);
+
+                if (isdigit(outText[m.position(1)])) {
+                    string sizedFillin = m[1];
+                    int size = stoi(sizedFillin);
+                    buildInput(qID, m[2]);
+                    buildString(replace, "<input class='' type='text' id='", qID, "' size='", size, "'/>");
+                }
+            }
+            outText.replace(m.position(), m.length(), replace);
+            htmlFile << outText << "</pre>\n";
+        }
+};
+
+
 
 // class MultipleChoiceVerticle : public QuestionType {
 //     private: 
@@ -173,19 +225,19 @@ QuestionType* defaultQuestionType;
 // };
 
 
-
+unordered_map<string, QuestionType*> questionTypes;
 
 class LiQuiz {
     private:
-        int questionNum;
-        int partNum;
+        //int questionNum;
+        //int partNum;
         string questionText;
         ofstream html;
-        ofstream ans;
+        //ofstream ans;
         ifstream liquizFile;
         regex def;
 	    regex questionStart;
-        static unordered_map<string, QuestionType*> questionTypes;
+        // static unordered_map<string, QuestionType*> questionTypes;
         static unordered_map<string, string> definitions;
 
         void findQuestionType(const string& type, const string& questionText) {
@@ -194,7 +246,7 @@ class LiQuiz {
             if (question != nullptr) {
                 // TODO: part of Question class
                 question->setText(questionText);
-                question->printCore(html);
+                question->print(html);
             }	
         }
 
@@ -208,15 +260,17 @@ class LiQuiz {
         }
 
     public:
-        LiQuiz(const char liquizFileName[]) : questionNum(1), def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}"), questionStart("^\\{") {
+        LiQuiz(const char liquizFileName[]) :  liquizFile(liquizFileName), def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}"), questionStart("^\\{") {
             questionText.reserve(1024);
+            // questionTypes["pcode"] = new PCodeQuestion();
+            // questionTypes["code"] = new CodeQuestion();
         }
 
         void openFile(const char liquizFileName[]) {
             liquizFile.open(liquizFileName);
             string baseFileName = removeExtension(liquizFileName);
             html.open(baseFileName + "html");
-            ans.open(baseFileName + "ans");
+            answers.open(baseFileName + "ans");
         }
 
         string getJSONHeader() {
@@ -289,7 +343,7 @@ class LiQuiz {
             questionNum++;
         }
 
-        friend void buildInput(int& partNum, int& questionNum, string& qid, const string& ans, ostream& answers);
+        friend void buildInput(string& qid, const string& ans);
 
         void grabQuestions() {
             string line, qID, temp, defSelect;
@@ -297,9 +351,9 @@ class LiQuiz {
             smatch m;
             while (getline(liquizFile, line), !liquizFile.eof()) {
                 if(regex_search(line, m, def)) {
-                    buildInput(partNum, questionNum, qID, m[2], ans);
+                    buildInput(qID, m[2]);
                     buildSelect(defSelect, temp, qID, m[2]);
-                    definitions[m[1]] = defSelect;
+                    //definitions[m[1]] = defSelect;
                 } else if (regex_search(line, m, questionStart)) {
                     istringstream s(line);
                     nlohmann::json question;
@@ -333,7 +387,7 @@ class LiQuiz {
         void closeFile() {
             liquizFile.close();
             html.close();
-            ans.close();
+            answers.close();
         }
 
         void generateQuiz(const char fileName[]) {
@@ -347,20 +401,20 @@ class LiQuiz {
 
 
 int main(int argc, char* argv[]) {
-	// questionType["text"] = defaultQuestionType = new TextQuestion();
-	// questionType["pcode"] = new PCodeQuestion();
-    // questionType["code"] = new CodeQuestion();
-	//  questionType["pcode"] = new PseudocodeQuestion();
-    //questionType["mc"]
-	// try {
-    // if (argc < 2)
-	// 	  generateLiquizHTML("datastruct_numbertheoretic.lq");
-    // else
-    //  for (int i = 1; i < argc; i++) {
-	// 	   generateLiquizHTML(argv[i]);
-    //  }
+    questionTypes["pcode"] = new PCodeQuestion();
+    questionTypes["code"] = new CodeQuestion();
 
-	// } catch (std::exception& e) {
-	// 	cerr << e.what() << '\n';
-	// }
+	try {
+        if (argc < 2) {
+            LiQuiz L("datastruct_numbertheoretic.lq");
+            L.generateQuiz("datastruct_numbertheoretic.lq");
+        } else {
+            for (int i = 1; i < argc; i++) {
+                LiQuiz L(argv[i]);
+                L.generateQuiz(argv[i]);
+            }
+        }
+	} catch (std::exception& e) {
+		cerr << e.what() << '\n';
+	}
 }
