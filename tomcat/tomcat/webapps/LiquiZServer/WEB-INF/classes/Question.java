@@ -5,13 +5,12 @@ import java.util.ArrayList;
 public abstract class Question {
   Double gradeVal;
 
-  @Override
-  public final String type(){
-    return getClass().getSimpleName();
+  public Question( Double gradeVal){
+    this.gradeVal = gradeVal;
   }
 
-  public Question(String type, Double gradeVal){
-    this.gradeVal = gradeVal;
+  public final String type(){
+    return getClass().getSimpleName();
   }
 
   public Double getGradeValue(){

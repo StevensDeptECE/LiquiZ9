@@ -4,18 +4,24 @@ import java.util.ArrayList;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 //import classes.question.*;
 //import classes.numquestion.*;
 
 public class QuizToGrade {
-  ArrayList<String> studentInputs = new ArrayList<String>();
-  ArrayList<Question> answers = new ArrayList<Question>();
+  HashMap<String, String[]> inputsMap = new HashMap<String, String[]>();
+  HashMap<String, Question> questionsMap = new HashMap<String, Question>();
   Double grade;
   Boolean quizGraded;
 
-  public QuizToGrade(String filename){
+  public QuizToGrade(String filename, Map inputsMap){
     this.grade = 0.0;
     this.quizGraded = false;
+    inputsMap.putAll(inputsMap);
 
     updateAnswers(filename);
   }
@@ -26,8 +32,8 @@ public class QuizToGrade {
       Scanner myReader = new Scanner(myObj);
       while (myReader.hasNextLine()) {
         String qType = myReader.next();
-        String qAns = myReader.nextLine();
-        addQuestion(qType, qAns);
+        String[] qAns = {myReader.nextLine()};
+        addQuestion(qType, qAns, 0.0);
       }
       myReader.close();
     }
@@ -37,28 +43,38 @@ public class QuizToGrade {
     }
   }
 
-  public void addInputs(String input){
-    studentInputs.add(input);
-  }
-
-  public void addQuestion(String qType, String qAns, Double gradeVal, Boolean caseSensitivity){
-    switch(qType){
-      case "SimpleQuestion":
-        SimpleQuestion q = new SimpleQuestion(qAns, gradeVal, caseSensitivity);
-        answers.add(q);
+  public void addQuestion(String qType, String qAns[], Double gradeVal){
+    switch(qType.charAt(0)){
+      case 'q':
+        SimpleQuestion sqc = new SimpleQuestion(qAns[0], gradeVal, true);
+        //answers.add(q);
+        questionsMap.put(qType, sqc);
         break;
-      case "NumQuestion":
-        NumQuestion q = new NumQuestion(gradeVal);
-        answers.add(q);
+      case 'Q':
+        SimpleQuestion sq = new SimpleQuestion(qAns[0], gradeVal, false);
+        questionsMap.put(qType, sq);
+        break;
+      case 'n':
+        NumQuestion nq = new NumQuestion(0.0, 1.0, gradeVal);
+        questionsMap.put(qType, nq);
+        break;
+      case 'm':
+        MultiAnsQuestion mqc = new MultiAnsQuestion(qAns, gradeVal, true);
+        questionsMap.put(qType, mqc);
+        break;
+      case 'M':
+        MultiAnsQuestion mq = new MultiAnsQuestion(qAns, gradeVal, false);
+        questionsMap.put(qType, mq);
         break;
     }
   }
 
   public void updateGrade(){
-    int i = 0;
-    for(Question q : answers){
-      String[] input = {studentInputs.get(i)};
-      grade+=q.checkAnswer(input);
+    for(Map.Entry<String, String[]> entry : inputsMap.entrySet()){
+      String key = entry.getKey();
+      String[] inputs = entry.getValue();
+
+      grade+=questionsMap.get(key).checkAnswer(inputs);
     }
     quizGraded = true;
   }
@@ -66,6 +82,5 @@ public class QuizToGrade {
   public Double getGrade(){
     return grade;
   }
-
 
 }

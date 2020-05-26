@@ -30,8 +30,11 @@ public class TestQuizServlet extends HttpServlet {
 
       //creates an enumeration of every parameter name that is an input field for the form.
       Enumeration forms = request.getParameterNames();
+      Map inputsMap = request.getParameterMap();
 
-      QuizToGrade quiz = new QuizToGrade("cpe390_introans");
+      out.println("userid" + m.get("userid"));
+
+      QuizToGrade quiz = new QuizToGrade("cpe390_introans", inputsMap);
 
       while(forms.hasMoreElements()){
         //creates an object from the element in forms and sets it to a string obj
