@@ -151,39 +151,10 @@ class MulitipleChoiceHorizontal : public QuestionType {
             // TODO: formatting
             htmlFile << "<pre class='pcode'>\n";
 
-            if (regex_search(outText, m, MCH)) {
-                cout << "found" << endl;
+            while (regex_search(outText, m, MCH)) {
                 string delim = m[1], answer = m[2];
-                for (int i = 0; i < m.length(); i++) {
-                    if(outText[m.position()+i] == ' ') {
-                        int start = m.position()+i;
-
-                        for (int j = m.position()+i; j < m.length(); j++) {
-                            if(outText[start+j] == ',') {
-                                int end = start+j;
-                                string value;
-
-                                htmlFile << "<input type='radio' name='mch' value='";
-                                for (int k = start; k < end; k++) {
-                                    value = value + outText[k];
-                                }
-                                htmlFile << value << "'> " << value << "</br>";
-                            }
-                        }
-                    }
-                }
-                //cout << outText[m.position()+4];
+                outText.replace(m.position(), m.length(), "<input type='radio' name='mch' value='test'>");
             }
-
-            // while (regex_search(outText, m, specials)) {
-            //     string delim = m[1], answer = m[2];
-            //     contentPrint(delim, answer);
-
-            //     // buildInput(qID, answer);
-            //     // buildString(temp, "<tr><td><input class='mc' type='radio' name='", qID, "'>");
-            //     // buildStringSplitDelimiter(replace, answer, ',', "<table class='mcv'>", "</table>", temp, "</input></td></tr>");
-            //     outText.replace(m.position(), m.length(), replace);
-            // }
             htmlFile << outText << "</pre>\n";
         }
 };
