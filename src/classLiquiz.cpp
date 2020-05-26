@@ -23,7 +23,8 @@ const string AUDIO = "aud("; // an audio file
 const string VIDEO = "vid("; // a video
 const string TEXTAREA = "ta(";
 const string SURVEY = "sur("; // survey style, one line table including question
-const string MCH = "mch("; //Multiple Choice Horizontal Layout
+//const string MCH = "mch("; //Multiple Choice Horizontal Layout
+const regex MCH("mch:");
 const string MCV = "mcv("; //Multiple Choice Vertical Layout
 const string MAH = "mah("; //Multiple Answer Horizontal Layout
 const string MAV = "mav("; //Multiple Answer Vertical Layout
@@ -142,22 +143,26 @@ QuestionType* defaultQuestionType;
 
 class MulitipleChoiceHorizontal : public QuestionType {
     private:
-        string temp;
+        string temp, line;
     public:
         void print(ostream& htmlFile) {
             string outText = text;
             smatch m;
+            // TODO: formatting
+            htmlFile << "<pre class='pcode'>\n";
+
+            cout << outText;
+
             while (regex_search(outText, m, specials)) {
-                string delim = m[1], value = m[2];
-                contentPrint(delim, value);
-                if(delim == MCH) {
-                    buildString(qID, value);
-                    buildString(temp, "<td><input class='mc' type='radio' name='", qID, "'>");
-                    buildStringSplitDelimiter(replace, value, ',', "<table class='mch'><tr>", "</tr></table>", temp, "</input></td>");
-                }
+                string delim = m[1], answer = m[2];
+                contentPrint(delim, answer);
+
+                // buildInput(qID, answer);
+                // buildString(temp, "<tr><td><input class='mc' type='radio' name='", qID, "'>");
+                // buildStringSplitDelimiter(replace, answer, ',', "<table class='mcv'>", "</table>", temp, "</input></td></tr>");
+                outText.replace(m.position(), m.length(), replace);
             }
-            outText.replace(m.position(), m.length(), replace);
-            htmlFile << outText;
+            htmlFile << outText << "</pre>\n";
         }
 };
 
@@ -173,14 +178,14 @@ class CodeQuestion : public QuestionType {
                 string delim = m[1], value = m[2];
                 contentPrint(delim, value);
 
-                if (isdigit(outText[m.position(1)])) {
-                    string sizedFillin = m[1];
-                    int size = stoi(sizedFillin);
-                    buildInput(qID, m[2]);
-                    buildString(replace, "<input class='' type='text' id='", qID, "' size='", size, "'/>");
-                }
+                // if (isdigit(outText[m.position(1)])) {
+                //     string sizedFillin = m[1];
+                //     int size = stoi(sizedFillin);
+                //     buildInput(qID, m[2]);
+                //     buildString(replace, "<input class='' type='text' id='", qID, "' size='", size, "'/>");
+                // }
+                outText.replace(m.position(), m.length(), replace);
             }
-            outText.replace(m.position(), m.length(), replace);
             htmlFile << outText << "</pre>\n";
         }
 };
@@ -194,17 +199,18 @@ class PCodeQuestion : public QuestionType {
             smatch m;
             htmlFile << "<pre class='pcode'>\n";
             while (regex_search(outText, m, specials)) {
-                string delim = m[1], value = m[2];
-                contentPrint(delim, value);
+                string delim = m[1], answer = m[2];
+                contentPrint(delim, answer);
 
-                if (isdigit(outText[m.position(1)])) {
-                    string sizedFillin = m[1];
-                    int size = stoi(sizedFillin);
-                    buildInput(qID, m[2]);
-                    buildString(replace, "<input class='' type='text' id='", qID, "' size='", size, "'/>");
-                }
+                // if (isdigit(outText[m.position(1)])) {
+                //     string sizedFillin = m[1];
+
+                //     int size = stoi(sizedFillin);
+                //     buildInput(qID, m[2]);
+                //     buildString(replace, "<input class='' type='text' id='", qID, "' size='", size, "'/>");
+                // }
+                outText.replace(m.position(), m.length(), replace);
             }
-            outText.replace(m.position(), m.length(), replace);
             htmlFile << outText << "</pre>\n";
         }
 };
@@ -226,6 +232,7 @@ class PCodeQuestion : public QuestionType {
 
 
 unordered_map<string, QuestionType*> questionTypes;
+unordered_map<string, string> definitions;
 
 class LiQuiz {
     private:
@@ -237,8 +244,6 @@ class LiQuiz {
         ifstream liquizFile;
         regex def;
 	    regex questionStart;
-        // static unordered_map<string, QuestionType*> questionTypes;
-        static unordered_map<string, string> definitions;
 
         void findQuestionType(const string& type, const string& questionText) {
             QuestionType* question = (questionTypes.find(type) != questionTypes.end())
@@ -247,7 +252,7 @@ class LiQuiz {
                 // TODO: part of Question class
                 question->setText(questionText);
                 question->print(html);
-            }	
+            }
         }
 
         string removeExtension(const char fileName[]) { 
@@ -260,20 +265,15 @@ class LiQuiz {
         }
 
     public:
-        LiQuiz(const char liquizFileName[]) :  liquizFile(liquizFileName), def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}"), questionStart("^\\{") {
+        LiQuiz(const char liquizFileName[]) :  def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}"), questionStart("^\\{") {
             questionText.reserve(1024);
-            // questionTypes["pcode"] = new PCodeQuestion();
-            // questionTypes["code"] = new CodeQuestion();
-        }
-
-        void openFile(const char liquizFileName[]) {
-            liquizFile.open(liquizFileName);
             string baseFileName = removeExtension(liquizFileName);
+            liquizFile.open(liquizFileName);
             html.open(baseFileName + "html");
             answers.open(baseFileName + "ans");
         }
 
-        string getJSONHeader() {
+        nlohmann::json getJSONHeader() {
             string line;
             getline(liquizFile, line);
             nlohmann::json header = nlohmann::json::parse(line);
@@ -347,20 +347,20 @@ class LiQuiz {
 
         void grabQuestions() {
             string line, qID, temp, defSelect;
-            const string blank = "";
             smatch m;
             while (getline(liquizFile, line), !liquizFile.eof()) {
-                if(regex_search(line, m, def)) {
+                if(regex_search(line, m, def)) {    // looking for definitions - TODO: this doesn't seem to work
                     buildInput(qID, m[2]);
                     buildSelect(defSelect, temp, qID, m[2]);
-                    //definitions[m[1]] = defSelect;
-                } else if (regex_search(line, m, questionStart)) {
+                    definitions[m[1]] = defSelect;
+                } else if (regex_search(line, m, questionStart)) {      // looking for the beginning of a question
                     istringstream s(line);
                     nlohmann::json question;
                     s >> question;
+                    string questionType = question.at("qt");
                     getline(liquizFile, line);
                     questionText = line + '\n';
-                    while (getline(liquizFile, line), !liquizFile.eof() && line != blank) {
+                    while (getline(liquizFile, line), !liquizFile.eof() && line != BLANK) {
                         questionText += line;
                         questionText += '\n';
                     }
@@ -390,8 +390,7 @@ class LiQuiz {
             answers.close();
         }
 
-        void generateQuiz(const char fileName[]) {
-            openFile(fileName);
+        void generateQuiz() {
             generateHeader();
             grabQuestions();
             generateFooter(); 
@@ -403,15 +402,16 @@ class LiQuiz {
 int main(int argc, char* argv[]) {
     questionTypes["pcode"] = new PCodeQuestion();
     questionTypes["code"] = new CodeQuestion();
+    questionTypes["mch"] = new MulitipleChoiceHorizontal();
 
 	try {
         if (argc < 2) {
             LiQuiz L("datastruct_numbertheoretic.lq");
-            L.generateQuiz("datastruct_numbertheoretic.lq");
+            L.generateQuiz();
         } else {
             for (int i = 1; i < argc; i++) {
                 LiQuiz L(argv[i]);
-                L.generateQuiz(argv[i]);
+                L.generateQuiz();
             }
         }
 	} catch (std::exception& e) {
