@@ -23,8 +23,7 @@ const string AUDIO = "aud("; // an audio file
 const string VIDEO = "vid("; // a video
 const string TEXTAREA = "ta(";
 const string SURVEY = "sur("; // survey style, one line table including question
-//const string MCH = "mch("; //Multiple Choice Horizontal Layout
-const regex MCH("mch:");
+const string MCH = "mch("; //Multiple Choice Horizontal Layout
 const string MCV = "mcv("; //Multiple Choice Vertical Layout
 const string MAH = "mah("; //Multiple Answer Horizontal Layout
 const string MAV = "mav("; //Multiple Answer Vertical Layout
@@ -55,7 +54,8 @@ void buildString(std::string& dest, const Args&... args) {
     static_cast<void>(unpack);
 }
 
-void buildInput(string& qid, const string& ans) {
+// TODO: add type input for ethan
+void addAnswer(string& qid, const string& ans) {
 	partNum++;
 	buildString(qid, "q", questionNum, "_", partNum);
     answers << qid << '\t' << ans << '\t' << '\n';
@@ -111,12 +111,8 @@ class QuestionType {
     protected:
         string qID, replace, text;
 
-    private:
-        //string text;
-
     public:
         void setText(const string& t) { text = t; }
-        //void printCore(ostream& s) const;
         virtual void print(ostream& s) = 0;
         virtual ~QuestionType() {}
 
@@ -133,27 +129,189 @@ class QuestionType {
                 string videoType = ""; // TODO: use this
 			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
             } else if(type == BLANK) {
-                buildInput(qID, value);
+                addAnswer(qID, value);
                 buildString(replace, "<input class='' type='text' id='", qID, "' size='6'/>");
             }
         }
 };
 
-QuestionType* defaultQuestionType;
-
-class MulitipleChoiceHorizontal : public QuestionType {
+class MultipleChoiceHorizontal : public QuestionType {
     private:
-        string temp, line;
+        string temp, input, answer, option;
     public:
+        void getAnswer() {
+            for (int i = 0; i < answer.length(); i++) {
+                    if (answer[i] == '*') {
+                        for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
+                            input += answer[j];
+                        }
+                        answer.erase(i, 1);
+                    }
+                }
+        }
+
+        void getOptions() {
+            replace = "";
+            buildString(temp, "<input class='mc' type='radio' value='");
+            for (int i = 0; i <= answer.length(); i++) {
+                if (answer[i] == ',' || i == answer.length()) {
+                    replace += temp + option + "'>" + option + "\t";
+                    option = "";
+                } else {
+                    option += answer[i];
+                }
+            }
+        }
+
         void print(ostream& htmlFile) {
             string outText = text;
             smatch m;
             // TODO: formatting
-            htmlFile << "<pre class='pcode'>\n";
+            htmlFile << "<pre class=''>\n";
+            while (regex_search(outText, m, specials)) {
+                string delim = m[1];
+                answer = m[2];
+                getAnswer();
+                contentPrint(delim, input);
+                getOptions();
+                outText.replace(m.position(), m.length(), replace);
+            }
+            htmlFile << outText << "</pre>\n";
+        }
+};
 
-            while (regex_search(outText, m, MCH)) {
-                string delim = m[1], answer = m[2];
-                outText.replace(m.position(), m.length(), "<input type='radio' name='mch' value='test'>");
+class MultipleChoiceVertical : public QuestionType {
+    private:
+        string temp, input, answer, option;
+    public:
+        void getAnswer() {
+            for (int i = 0; i < answer.length(); i++) {
+                    if (answer[i] == '*') {
+                        for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
+                            input += answer[j];
+                        }
+                        answer.erase(i, 1);
+                    }
+                }
+        }
+
+        void getOptions() {
+            replace = "";
+            buildString(temp, "<input class='mc' type='radio' value='");
+            for (int i = 0; i <= answer.length(); i++) {
+                if (answer[i] == ',' || i == answer.length()) {
+                    replace += temp + option + "'>" + option + "\n\n";
+                    option = "";
+                } else {
+                    option += answer[i];
+                }
+            }
+        }
+
+        void print(ostream& htmlFile) {
+            string outText = text;
+            smatch m;
+            // TODO: formatting
+            htmlFile << "<pre class=''>\n";
+            while (regex_search(outText, m, specials)) {
+                string delim = m[1];
+                answer = m[2];
+                getAnswer();
+                contentPrint(delim, input);
+                getOptions();
+                outText.replace(m.position(), m.length(), replace);
+            }
+            htmlFile << outText << "</pre>\n";
+        }
+};
+
+class MultipleAnswerHorizontal : public QuestionType {
+    private:
+        string temp, input, answer, option;
+    public:
+        void getAnswer() {
+            for (int i = 0; i < answer.length(); i++) {
+                    if (answer[i] == '*') {
+                        for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
+                            input += answer[j];
+                            input += ", ";
+                        }
+                        answer.erase(i, 1);
+                    }
+                }
+        }
+
+        void getOptions() {
+            replace = "";
+            buildString(temp, "<input class='ma' type='checkbox' value='");
+            for (int i = 0; i <= answer.length(); i++) {
+                if (answer[i] == ',' || i == answer.length()) {
+                    replace += temp + option + "'>" + option + "\t";
+                    option = "";
+                } else {
+                    option += answer[i];
+                }
+            }
+        }
+
+        void print(ostream& htmlFile) {
+            string outText = text;
+            smatch m;
+            // TODO: formatting
+            htmlFile << "<pre class=''>\n";
+            while (regex_search(outText, m, specials)) {
+                string delim = m[1];
+                answer = m[2];
+                getAnswer();
+                contentPrint(delim, input);
+                getOptions();
+                outText.replace(m.position(), m.length(), replace);
+            }
+            htmlFile << outText << "</pre>\n";
+        }
+};
+
+class MultipleAnswerVertical : public QuestionType {
+    private:
+        string temp, input, answer, option;
+    public:
+        void getAnswer() {
+            for (int i = 0; i < answer.length(); i++) {
+                    if (answer[i] == '*') {
+                        for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
+                            input += answer[j];
+                            input += ", ";
+                        }
+                        answer.erase(i, 1);
+                    }
+                }
+        }
+
+        void getOptions() {
+            replace = "";
+            buildString(temp, "<input class='ma' type='checkbox' value='");
+            for (int i = 0; i <= answer.length(); i++) {
+                if (answer[i] == ',' || i == answer.length()) {
+                    replace += temp + option + "'>" + option + "\n\n";
+                    option = "";
+                } else {
+                    option += answer[i];
+                }
+            }
+        }
+
+        void print(ostream& htmlFile) {
+            string outText = text;
+            smatch m;
+            // TODO: formatting
+            htmlFile << "<pre class=''>\n";
+            while (regex_search(outText, m, specials)) {
+                string delim = m[1];
+                answer = m[2];
+                getAnswer();
+                contentPrint(delim, input);
+                getOptions();
+                outText.replace(m.position(), m.length(), replace);
             }
             htmlFile << outText << "</pre>\n";
         }
@@ -209,40 +367,21 @@ class PCodeQuestion : public QuestionType {
 };
 
 
-
-// class MultipleChoiceVerticle : public QuestionType {
-//     private: 
-//         string temp;
-//     public:
-//         void print(string& delim, string& value) {
-//             if(delim == MCV) {
-//                 buildString(qID, value);
-//                 buildString(temp, "<td><input class='mc' type='radio' name='", qID, "'>");
-//                 buildStringSplitDelimiter(replace, value, ',', "<table class='mcv'><tr>", "</tr></table>", temp, "</input></td>");
-//             }
-//         }
-// };
-
-
-unordered_map<string, QuestionType*> questionTypes;
-unordered_map<string, string> definitions;
-
 class LiQuiz {
     private:
-        //int questionNum;
-        //int partNum;
         string questionText;
         ofstream html;
-        //ofstream ans;
         ifstream liquizFile;
         regex def;
 	    regex questionStart;
+        unordered_map<string, QuestionType*> questionTypes;
+        unordered_map<string, string> definitions;
+        QuestionType* defaultQuestionType;
 
         void findQuestionType(const string& type, const string& questionText) {
             QuestionType* question = (questionTypes.find(type) != questionTypes.end())
                 ? questionTypes[type] : defaultQuestionType;
             if (question != nullptr) {
-                // TODO: part of Question class
                 question->setText(questionText);
                 question->print(html);
             }
@@ -271,6 +410,15 @@ class LiQuiz {
             getline(liquizFile, line);
             nlohmann::json header = nlohmann::json::parse(line);
             return header;
+        }
+
+        void addQuestionTyeps() {
+            questionTypes["pcode"] = new PCodeQuestion();
+            questionTypes["code"] = new CodeQuestion();
+            questionTypes["mch"] = new MultipleChoiceHorizontal();
+            questionTypes["mcv"] = new MultipleChoiceVertical();
+            questionTypes["mah"] = new MultipleAnswerHorizontal();
+            questionTypes["mav"] = new MultipleAnswerVertical();
         }
 
         void generateHeader() {
@@ -336,14 +484,14 @@ class LiQuiz {
             questionNum++;
         }
 
-        friend void buildInput(string& qid, const string& ans);
+        friend void addAnswer(string& qid, const string& ans);
 
         void grabQuestions() {
             string line, qID, temp, defSelect;
             smatch m;
             while (getline(liquizFile, line), !liquizFile.eof()) {
                 if(regex_search(line, m, def)) {    // looking for definitions - TODO: this doesn't seem to work
-                    buildInput(qID, m[2]);
+                    addAnswer(qID, m[2]);
                     buildSelect(defSelect, temp, qID, m[2]);
                     definitions[m[1]] = defSelect;
                 } else if (regex_search(line, m, questionStart)) {      // looking for the beginning of a question
@@ -384,6 +532,7 @@ class LiQuiz {
         }
 
         void generateQuiz() {
+            addQuestionTyeps();
             generateHeader();
             grabQuestions();
             generateFooter(); 
@@ -393,10 +542,6 @@ class LiQuiz {
 
 
 int main(int argc, char* argv[]) {
-    questionTypes["pcode"] = new PCodeQuestion();
-    questionTypes["code"] = new CodeQuestion();
-    questionTypes["mch"] = new MulitipleChoiceHorizontal();
-
 	try {
         if (argc < 2) {
             LiQuiz L("datastruct_numbertheoretic.lq");
