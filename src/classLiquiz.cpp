@@ -10,6 +10,7 @@ using namespace std;
 int questionNum = 1;
 int partNum; // the subnumber within each question
 ofstream answers;
+double questionCount = 0;
 
 
 const regex specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
@@ -57,10 +58,10 @@ void buildString(std::string& dest, const Args&... args) {
 }
 
 // TODO: add type input for ethan
-void addAnswer(string& typeID, string& qID, const string& ans) {
+void addAnswer(string& typeID, string& qID, const string& ans, double points) {
 	partNum++;
 	buildString(qID, typeID, "_", "q", questionNum, "_", partNum);
-    answers << qID << "\t\t" << ans << '\t' << '\n';
+    answers << qID << "\t\t" << points << "\t\t" << ans << '\t' << '\n';
 }
 
 void buildStringSplitDelimiter(string& dest, const string& in, const char delimit, const string& start, const string& end, 
@@ -109,6 +110,8 @@ void buildSelect(string& select, string& temp, const string& qid, const string& 
 
 
 class QuestionType {
+    private:
+        double points;
     // is this the correct way?
     protected:
         string qID, replace, text;
@@ -117,6 +120,10 @@ class QuestionType {
         void setText(const string& t) { text = t; }
         virtual void print(ostream& s) = 0;
         virtual ~QuestionType() {}
+
+        void setPoints(double p) {
+            points = p / questionCount;
+        }
 
         void contentPrint(string& typeID, string& type, string& value) {
             replace.reserve(4096);
@@ -131,7 +138,7 @@ class QuestionType {
                 string videoType = ""; // TODO: use this
 			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
             } else if(type == BLANK) {
-                addAnswer(typeID, qID, value);
+                addAnswer(typeID, qID, value, points);
                 buildString(replace, "<input class='' name='", qID, "'type='text' id='", qID, "' size='6'/>");
             }
         }
@@ -433,10 +440,11 @@ class LiQuiz {
         unordered_map<string, string> definitions;
         QuestionType* defaultQuestionType;
 
-        void findQuestionType(const string& type, const string& questionText) {
+        void findQuestionType(const string& type, const string& questionText, const double& points) {
             QuestionType* question = (questionTypes.find(type) != questionTypes.end())
                 ? questionTypes[type] : defaultQuestionType;
             if (question != nullptr) {
+                question->setPoints(points);
                 question->setText(questionText);
                 question->print(html);
             }
@@ -535,7 +543,7 @@ class LiQuiz {
             html << "<div class='q' id='q" << questionNum <<
                 "'>" << questionNum << ". " << questionName << "<span class='pts'> (" << points << " points)</span></p>";
             string qType = question.at("qt");
-            findQuestionType(qType, questionText);
+            findQuestionType(qType, questionText, points);
             html << "</div>\n";
             questionNum++;
         }
@@ -561,10 +569,16 @@ class LiQuiz {
                         questionText += line;
                         questionText += '\n';
                     }
+                    for (int i = 0; i < questionText.length(); i++) {
+                        if (questionText[i] == '$') {
+                            questionCount++;
+                        }
+                    }
+                    questionCount /= 2;
                     makeQuestion(question);
+                    questionCount = 0;
                 }
             }
-
         }
 
         void generateFooter() {
