@@ -132,7 +132,7 @@ class QuestionType {
 			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
             } else if(type == BLANK) {
                 addAnswer(typeID, qID, value);
-                buildString(replace, "<input class='' type='text' id='", qID, "' size='6'/>");
+                buildString(replace, "<input class='' name='", qID, "'type='text' id='", qID, "' size='6'/>");
             }
         }
 };
@@ -155,7 +155,7 @@ class MultipleChoiceHorizontal : public QuestionType {
 
         void getOptions() {
             replace = "";
-            buildString(temp, "<input class='mc' type='radio' value='");
+            buildString(temp, "<input class='mc' name='", qID, "'type='radio' value='");
             for (int i = 0; i <= answer.length(); i++) {
                 if (answer[i] == ',' || i == answer.length()) {
                     replace += temp + option + "'>" + option + "\t";
@@ -201,7 +201,7 @@ class MultipleChoiceVertical : public QuestionType {
 
         void getOptions() {
             replace = "";
-            buildString(temp, "<input class='mc' type='radio' value='");
+            buildString(temp, "<input class='mc' name='", qID, "'type='radio' value='");
             for (int i = 0; i <= answer.length(); i++) {
                 if (answer[i] == ',' || i == answer.length()) {
                     replace += temp + option + "'>" + option + "\n\n";
@@ -248,7 +248,7 @@ class MultipleAnswerHorizontal : public QuestionType {
 
         void getOptions() {
             replace = "";
-            buildString(temp, "<input class='ma' type='checkbox' value='");
+            buildString(temp, "<input class='ma' name='", qID, "'type='checkbox' value='");
             for (int i = 0; i <= answer.length(); i++) {
                 if (answer[i] == ',' || i == answer.length()) {
                     replace += temp + option + "'>" + option + "\t";
@@ -295,7 +295,7 @@ class MultipleAnswerVertical : public QuestionType {
 
         void getOptions() {
             replace = "";
-            buildString(temp, "<input class='ma' type='checkbox' value='");
+            buildString(temp, "<input class='ma' name='", qID, "'type='checkbox' value='");
             for (int i = 0; i <= answer.length(); i++) {
                 if (answer[i] == ',' || i == answer.length()) {
                     replace += temp + option + "'>" + option + "\n\n";
@@ -528,7 +528,7 @@ class LiQuiz {
                 )";
         }
 
-        void generateQuestion(nlohmann::json& question) {
+        void makeQuestion(nlohmann::json& question) {
             string temp = (question.at("points"));
             double points = std::stod(temp);
             string questionName = question.at("name");
@@ -561,7 +561,7 @@ class LiQuiz {
                         questionText += line;
                         questionText += '\n';
                     }
-                    generateQuestion(question);
+                    makeQuestion(question);
                 }
             }
 
