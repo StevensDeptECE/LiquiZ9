@@ -14,6 +14,8 @@ ofstream answers;
 
 const regex specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
 const string BLANK = ""; // fill in the blank
+//const string CASEINSENS = "Q:"; // fill-in, case insensitive
+
 const string REGEX = "re(";
 // $re(  $i( ignore case
 const string SELECT = "("; // selection (dropdown menu)
@@ -23,10 +25,6 @@ const string AUDIO = "aud("; // an audio file
 const string VIDEO = "vid("; // a video
 const string TEXTAREA = "ta(";
 const string SURVEY = "sur("; // survey style, one line table including question
-const string MCH = "mch("; //Multiple Choice Horizontal Layout
-const string MCV = "mcv("; //Multiple Choice Vertical Layout
-const string MAH = "mah("; //Multiple Answer Horizontal Layout
-const string MAV = "mav("; //Multiple Answer Vertical Layout
 const string LOOKUP = "$%"; // lookup a previously defined select
 const string MAT = "mat("; //Matrix question
 const string EQ = "eq("; //Matrix question
@@ -39,6 +37,10 @@ const string MP4 = "mp4";
 const string MP3 = "mp3";
 const string OGG = "ogg";
 
+const regex CASEINSENS("Q:");
+const regex SPACEINSENS("s:");
+const regex NUMERIC("n:");
+const regex SPACECASE("S:");
 
 
 inline const std::string& to_string(const std::string& s) {return s;}
@@ -55,10 +57,10 @@ void buildString(std::string& dest, const Args&... args) {
 }
 
 // TODO: add type input for ethan
-void addAnswer(string& qid, const string& ans) {
+void addAnswer(string& typeID, string& qID, const string& ans) {
 	partNum++;
-	buildString(qid, "q", questionNum, "_", partNum);
-    answers << qid << '\t' << ans << '\t' << '\n';
+	buildString(qID, typeID, "_", "q", questionNum, "_", partNum);
+    answers << qID << "\t\t" << ans << '\t' << '\n';
 }
 
 void buildStringSplitDelimiter(string& dest, const string& in, const char delimit, const string& start, const string& end, 
@@ -116,7 +118,7 @@ class QuestionType {
         virtual void print(ostream& s) = 0;
         virtual ~QuestionType() {}
 
-        void contentPrint(string& type, string& value) {
+        void contentPrint(string& typeID, string& type, string& value) {
             replace.reserve(4096);
 
             if(type == IMAGE) {
@@ -129,7 +131,7 @@ class QuestionType {
                 string videoType = ""; // TODO: use this
 			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
             } else if(type == BLANK) {
-                addAnswer(qID, value);
+                addAnswer(typeID, qID, value);
                 buildString(replace, "<input class='' type='text' id='", qID, "' size='6'/>");
             }
         }
@@ -138,6 +140,7 @@ class QuestionType {
 class MultipleChoiceHorizontal : public QuestionType {
     private:
         string temp, input, answer, option;
+        string typeID = "q";
     public:
         void getAnswer() {
             for (int i = 0; i < answer.length(); i++) {
@@ -172,7 +175,7 @@ class MultipleChoiceHorizontal : public QuestionType {
                 string delim = m[1];
                 answer = m[2];
                 getAnswer();
-                contentPrint(delim, input);
+                contentPrint(typeID, delim, input);
                 getOptions();
                 outText.replace(m.position(), m.length(), replace);
             }
@@ -183,6 +186,7 @@ class MultipleChoiceHorizontal : public QuestionType {
 class MultipleChoiceVertical : public QuestionType {
     private:
         string temp, input, answer, option;
+        string typeID = "q";
     public:
         void getAnswer() {
             for (int i = 0; i < answer.length(); i++) {
@@ -217,7 +221,7 @@ class MultipleChoiceVertical : public QuestionType {
                 string delim = m[1];
                 answer = m[2];
                 getAnswer();
-                contentPrint(delim, input);
+                contentPrint(typeID, delim, input);
                 getOptions();
                 outText.replace(m.position(), m.length(), replace);
             }
@@ -228,13 +232,14 @@ class MultipleChoiceVertical : public QuestionType {
 class MultipleAnswerHorizontal : public QuestionType {
     private:
         string temp, input, answer, option;
+        string typeID = "m";
     public:
         void getAnswer() {
             for (int i = 0; i < answer.length(); i++) {
                     if (answer[i] == '*') {
                         for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
                             input += answer[j];
-                            input += ", ";
+                            input += "\t";
                         }
                         answer.erase(i, 1);
                     }
@@ -263,7 +268,7 @@ class MultipleAnswerHorizontal : public QuestionType {
                 string delim = m[1];
                 answer = m[2];
                 getAnswer();
-                contentPrint(delim, input);
+                contentPrint(typeID, delim, input);
                 getOptions();
                 outText.replace(m.position(), m.length(), replace);
             }
@@ -274,13 +279,14 @@ class MultipleAnswerHorizontal : public QuestionType {
 class MultipleAnswerVertical : public QuestionType {
     private:
         string temp, input, answer, option;
+        string typeID = "m";
     public:
         void getAnswer() {
             for (int i = 0; i < answer.length(); i++) {
                     if (answer[i] == '*') {
                         for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
                             input += answer[j];
-                            input += ", ";
+                            input += "\t";
                         }
                         answer.erase(i, 1);
                     }
@@ -309,7 +315,7 @@ class MultipleAnswerVertical : public QuestionType {
                 string delim = m[1];
                 answer = m[2];
                 getAnswer();
-                contentPrint(delim, input);
+                contentPrint(typeID, delim, input);
                 getOptions();
                 outText.replace(m.position(), m.length(), replace);
             }
@@ -319,22 +325,47 @@ class MultipleAnswerVertical : public QuestionType {
 
 class CodeQuestion : public QuestionType {
     private:
-        string temp;
+        string temp, typeID;
     public:
+        void getAnswer(string& answer) {
+            for (int i = 0; i <= answer.length(); i++) {
+                if (answer[i] == ',' || i == answer.length()) {
+                    temp += "\t";
+                } else {
+                    temp += answer[i];
+                }
+            }
+            answer = temp;
+        }
+
+        void fillType(string& line) {
+            smatch m;
+            if (regex_search(line, m, CASEINSENS)) {
+                typeID = "Q";
+                line.replace(m.position(), m.length(), "");
+            } else if (regex_search(line, m, SPACEINSENS)) {
+                typeID = "s";
+                line.replace(m.position(), m.length(), "");
+            } else if (regex_search(line, m, NUMERIC)) {
+                typeID = "n";
+                getAnswer(line);
+                line.replace(m.position(), m.length(), "");
+            } else if (regex_search(line, m, SPACECASE)) {
+                typeID = "S";
+                line.replace(m.position(), m.length(), "");
+            } else {
+                typeID = "q";
+            }
+        }
+
         void print(ostream& htmlFile) {
             string outText = text;
             smatch m;
-            htmlFile << "<pre>\n";
+            htmlFile << "<pre class='pcode'>\n";
             while (regex_search(outText, m, specials)) {
                 string delim = m[1], value = m[2];
-                contentPrint(delim, value);
-
-                // if (isdigit(outText[m.position(1)])) {
-                //     string sizedFillin = m[1];
-                //     int size = stoi(sizedFillin);
-                //     buildInput(qID, m[2]);
-                //     buildString(replace, "<input class='' type='text' id='", qID, "' size='", size, "'/>");
-                // }
+                fillType(value);
+                contentPrint(typeID, delim, value);
                 outText.replace(m.position(), m.length(), replace);
             }
             htmlFile << outText << "</pre>\n";
@@ -343,23 +374,47 @@ class CodeQuestion : public QuestionType {
 
 class PCodeQuestion : public QuestionType {
     private:
-        string temp;
+        string temp, typeID;
     public:
+        void getAnswer(string& answer) {
+            for (int i = 0; i <= answer.length(); i++) {
+                if (answer[i] == ',' || i == answer.length()) {
+                    temp += "\t";
+                } else {
+                    temp += answer[i];
+                }
+            }
+            answer = temp;
+        }
+
+        void fillType(string& line) {
+            smatch m;
+            if (regex_search(line, m, CASEINSENS)) {
+                typeID = "Q";
+                line.replace(m.position(), m.length(), "");
+            } else if (regex_search(line, m, SPACEINSENS)) {
+                typeID = "s";
+                line.replace(m.position(), m.length(), "");
+            } else if (regex_search(line, m, NUMERIC)) {
+                typeID = "n";
+                getAnswer(line);
+                line.replace(m.position(), m.length(), "");
+            } else if (regex_search(line, m, SPACECASE)) {
+                typeID = "S";
+                line.replace(m.position(), m.length(), "");
+            } else {
+                typeID = "q";
+            }
+        }
+
         void print(ostream& htmlFile) {
             string outText = text;
             smatch m;
             htmlFile << "<pre class='pcode'>\n";
             while (regex_search(outText, m, specials)) {
-                string delim = m[1], answer = m[2];
-                contentPrint(delim, answer);
-
-                // if (isdigit(outText[m.position(1)])) {
-                //     string sizedFillin = m[1];
-
-                //     int size = stoi(sizedFillin);
-                //     buildInput(qID, m[2]);
-                //     buildString(replace, "<input class='' type='text' id='", qID, "' size='", size, "'/>");
-                // }
+                string delim = m[1], value = m[2];
+                fillType(value);
+                contentPrint(typeID, delim, value);
                 outText.replace(m.position(), m.length(), replace);
             }
             htmlFile << outText << "</pre>\n";
@@ -474,7 +529,8 @@ class LiQuiz {
         }
 
         void generateQuestion(nlohmann::json& question) {
-            double points = 10;
+            string temp = (question.at("points"));
+            double points = std::stod(temp);
             string questionName = question.at("name");
             html << "<div class='q' id='q" << questionNum <<
                 "'>" << questionNum << ". " << questionName << "<span class='pts'> (" << points << " points)</span></p>";
@@ -484,14 +540,14 @@ class LiQuiz {
             questionNum++;
         }
 
-        friend void addAnswer(string& qid, const string& ans);
+        friend void addAnswer(string& typeID, string& qID, const string& ans);
 
         void grabQuestions() {
             string line, qID, temp, defSelect;
             smatch m;
             while (getline(liquizFile, line), !liquizFile.eof()) {
                 if(regex_search(line, m, def)) {    // looking for definitions - TODO: this doesn't seem to work
-                    addAnswer(qID, m[2]);
+                    //addAnswer("d", qID, m[2]);
                     buildSelect(defSelect, temp, qID, m[2]);
                     definitions[m[1]] = defSelect;
                 } else if (regex_search(line, m, questionStart)) {      // looking for the beginning of a question
