@@ -26,7 +26,6 @@ const string AUDIO = "aud("; // an audio file
 const string VIDEO = "vid("; // a video
 const string TEXTAREA = "ta(";
 const string SURVEY = "sur("; // survey style, one line table including question
-const string LOOKUP = "$%"; // lookup a previously defined select
 const string MAT = "mat("; //Matrix question
 const string EQ = "eq("; //Matrix question
 //TODO: support select, MCH, and MCV for lookup. Right now it's just select
@@ -42,6 +41,7 @@ const regex CASEINSENS("Q:");
 const regex SPACEINSENS("s:");
 const regex NUMERIC("n:");
 const regex SPACECASE("S:");
+const regex LOOKUP("%");
 
 
 inline const std::string& to_string(const std::string& s) {return s;}
@@ -103,10 +103,11 @@ For efficiency, this function takes two strings to build
 The first is for the entire string, the second is a temporary used to build it
 */
 void buildSelect(string& select, string& temp, const string& qid, const string& input) {
-    buildString(temp, "<select id='", qid, "'>\n" "<option></option>");
+    buildString(temp, "<select name='", qid, "' id='", qid, "'>\n");
     buildStringSplitDelimiter(select, input, ',', temp, "</select>", "<option>", "</option>");
 }
 
+string definitions;
 
 
 class QuestionType {
@@ -381,7 +382,7 @@ class CodeQuestion : public QuestionType {
 
 class PCodeQuestion : public QuestionType {
     private:
-        string temp, typeID;
+        string temp, typeID, option, outText;
     public:
         void getAnswer(string& answer) {
             for (int i = 0; i <= answer.length(); i++) {
@@ -409,25 +410,60 @@ class PCodeQuestion : public QuestionType {
             } else if (regex_search(line, m, SPACECASE)) {
                 typeID = "S";
                 line.replace(m.position(), m.length(), "");
+            } else if (regex_search(line, m, LOOKUP)) {
+                typeID = "L";
+                line.replace(m.position(), m.length(), "");
             } else {
                 typeID = "q";
             }
         }
 
         void print(ostream& htmlFile) {
-            string outText = text;
+            outText = text;
             smatch m;
             htmlFile << "<pre class='pcode'>\n";
             while (regex_search(outText, m, specials)) {
                 string delim = m[1], value = m[2];
                 fillType(value);
-                contentPrint(typeID, delim, value);
-                outText.replace(m.position(), m.length(), replace);
+                if(typeID != "L") {
+                    contentPrint(typeID, delim, value);
+                    outText.replace(m.position(), m.length(), replace);
+                } else {
+                    outText.replace(m.position(), m.length(), definitions);
+                }
             }
             htmlFile << outText << "</pre>\n";
         }
 };
 
+class Definitions : public QuestionType {
+    private:
+        string temp, defselect, option, defs;
+        string typeID = "def";
+    public:
+        void getOptions() {
+            buildString(definitions, "<select class='' name='", qID, "'>");
+            for (int i = 0; i <= defs.length(); i++) {
+                if (defs[i] == ',' || i == defs.length()) {
+                    definitions += "<option value='" + option + "'>" + option + "</option>\n";
+                    option = "";
+                } else {
+                    option += defs[i];
+                }
+            }
+            definitions += "</select>";
+        }
+
+        void print(ostream& htmlFile) {
+            string outText = text;
+            smatch m;
+            if (regex_search(outText, m, specials)) {
+                defs = m[2];
+                addAnswer(typeID, qID, defs, 0);
+                getOptions();
+            }
+        }
+};
 
 class LiQuiz {
     private:
@@ -437,7 +473,6 @@ class LiQuiz {
         regex def;
 	    regex questionStart;
         unordered_map<string, QuestionType*> questionTypes;
-        unordered_map<string, string> definitions;
         QuestionType* defaultQuestionType;
 
         void findQuestionType(const string& type, const string& questionText, const double& points) {
@@ -482,6 +517,7 @@ class LiQuiz {
             questionTypes["mcv"] = new MultipleChoiceVertical();
             questionTypes["mah"] = new MultipleAnswerHorizontal();
             questionTypes["mav"] = new MultipleAnswerVertical();
+            questionTypes["def"] = new Definitions();
         }
 
         void generateHeader() {
@@ -538,27 +574,25 @@ class LiQuiz {
 
         void makeQuestion(nlohmann::json& question) {
             string temp = (question.at("points"));
-            double points = std::stod(temp);
-            string questionName = question.at("name");
-            html << "<div class='q' id='q" << questionNum <<
-                "'>" << questionNum << ". " << questionName << "<span class='pts'> (" << points << " points)</span></p>";
             string qType = question.at("qt");
-            findQuestionType(qType, questionText, points);
-            html << "</div>\n";
-            questionNum++;
+            double points = std::stod(temp);
+            if (qType != "def") {
+                string questionName = question.at("name");
+                html << "<div class='q' id='q" << questionNum <<
+                    "'>" << questionNum << ". " << questionName << "<span class='pts'> (" << points << " points)</span></p>";
+                findQuestionType(qType, questionText, points);
+                html << "</div>\n";
+                questionNum++;
+            } else {
+                findQuestionType(qType, questionText, points);
+            }
         }
 
-        friend void addAnswer(string& typeID, string& qID, const string& ans);
-
         void grabQuestions() {
-            string line, qID, temp, defSelect;
+            string line, qID, temp;
             smatch m;
             while (getline(liquizFile, line), !liquizFile.eof()) {
-                if(regex_search(line, m, def)) {    // looking for definitions - TODO: this doesn't seem to work
-                    //addAnswer("d", qID, m[2]);
-                    buildSelect(defSelect, temp, qID, m[2]);
-                    definitions[m[1]] = defSelect;
-                } else if (regex_search(line, m, questionStart)) {      // looking for the beginning of a question
+                if (regex_search(line, m, questionStart)) {      // looking for the beginning of a question
                     istringstream s(line);
                     nlohmann::json question;
                     s >> question;
