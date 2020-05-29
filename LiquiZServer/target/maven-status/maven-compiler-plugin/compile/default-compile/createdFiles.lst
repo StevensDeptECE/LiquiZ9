@@ -1,0 +1,6 @@
+questions\MultiAnsQuestion.class
+questions\SimpleQuestion.class
+quiz\QuizToGrade.class
+questions\Question.class
+questions\NumQuestion.class
+quiz\TestQuizServlet.class
