@@ -11,6 +11,7 @@ int questionNum = 1;
 int partNum; // the subnumber within each question
 ofstream answers;
 double questionCount = 0;
+string definitions;
 
 
 const regex specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
@@ -43,73 +44,6 @@ const regex NUMERIC("n:");
 const regex SPACECASE("S:");
 const regex LOOKUP("%");
 
-
-inline const std::string& to_string(const std::string& s) {return s;}
-inline std::string to_string(char c) {
-	char s[2] = {c, '\0'};
-	return std::string(s);
-}
-
-template<typename... Args>
-void buildString(std::string& dest, const Args&... args) {
-    dest.clear();
-    int unpack[]{0, (dest += to_string(args), 0)...};
-    static_cast<void>(unpack);
-}
-
-// TODO: add type input for ethan
-void addAnswer(string& typeID, string& qID, const string& ans, double points) {
-	partNum++;
-	buildString(qID, typeID, "_", "q", questionNum, "_", partNum);
-    answers << qID << "\t\t" << points << "\t\t" << ans << '\t' << '\n';
-}
-
-void buildStringSplitDelimiter(string& dest, const string& in, const char delimit, const string& start, const string& end, 
-                                            const string& pre, const string& post) {
-    dest = start;
-    int startIndex = 0, endIndex;
-    if (in[startIndex]=='"')
-        startIndex++; // skip surrounding quotes
-    for (int i = 0; i < in.length(); i++) {
-        if (in[i] == delimit) {
-            endIndex = i-1;
-            if (in[endIndex] == '"')
-                endIndex--;
-            dest += pre;
-            for (int j = startIndex; j <= endIndex; j++)
-                dest += in[j];
-            dest += post;
-            startIndex = i+1;
-            if (in[startIndex] == '"')
-                startIndex++;
-        }
-    }
-    dest += pre;
-    endIndex = in.length()-1;
-    if (in[endIndex] == '"')
-        endIndex--;
-    for (int j = startIndex; j < endIndex; j++)
-        dest += in[j];
-    dest += post;
-    dest += end;
-}
-
-/*
-Build a select from a string current delimited with ','
-TODO: This needs to be more sophisticated. Right now no element may
-contain a comma.
-
-For efficiency, this function takes two strings to build
-The first is for the entire string, the second is a temporary used to build it
-*/
-void buildSelect(string& select, string& temp, const string& qid, const string& input) {
-    buildString(temp, "<select name='", qid, "' id='", qid, "'>\n");
-    buildStringSplitDelimiter(select, input, ',', temp, "</select>", "<option>", "</option>");
-}
-
-string definitions;
-
-
 class QuestionType {
     private:
         double points;
@@ -124,6 +58,55 @@ class QuestionType {
 
         void setPoints(double p) {
             points = p / questionCount;
+        }
+
+        void addAnswer(string& typeID, string& qID, const string& ans, double points) {
+            partNum++;
+            buildString(qID, typeID, "_", "q", questionNum, "_", partNum);
+            answers << qID << "\t\t" << points << "\t\t" << ans << '\n';
+        }
+
+        inline const std::string& to_string(const std::string& s) {return s;}
+        inline std::string to_string(char c) {
+            char s[2] = {c, '\0'};
+            return std::string(s);
+        }
+
+        template<typename... Args>
+        void buildString(std::string& dest, const Args&... args) {
+            dest.clear();
+            int unpack[]{0, (dest += to_string(args), 0)...};
+            static_cast<void>(unpack);
+        }
+
+        void buildStringSplitDelimiter(string& dest, const string& in, const char delimit, const string& start, const string& end, 
+                                            const string& pre, const string& post) {
+            dest = start;
+            int startIndex = 0, endIndex;
+            if (in[startIndex]=='"')
+                startIndex++; // skip surrounding quotes
+            for (int i = 0; i < in.length(); i++) {
+                if (in[i] == delimit) {
+                    endIndex = i-1;
+                    if (in[endIndex] == '"')
+                        endIndex--;
+                    dest += pre;
+                    for (int j = startIndex; j <= endIndex; j++)
+                        dest += in[j];
+                    dest += post;
+                    startIndex = i+1;
+                    if (in[startIndex] == '"')
+                        startIndex++;
+                }
+            }
+            dest += pre;
+            endIndex = in.length()-1;
+            if (in[endIndex] == '"')
+                endIndex--;
+            for (int j = startIndex; j < endIndex; j++)
+                dest += in[j];
+            dest += post;
+            dest += end;
         }
 
         void contentPrint(string& typeID, string& type, string& value) {
@@ -247,11 +230,12 @@ class MultipleAnswerHorizontal : public QuestionType {
                     if (answer[i] == '*') {
                         for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
                             input += answer[j];
-                            input += "\t";
+                            input += ",";
                         }
                         answer.erase(i, 1);
                     }
-                }
+            }
+            input.erase(input.length()-1, 1);
         }
 
         void getOptions() {
@@ -294,11 +278,12 @@ class MultipleAnswerVertical : public QuestionType {
                     if (answer[i] == '*') {
                         for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
                             input += answer[j];
-                            input += "\t";
+                            input += ",";
                         }
                         answer.erase(i, 1);
                     }
-                }
+            }
+            input.erase(input.length()-1, 1);
         }
 
         void getOptions() {
@@ -333,7 +318,7 @@ class MultipleAnswerVertical : public QuestionType {
 
 class CodeQuestion : public QuestionType {
     private:
-        string temp, typeID;
+        string temp, typeID, option, outText;
     public:
         void getAnswer(string& answer) {
             for (int i = 0; i <= answer.length(); i++) {
@@ -361,20 +346,27 @@ class CodeQuestion : public QuestionType {
             } else if (regex_search(line, m, SPACECASE)) {
                 typeID = "S";
                 line.replace(m.position(), m.length(), "");
+            } else if (regex_search(line, m, LOOKUP)) {
+                typeID = "L";
+                line.replace(m.position(), m.length(), "");
             } else {
                 typeID = "q";
             }
         }
 
         void print(ostream& htmlFile) {
-            string outText = text;
+            outText = text;
             smatch m;
             htmlFile << "<pre class='pcode'>\n";
             while (regex_search(outText, m, specials)) {
                 string delim = m[1], value = m[2];
                 fillType(value);
                 contentPrint(typeID, delim, value);
-                outText.replace(m.position(), m.length(), replace);
+                if(typeID != "L") {
+                    outText.replace(m.position(), m.length(), replace);
+                } else {
+                    outText.replace(m.position(), m.length(), definitions);
+                }
             }
             htmlFile << outText << "</pre>\n";
         }
@@ -425,12 +417,14 @@ class PCodeQuestion : public QuestionType {
             while (regex_search(outText, m, specials)) {
                 string delim = m[1], value = m[2];
                 fillType(value);
+                // contentPrint(typeID, delim, value);
                 if(typeID != "L") {
-                    contentPrint(typeID, delim, value);
                     outText.replace(m.position(), m.length(), replace);
                 } else {
+                    typeID = "q";
                     outText.replace(m.position(), m.length(), definitions);
                 }
+                contentPrint(typeID, delim, value);
             }
             htmlFile << outText << "</pre>\n";
         }
@@ -459,8 +453,8 @@ class Definitions : public QuestionType {
             smatch m;
             if (regex_search(outText, m, specials)) {
                 defs = m[2];
-                addAnswer(typeID, qID, defs, 0);
                 getOptions();
+                answers << typeID << "\t\t\t" << defs << "\n";
             }
         }
 };
