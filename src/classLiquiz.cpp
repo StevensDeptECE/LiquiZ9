@@ -7,45 +7,46 @@
 #include <unordered_map>
 using namespace std;
 
+
 string definitions;
 
 
-const regex specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
-const string BLANK = ""; // fill in the blank
-
-const string REGEX = "re(";
-// $re(  $i( ignore case
-const string SELECT = "("; // selection (dropdown menu)
-const string IMAGE = "img("; // a picture
-const string IMAGEMAP = "map("; // an image map (interactive)
-const string AUDIO = "aud("; // an audio file
-const string VIDEO = "vid("; // a video
-const string TEXTAREA = "ta(";
-const string SURVEY = "sur("; // survey style, one line table including question
-const string MAT = "mat("; //Matrix question
-const string EQ = "eq("; //Matrix question
-//TODO: support select, MCH, and MCV for lookup. Right now it's just select
-//TODO: remove "" from stinking lookup!
-const string SUFFIXES[] = {"png", "jpg", "mp3", "mp4"};
-const string PNG = "png";
-const string JPG = "jpg";
-const string MP4 = "mp4";
-const string MP3 = "mp3";
-const string OGG = "ogg";
-
-const regex CASEINSENS("Q:");
-const regex SPACEINSENS("s:");
-const regex NUMERIC("n:");
-const regex SPACECASE("S:");
-const regex LOOKUP("%");
-
-        inline const std::string& to_string(const std::string& s) {return s;}
-        inline std::string to_string(char c) {
-            char s[2] = {c, '\0'};
-            return std::string(s);
-        }
+inline const std::string& to_string(const std::string& s) {return s;}
+inline std::string to_string(char c) {
+    char s[2] = {c, '\0'};
+    return std::string(s);
+}
 
 class QuestionType {
+    friend class LiQuiz;
+    protected:
+        const static regex specials;
+        const static string BLANK; // fill in the blank
+
+        const static string REGEX;
+        const static string SELECT; // selection (dropdown menu)
+        const static string IMAGE; // a picture
+        const static string IMAGEMAP; // an image map (interactive)
+        const static string AUDIO; // an audio file
+        const static string VIDEO; // a video
+        const static string TEXTAREA;
+        const static string SURVEY; // survey style, one line table including question
+        const static string MAT; //Matrix question
+        const static string EQ; //Matrix question
+        //TODO: support select, MCH, and MCV for lookup. Right now it's just select
+        //TODO: remove "" from stinking lookup!
+        const static string SUFFIXES[];
+        const static string PNG;
+        const static string JPG;
+        const static string MP4;
+        const static string MP3;
+        const static string OGG;
+
+        const static regex CASEINSENS;
+        const static regex SPACEINSENS;
+        const static regex NUMERIC;
+        const static regex SPACECASE;
+        const static regex LOOKUP;
     private:
         double points;
     // is this the correct way?
@@ -122,6 +123,35 @@ class QuestionType {
             }
         }
 };
+
+const regex QuestionType::specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
+const string QuestionType::BLANK = ""; // fill in the blank
+
+const string QuestionType::REGEX = "re(";
+// $re(  $i( ignore case
+const string QuestionType::SELECT = "("; // selection (dropdown menu)
+const string QuestionType::IMAGE = "img("; // a picture
+const string QuestionType::IMAGEMAP = "map("; // an image map (interactive)
+const string QuestionType::AUDIO = "aud("; // an audio file
+const string QuestionType::VIDEO = "vid("; // a video
+const string QuestionType::TEXTAREA = "ta(";
+const string QuestionType::SURVEY = "sur("; // survey style, one line table including question
+const string QuestionType::MAT = "mat("; //Matrix question
+const string QuestionType::EQ = "eq("; //Matrix question
+//TODO: support select, MCH, and MCV for lookup. Right now it's just select
+//TODO: remove "" from stinking lookup!
+const string QuestionType::SUFFIXES[] = {"png", "jpg", "mp3", "mp4"};
+const string QuestionType::PNG = "png";
+const string QuestionType::JPG = "jpg";
+const string QuestionType::MP4 = "mp4";
+const string QuestionType::MP3 = "mp3";
+const string QuestionType::OGG = "ogg";
+
+const regex QuestionType::CASEINSENS("Q:");
+const regex QuestionType::SPACEINSENS("s:");
+const regex QuestionType::NUMERIC("n:");
+const regex QuestionType::SPACECASE("S:");
+const regex QuestionType::LOOKUP("%");
 
 class MultipleChoiceHorizontal : public QuestionType {
     private:
@@ -456,13 +486,14 @@ class Definitions : public QuestionType {
 
 class LiQuiz {
     private:
+        const static regex def;
+	    const static regex questionStart;
+        static unordered_map<string, QuestionType*> questionTypes;
+    private:
         string questionText;
         ofstream html;
         ofstream answers;
         ifstream liquizFile;
-        regex def;
-	    regex questionStart;
-        unordered_map<string, QuestionType*> questionTypes;
         QuestionType* defaultQuestionType;
         int questionNum = 1;
         int partNum; // the subnumber within each question
@@ -489,7 +520,7 @@ class LiQuiz {
         }
 
     public:
-        LiQuiz(const char liquizFileName[]) :  def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}"), questionStart("^\\{") {
+        LiQuiz(const char liquizFileName[]) {
             questionText.reserve(1024);
             string baseFileName = removeExtension(liquizFileName);
             liquizFile.open(liquizFileName);
@@ -502,16 +533,6 @@ class LiQuiz {
             getline(liquizFile, line);
             nlohmann::json header = nlohmann::json::parse(line);
             return header;
-        }
-
-        void addQuestionTyeps() {
-            questionTypes["pcode"] = new PCodeQuestion();
-            questionTypes["code"] = new CodeQuestion();
-            questionTypes["mch"] = new MultipleChoiceHorizontal();
-            questionTypes["mcv"] = new MultipleChoiceVertical();
-            questionTypes["mah"] = new MultipleAnswerHorizontal();
-            questionTypes["mav"] = new MultipleAnswerVertical();
-            questionTypes["def"] = new Definitions();
         }
 
         void generateHeader() {
@@ -593,7 +614,7 @@ class LiQuiz {
                     string questionType = question.at("qt");
                     getline(liquizFile, line);
                     questionText = line + '\n';
-                    while (getline(liquizFile, line), !liquizFile.eof() && line != BLANK) {
+                    while (getline(liquizFile, line), !liquizFile.eof() && line != QuestionType::BLANK) {
                         questionText += line;
                         questionText += '\n';
                     }
@@ -630,12 +651,25 @@ class LiQuiz {
         }
 
         void generateQuiz() {
-            addQuestionTyeps();
+            //addQuestionTyeps();
             generateHeader();
             grabQuestions();
             generateFooter(); 
             closeFile();
         }
+};
+
+const regex LiQuiz::def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}");
+const regex LiQuiz::questionStart("^\\{");
+
+unordered_map<string, QuestionType*> questionTypes {
+    {"pcode", new PCodeQuestion()},
+    {"code", new CodeQuestion()},
+    {"mch", new MultipleChoiceHorizontal()},
+    {"mcv", new MultipleChoiceVertical()},
+    {"mah", new MultipleAnswerHorizontal()},
+    {"mav", new MultipleAnswerVertical()},
+    {"def", new Definitions()}
 };
 
 
