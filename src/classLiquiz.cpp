@@ -7,16 +7,11 @@
 #include <unordered_map>
 using namespace std;
 
-int questionNum = 1;
-int partNum; // the subnumber within each question
-ofstream answers;
-double questionCount = 0;
 string definitions;
 
 
 const regex specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
 const string BLANK = ""; // fill in the blank
-//const string CASEINSENS = "Q:"; // fill-in, case insensitive
 
 const string REGEX = "re(";
 // $re(  $i( ignore case
@@ -44,6 +39,12 @@ const regex NUMERIC("n:");
 const regex SPACECASE("S:");
 const regex LOOKUP("%");
 
+        inline const std::string& to_string(const std::string& s) {return s;}
+        inline std::string to_string(char c) {
+            char s[2] = {c, '\0'};
+            return std::string(s);
+        }
+
 class QuestionType {
     private:
         double points;
@@ -53,23 +54,17 @@ class QuestionType {
 
     public:
         void setText(const string& t) { text = t; }
-        virtual void print(ostream& s) = 0;
+        virtual void print(ostream& h, ostream& a, int& pN, int& qN) = 0;
         virtual ~QuestionType() {}
 
-        void setPoints(double p) {
+        void setPoints(double p, double questionCount) {
             points = p / questionCount;
         }
 
-        void addAnswer(string& typeID, string& qID, const string& ans, double points) {
+        void addAnswer(string& typeID, string& qID, const string& ans, double points, ostream &answersFile, int& partNum, int& questionNum) {
             partNum++;
             buildString(qID, typeID, "_", "q", questionNum, "_", partNum);
-            answers << qID << "\t\t" << points << "\t\t" << ans << '\n';
-        }
-
-        inline const std::string& to_string(const std::string& s) {return s;}
-        inline std::string to_string(char c) {
-            char s[2] = {c, '\0'};
-            return std::string(s);
+            answersFile << qID << "\t" << points << "\t" << ans << '\n';
         }
 
         template<typename... Args>
@@ -109,7 +104,7 @@ class QuestionType {
             dest += end;
         }
 
-        void contentPrint(string& typeID, string& type, string& value) {
+        void contentPrint(string& typeID, string& type, string& value, ostream& answersFile, int& partNum, int& questionNum) {
             replace.reserve(4096);
 
             if(type == IMAGE) {
@@ -122,7 +117,7 @@ class QuestionType {
                 string videoType = ""; // TODO: use this
 			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
             } else if(type == BLANK) {
-                addAnswer(typeID, qID, value, points);
+                addAnswer(typeID, qID, value, points, answersFile, partNum, questionNum);
                 buildString(replace, "<input class='' name='", qID, "'type='text' id='", qID, "' size='6'/>");
             }
         }
@@ -157,7 +152,7 @@ class MultipleChoiceHorizontal : public QuestionType {
             }
         }
 
-        void print(ostream& htmlFile) {
+        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
             string outText = text;
             smatch m;
             // TODO: formatting
@@ -166,7 +161,7 @@ class MultipleChoiceHorizontal : public QuestionType {
                 string delim = m[1];
                 answer = m[2];
                 getAnswer();
-                contentPrint(typeID, delim, input);
+                contentPrint(typeID, delim, input, answersFile, partNum, questionNum);
                 getOptions();
                 outText.replace(m.position(), m.length(), replace);
             }
@@ -203,7 +198,7 @@ class MultipleChoiceVertical : public QuestionType {
             }
         }
 
-        void print(ostream& htmlFile) {
+        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
             string outText = text;
             smatch m;
             // TODO: formatting
@@ -212,7 +207,7 @@ class MultipleChoiceVertical : public QuestionType {
                 string delim = m[1];
                 answer = m[2];
                 getAnswer();
-                contentPrint(typeID, delim, input);
+                contentPrint(typeID, delim, input, answersFile, partNum, questionNum);
                 getOptions();
                 outText.replace(m.position(), m.length(), replace);
             }
@@ -251,7 +246,7 @@ class MultipleAnswerHorizontal : public QuestionType {
             }
         }
 
-        void print(ostream& htmlFile) {
+        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
             string outText = text;
             smatch m;
             // TODO: formatting
@@ -260,7 +255,7 @@ class MultipleAnswerHorizontal : public QuestionType {
                 string delim = m[1];
                 answer = m[2];
                 getAnswer();
-                contentPrint(typeID, delim, input);
+                contentPrint(typeID, delim, input, answersFile, partNum, questionNum);
                 getOptions();
                 outText.replace(m.position(), m.length(), replace);
             }
@@ -299,7 +294,7 @@ class MultipleAnswerVertical : public QuestionType {
             }
         }
 
-        void print(ostream& htmlFile) {
+        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
             string outText = text;
             smatch m;
             // TODO: formatting
@@ -308,7 +303,7 @@ class MultipleAnswerVertical : public QuestionType {
                 string delim = m[1];
                 answer = m[2];
                 getAnswer();
-                contentPrint(typeID, delim, input);
+                contentPrint(typeID, delim, input, answersFile, partNum, questionNum);
                 getOptions();
                 outText.replace(m.position(), m.length(), replace);
             }
@@ -317,7 +312,7 @@ class MultipleAnswerVertical : public QuestionType {
 };
 
 class CodeQuestion : public QuestionType {
-    private:
+private:
         string temp, typeID, option, outText;
     public:
         void getAnswer(string& answer) {
@@ -354,23 +349,24 @@ class CodeQuestion : public QuestionType {
             }
         }
 
-        void print(ostream& htmlFile) {
+        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
             outText = text;
             smatch m;
             htmlFile << "<pre class='pcode'>\n";
             while (regex_search(outText, m, specials)) {
                 string delim = m[1], value = m[2];
                 fillType(value);
-                contentPrint(typeID, delim, value);
                 if(typeID != "L") {
                     outText.replace(m.position(), m.length(), replace);
                 } else {
+                    typeID = "q";
                     outText.replace(m.position(), m.length(), definitions);
                 }
+                contentPrint(typeID, delim, value, answersFile, partNum, questionNum);
             }
             htmlFile << outText << "</pre>\n";
         }
-};
+ };
 
 class PCodeQuestion : public QuestionType {
     private:
@@ -410,21 +406,20 @@ class PCodeQuestion : public QuestionType {
             }
         }
 
-        void print(ostream& htmlFile) {
+        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
             outText = text;
             smatch m;
             htmlFile << "<pre class='pcode'>\n";
             while (regex_search(outText, m, specials)) {
                 string delim = m[1], value = m[2];
                 fillType(value);
-                // contentPrint(typeID, delim, value);
                 if(typeID != "L") {
                     outText.replace(m.position(), m.length(), replace);
                 } else {
                     typeID = "q";
                     outText.replace(m.position(), m.length(), definitions);
                 }
-                contentPrint(typeID, delim, value);
+                contentPrint(typeID, delim, value, answersFile, partNum, questionNum);
             }
             htmlFile << outText << "</pre>\n";
         }
@@ -448,13 +443,13 @@ class Definitions : public QuestionType {
             definitions += "</select>";
         }
 
-        void print(ostream& htmlFile) {
+        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
             string outText = text;
             smatch m;
             if (regex_search(outText, m, specials)) {
                 defs = m[2];
                 getOptions();
-                answers << typeID << "\t\t\t" << defs << "\n";
+                answersFile << typeID << "\t\t\t" << defs << "\n";
             }
         }
 };
@@ -463,19 +458,24 @@ class LiQuiz {
     private:
         string questionText;
         ofstream html;
+        ofstream answers;
         ifstream liquizFile;
         regex def;
 	    regex questionStart;
         unordered_map<string, QuestionType*> questionTypes;
         QuestionType* defaultQuestionType;
+        int questionNum = 1;
+        int partNum; // the subnumber within each question
+        double questionCount = 0;
+        
 
         void findQuestionType(const string& type, const string& questionText, const double& points) {
             QuestionType* question = (questionTypes.find(type) != questionTypes.end())
                 ? questionTypes[type] : defaultQuestionType;
             if (question != nullptr) {
-                question->setPoints(points);
+                question->setPoints(points, questionCount);
                 question->setText(questionText);
-                question->print(html);
+                question->print(html, answers, partNum, questionNum);
             }
         }
 
