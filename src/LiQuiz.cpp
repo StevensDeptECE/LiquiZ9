@@ -18,10 +18,10 @@ inline std::string to_string(char c) {
 }
 
 class QuestionType {
-    friend class LiQuiz;
+    friend class LiQuizCompiler;
     protected:
         const static regex specials;
-        const static string BLANK; // fill in the blank
+        const static string DELIM; // fill in the blank
 
         const static string REGEX;
         const static string SELECT; // selection (dropdown menu)
@@ -117,7 +117,7 @@ class QuestionType {
             } else if(type == VIDEO) {
                 string videoType = ""; // TODO: use this
 			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
-            } else if(type == BLANK) {
+            } else if(type == DELIM) {
                 addAnswer(typeID, qID, value, points, answersFile, partNum, questionNum);
                 buildString(replace, "<input class='' name='", qID, "'type='text' id='", qID, "' size='6'/>");
             }
@@ -125,7 +125,7 @@ class QuestionType {
 };
 
 const regex QuestionType::specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
-const string QuestionType::BLANK = ""; // fill in the blank
+const string QuestionType::DELIM = "---"; // fill in the blank
 
 const string QuestionType::REGEX = "re(";
 // $re(  $i( ignore case
@@ -226,6 +226,8 @@ class MultipleChoiceVertical : public QuestionType {
                     option += answer[i];
                 }
             }
+            replace.erase(replace.length()-1, 1);
+            replace.erase(replace.length()-1, 1);
         }
 
         void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
@@ -322,6 +324,8 @@ class MultipleAnswerVertical : public QuestionType {
                     option += answer[i];
                 }
             }
+            replace.erase(replace.length()-1, 1);
+            replace.erase(replace.length()-1, 1);
         }
 
         void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
@@ -484,7 +488,7 @@ class Definitions : public QuestionType {
         }
 };
 
-class LiQuiz {
+class LiQuizCompiler {
     private:
         const static regex def;
 	    const static regex questionStart;
@@ -520,7 +524,7 @@ class LiQuiz {
         }
 
     public:
-        LiQuiz(const char liquizFileName[]) {
+        LiQuizCompiler(const char liquizFileName[]) {
             questionText.reserve(1024);
             string baseFileName = removeExtension(liquizFileName);
             liquizFile.open(liquizFileName);
@@ -614,7 +618,7 @@ class LiQuiz {
                     string questionType = question.at("qt");
                     getline(liquizFile, line);
                     questionText = line + '\n';
-                    while (getline(liquizFile, line), !liquizFile.eof() && line != QuestionType::BLANK) {
+                    while (getline(liquizFile, line), !liquizFile.eof() && line != QuestionType::DELIM) {
                         questionText += line;
                         questionText += '\n';
                     }
@@ -651,7 +655,6 @@ class LiQuiz {
         }
 
         void generateQuiz() {
-            //addQuestionTyeps();
             generateHeader();
             grabQuestions();
             generateFooter(); 
@@ -659,10 +662,10 @@ class LiQuiz {
         }
 };
 
-const regex LiQuiz::def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}");
-const regex LiQuiz::questionStart("^\\{");
+const regex LiQuizCompiler::def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}");
+const regex LiQuizCompiler::questionStart("^\\{");
 
-unordered_map<string, QuestionType*> questionTypes {
+unordered_map<string, QuestionType*> LiQuizCompiler::questionTypes {
     {"pcode", new PCodeQuestion()},
     {"code", new CodeQuestion()},
     {"mch", new MultipleChoiceHorizontal()},
@@ -676,11 +679,11 @@ unordered_map<string, QuestionType*> questionTypes {
 int main(int argc, char* argv[]) {
 	try {
         if (argc < 2) {
-            LiQuiz L("datastruct_numbertheoretic.lq");
+            LiQuizCompiler L("datastruct_numbertheoretic.lq");
             L.generateQuiz();
         } else {
             for (int i = 1; i < argc; i++) {
-                LiQuiz L(argv[i]);
+                LiQuizCompiler L(argv[i]);
                 L.generateQuiz();
             }
         }
