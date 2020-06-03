@@ -5,20 +5,19 @@
  */
 package questions;
 
-public class SimpleQuestion extends Question{
+import java.util.HashMap;
+
+public class SimpleQuestion extends Question {
   String ans;
   boolean caseSens;
   boolean spaceSens;
 
-  public SimpleQuestion(String ans, double gradeVal, String qType){
-    super(gradeVal);
+  //TODO: set number space sensitivity
+  public SimpleQuestion(String ans, double gradeVal, String qType, HashMap<String, Question> questionsMap) {
+    super(gradeVal, questionsMap, qType);
     char type = qType.charAt(0);
-    caseSens = true;
-    if(type == 'Q' || type == 'S')
-        caseSens = false;
-    spaceSens = true;
-    if(type == 's' || type == 'S')
-        spaceSens = false;
+    caseSens = !(type == 'Q' || type == 'S');
+    spaceSens = !(type == 's' || type == 'S');
     this.ans = ans;
     if(!caseSens)
       this.ans = this.ans.toLowerCase();
@@ -26,12 +25,16 @@ public class SimpleQuestion extends Question{
       this.ans = this.ans.replaceAll("\\s", "");
   }
 
-  public String getAnswer(){
+  public String getAnswer() {
     return ans;
   }
 
-  public boolean getCaseSensitivity(){
+  public boolean getCaseSensitivity() {
     return caseSens;
+  }
+  
+  public boolean getSpaceSensitivity() {
+      return spaceSens;
   }
 
     /**
@@ -39,8 +42,8 @@ public class SimpleQuestion extends Question{
      * @param studentAns    the answers taken from the students page
      * @return double       the value of the question after it has been graded
      */
-    @Override
-  public double checkAnswer(String studentAns[]){
+  @Override
+  public double checkAnswer(String studentAns[]) {
     String caseStudentAns = studentAns[0];
     if(!caseSens)
       caseStudentAns = caseStudentAns.toLowerCase();

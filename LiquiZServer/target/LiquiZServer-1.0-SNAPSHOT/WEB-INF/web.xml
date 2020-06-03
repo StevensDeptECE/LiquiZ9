@@ -7,7 +7,7 @@
     <servlet-mapping>
         <servlet-name>TestQuizServlet</servlet-name>
         <url-pattern>/loginTest</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping> 
     <session-config>
         <session-timeout>
             30

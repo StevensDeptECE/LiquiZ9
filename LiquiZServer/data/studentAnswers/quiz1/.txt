@@ -1,6 +1,0 @@
-q1_1: 
-q1_2: 
-Q1_3: 
-m2_1:  Type your essay here 
-n4_1: 
-grade: -5.0

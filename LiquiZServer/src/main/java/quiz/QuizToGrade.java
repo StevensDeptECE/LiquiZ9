@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package quiz;
-
 /**
  *
  * @author ejone
@@ -35,6 +34,14 @@ public class QuizToGrade{
     updateAnswers(filename);
     updateGrade();
   }
+  
+  public double getGrade(){
+    return grade;
+  }
+
+  public boolean isGraded(){
+    return quizGraded;
+  }
 
   private void updateAnswers(String filename){
     try {
@@ -51,35 +58,30 @@ public class QuizToGrade{
       }
       myReader.close();
     }
+    //TODO: respond on server side, log it, major problem
     catch (FileNotFoundException e) {
       System.out.println("An error occurred reading in the file.");
     }
   }
 
-  public void addQuestion(String qType, String qAns, Double gradeVal){
-      System.out.println(qType);
-      System.out.println(qType.charAt(0));
-      String[] qAnsArr = qAns.split(",");
-    switch(qType.charAt(0)){
+  public void addQuestion(String questionName, String qAns, Double gradeVal){
+    String[] qAnsArr = qAns.split(",");
+    switch(questionName.charAt(0)){
       case 'q':
       case 'Q':
       case 's': 
       case 'S':
-        SimpleQuestion sqc = new SimpleQuestion(qAns, gradeVal, qType);
-        questionsMap.put(qType, sqc);
-        System.out.println("add question");
+        SimpleQuestion sqc = new SimpleQuestion(qAns, gradeVal, questionName, questionsMap);
         break;
       case 'N':
       case 'n':
-        double lowVal = Double.parseDouble(qAnsArr[0]);
-        double highVal = Double.parseDouble(qAnsArr[1]);
-        NumQuestion nq = new NumQuestion(lowVal, highVal, gradeVal);
-        questionsMap.put(qType, nq);
+        double lowRange = Double.parseDouble(qAnsArr[0]);
+        double highRange = Double.parseDouble(qAnsArr[1]);
+        NumQuestion nq = new NumQuestion(lowRange, highRange, gradeVal, questionsMap, questionName);
         break;
       case 'M':
       case 'm':
-        MultiAnsQuestion mqc = new MultiAnsQuestion(qAnsArr, gradeVal, true);
-        questionsMap.put(qType, mqc);
+        MultiAnsQuestion mqc = new MultiAnsQuestion(qAnsArr, gradeVal, true, questionsMap, questionName);
         break;
       default:
         System.out.println("error adding question");
@@ -90,7 +92,6 @@ public class QuizToGrade{
     for(Map.Entry<String, String[]> entry : inputs.entrySet()){
       String key = entry.getKey();
       String[] inputsString = entry.getValue();
-      System.out.println(key + " " + inputsString[0]);
       
       Question q = questionsMap.get(key);
       if(q==null)
@@ -99,13 +100,5 @@ public class QuizToGrade{
         grade+=q.checkAnswer(inputsString);
     }
     quizGraded = true;
-  }
-
-  public double getGrade(){
-    return grade;
-  }
-
-  public boolean isGraded(){
-    return quizGraded;
   }
 }

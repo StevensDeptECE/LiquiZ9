@@ -5,27 +5,29 @@
  */
 package questions;
 
+import java.util.HashMap;
+
 /**
  *
  * @author ejone
  */
 public class NumQuestion extends Question {
-  double[] ansRange = new double[2];
-
-  public NumQuestion(double lowRange, double highRange, double gradeVal){
-    super(gradeVal);
-    if(lowRange < highRange){
-        ansRange[0] = lowRange;
-        ansRange[1] = highRange;
+  private double low, high;
+  
+  public NumQuestion(double low, double high, double gradeVal, HashMap<String, Question> questionsMap, String name) {
+    super(gradeVal, questionsMap, name);
+    if(low < high){
+        this.low = low;
+        this.high = high;
     }
     else{
-        ansRange[0] = highRange;
-        ansRange[1] = lowRange;        
+        this.low = high;
+        this.high = low;        
     }
   }
 
-  public double[] getAnswer(){
-    return ansRange;
+  public double[] getAnswer() {
+    return new double[]{low, high};
   }
 
     /**
@@ -35,13 +37,14 @@ public class NumQuestion extends Question {
      * @throws NumberFormatException    String cannot be parsed into a double
      */
     @Override
-  public double checkAnswer(String studentAns[]) throws NumberFormatException{
-    try{
+  public double checkAnswer(String studentAns[]) throws NumberFormatException {
+    try {
         double numStudentAns = Double.parseDouble(studentAns[0]);
-        if(numStudentAns >= ansRange[0] && numStudentAns <= ansRange[1])
+        if(numStudentAns >= low && numStudentAns <= high)
             return 1.0*gradeVal;
     }
-    catch (NumberFormatException nfe){
+    //TODO: display on the client something went wrong
+    catch (NumberFormatException nfe) {
         System.out.println("error, not a valid number");
     }
     return 0.0;
