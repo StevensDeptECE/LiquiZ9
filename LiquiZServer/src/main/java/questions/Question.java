@@ -5,18 +5,21 @@
  */
 package questions;
 
-public abstract class Question{
+import java.util.HashMap;
+
+public abstract class Question {
   double gradeVal;
 
-  public Question(double gradeVal){
+  public Question(double gradeVal, HashMap<String, Question> questionsMap, String name) {
     this.gradeVal = gradeVal;
+    questionsMap.put(name, this);
   }
 
-  public final String type(){
+  public final String type() {
     return getClass().getSimpleName();
   }
 
-  public double getGradeValue(){
+  public final double getGradeValue() {
     return gradeVal;
   }
 

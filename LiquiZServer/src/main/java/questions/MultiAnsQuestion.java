@@ -7,36 +7,27 @@ package questions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 /**
  *
  * @author ejone
  */
-public class MultiAnsQuestion extends Question{
-  int numAns;
+public class MultiAnsQuestion extends Question {
   boolean subWrongAns;
-  ArrayList<String> answers = new ArrayList<>();
+  String[] answers;
 
-  public MultiAnsQuestion(String ans[], double gradeVal, boolean subWrongAns){
-    super(gradeVal);
+  public MultiAnsQuestion(String ans[], double gradeVal, boolean subWrongAns, HashMap<String, Question> questionsMap, String name) {
+    super(gradeVal, questionsMap, name);
     this.subWrongAns = subWrongAns;
-    numAns = ans.length;
-    addAnswers(ans);
+    answers = ans;
   }
 
-  public ArrayList<String> getAnswer(){
+  public String[] getAnswer() {
     return answers;
   }
 
-  public boolean getSubWrongAns(){
+  public boolean getSubWrongAns() {
     return subWrongAns;
-  }
-
-  public int getNumberOfAnswers(){
-    return numAns;
-  }
-  
-  private void addAnswers(String ans[]){
-      answers.addAll(Arrays.asList(ans));
   }
   
 //TODO: add posibility to subtract points if one submitted is wrong 
@@ -47,15 +38,21 @@ public class MultiAnsQuestion extends Question{
      * @return double       the value of the question after it has been graded
      */
   @Override
-  public double checkAnswer(String studentAns[]){
-    int i = 0;
+  public double checkAnswer(String studentAns[]) {
     double finishedGradeVal = 0.0;
+    final double pointsPerAnswer = gradeVal/answers.length;
     for(String a : studentAns){
-      if(answers.contains(a))
-        finishedGradeVal += (1.0/numAns)*gradeVal;
-      else if(subWrongAns)
-        finishedGradeVal -= (1.0/numAns)*gradeVal;
+      int index = 0;
+      for(String answer : answers) {
+        index++;
+        if(answer.equals(a)){
+          finishedGradeVal += pointsPerAnswer;
+          break;
+        }
+        else if(index == answers.length && subWrongAns)
+          finishedGradeVal -= pointsPerAnswer;
+      }
     }
-    return finishedGradeVal;
+    return Math.round(finishedGradeVal*1000)/1000;
   }
 }
