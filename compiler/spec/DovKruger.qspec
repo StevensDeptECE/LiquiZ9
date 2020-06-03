@@ -1,0 +1,25 @@
+{
+  "quizspec":   "DovKruger.qspec",
+  "author":     "Dov Kruger",
+  "email":	"Dov.Kruger@stevens.edu",
+  "UUID":	"auth123",
+  "copyright":  "copyright (c) 2020 Dov Kruger",
+  "license":    "Gnu 3.0 see license.txt",
+
+  "defaults": {
+     "img":"StevensLogo380x326.png",
+     "stylesheet":"quiz.css",
+     
+     "numberOfTries":   4,
+     "timeLimit":       0,
+     "fillInTheBlankSize": 4,
+     "openDate":            "2020-05-01 23:59:59",
+     "closeDate":           "+0 00:30:00",
+  },
+  "def": {
+    "tf": ["true", "false"],
+    "yn": ["yes", "no"],
+    "likert": ["strongly disagree", "disagree", "neutral", "agree", "strongly agree"],
+    
+  }
+}

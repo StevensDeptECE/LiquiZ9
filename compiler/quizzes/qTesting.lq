@@ -1,0 +1,44 @@
+{"quizspec":"dkruger.qspec", "name":"Number Theoretic"}
+{"qt":"def", "name":"defs", "points":"0"}
+$O(n),O(n^2),O(n^3),O(n^4),O(log2(n)),O(log3(n),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log2(n),O(n*√n)$
+---
+{"qt":"pcode", "name":"Miller-Rabin", "points":"30"}
+MillerRabin(n, k)	// Complexity: k*$%O(n^3)$
+  for i ← 1 to k
+    a ← random(2, $Q:n-2$)
+    s ← number of zeros of n-1
+    d ← leading non-zero digits of n-1
+    x ← d
+    for i ← 1 to s
+      if powermod($s:a$, x, $S:n$) ≠ 1
+        return false
+      end
+      x ← x*$x$ mod $n$
+    end
+    if powermod($a$, x-1, x)  ≠ 1
+      return $Q:false$
+    end
+  end
+  return true // probably!
+  $n:1,5$
+end
+---
+{"qt":"mch", "name":"Multiple Choice Horizontal", "points":"35"}
+What's 2+2?
+$1,2,3,*4$
+
+Answer again I guess
+$1,2,3,*4$
+---
+{"qt":"mcv", "name":"Multiple Choice Vertical", "points":"40"}
+What's 2+2?
+$1,2,3,*4$
+---
+{"qt":"mah", "name":"Multiple Answer Horizontal", "points":"45"}
+What's NOT 2+2?
+$*1,*2,*3,4$
+---
+{"qt":"mav", "name":"Multiple Answer Vertical", "points":"50"}
+What's NOT 2+2?
+$*1,*2,*3,4$
+---
