@@ -1,0 +1,51 @@
+{"quizspec":"dkruger.qspec", "name":"Number Theoretic"}
+{"style":"def", "name":"comp", "values":"O(n),O(n^2),O(n^3),O(n^4),O(log2(n)),O(log3(n),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log2(n),O(n*√n)"}
+{"style":"text", "name":"Multiple Choice Horizontal", "points":"35"}
+What's 2+2?
+$mch:1,2,3,*4$
+
+Answer again I guess
+$mcv:1,2,3,*4$
+---
+{"style":"text", "name":"Multiple Choice Vertical", "points":"40"}
+What's 2+2?
+$mcv:1,2,3,*4$
+---
+{"style":"text", "name":"Multiple Answer Horizontal", "points":"45"}
+What's NOT 2+2?
+$mah:*1,*2,*3,4$
+---
+{"style":"text", "name":"Multiple Answer Vertical", "points":"50"}
+What's NOT 2+2?
+$mav:*1,*2,*3,4$
+---
+{"style":"text", "name":"Basic Knowledge", "points":"10"}
+Please enter all answers in lowercase until we add the case insensitive question.
+
+How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? $f:16$.
+
+Some of the registers are special and cannot be used as general registers.
+
+For example register r15 is the $fQ:pc$, r14 is the $f:sp$, and r13 is $f:lr$.
+
+The range of registers available for use is generally considered to be r0 to $f:r11$.
+
+There are $fs:16$ double precision registers starting from $f:d0$ to $f:d15$.
+
+There are $f:32$ single precision registers starting from $f:s0$ to $f:s31$.
+
+We can say that register d1 and s2 $f:can be used independently,cannot be used at the same time,should never be used because they are reserved,are not valid in the arm architecture$.
+---
+{"style":"text", "name":"Write a Function", "points":"10"}
+author: Andrew Desanti
+Using the above isLeap function, write the following function that counts how many leap years between 2020 and the year:
+$tar:$
+---
+{"style":"pcode", "name":"gcd", "points":"10"}
+gcd(a,b)       // Complexity: $def:comp:O(n^3)$
+  if $f:b$ = 0
+    return a
+  end
+  return $f:gcd$(b, a mod b)
+end
+---

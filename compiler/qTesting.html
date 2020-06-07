@@ -6,7 +6,7 @@
                 <title>
                 "Number Theoretic"
                 </title>
-                    <link rel="stylesheet" href="css/quiz.css" type="text/css">
+                    <link rel="stylesheet" type="text/css" href="css/quiz.css">
                     <script src='js/quiz.js'></script>
                 </head>
                 <body onload='startTime()'>
@@ -39,8 +39,62 @@
                 </div>
                 </div>
 
-                <div class='q' id='q1'>1. Miller-Rabin<span class='pts'> (30 points)</span></p><pre class='pcode'>
-MillerRabin(n, k)	// Complexity: k*<select class='' name=''><option value='O(n)'>O(n)</option>
+                <div class='q' id='q1'>1. Multiple Choice Vertical<span class='pts'> (40 points)</span></p>
+<pre>
+What's 2+2?
+<input class='mc' name='q_q1_1'type='radio' value='1'>1
+
+<input class='mc' name='q_q1_1'type='radio' value='2'>2
+
+<input class='mc' name='q_q1_1'type='radio' value='3'>3
+
+<input class='mc' name='q_q1_1'type='radio' value='4'>4
+</pre></div>
+<div class='q' id='q2'>2. Multiple Answer Horizontal<span class='pts'> (45 points)</span></p>
+<pre>
+What's NOT 2+2?
+<input class='ma' name='m_q2_2'type='checkbox' value='1'>1	<input class='ma' name='m_q2_2'type='checkbox' value='2'>2	<input class='ma' name='m_q2_2'type='checkbox' value='3'>3	<input class='ma' name='m_q2_2'type='checkbox' value='4'>4	
+</pre></div>
+<div class='q' id='q3'>3. Multiple Answer Vertical<span class='pts'> (50 points)</span></p>
+<pre>
+What's NOT 2+2?
+<input class='ma' name='m_q3_3'type='checkbox' value='1'>1
+
+<input class='ma' name='m_q3_3'type='checkbox' value='2'>2
+
+<input class='ma' name='m_q3_3'type='checkbox' value='3'>3
+
+<input class='ma' name='m_q3_3'type='checkbox' value='4'>4
+</pre></div>
+<div class='q' id='q4'>4. Basic Knowledge<span class='pts'> (10 points)</span></p>
+<pre>
+Please enter all answers in lowercase until we add the case insensitive question.
+
+How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? <input class='' name='q_q4_4'type='text' id='q_q4_4' size='6'/>.
+
+Some of the registers are special and cannot be used as general registers.
+
+For example register r15 is the <input class='' name='Q_q4_5'type='text' id='Q_q4_5' size='6'/>, r14 is the <input class='' name='q_q4_6'type='text' id='q_q4_6' size='6'/>, and r13 is <input class='' name='q_q4_7'type='text' id='q_q4_7' size='6'/>.
+
+The range of registers available for use is generally considered to be r0 to <input class='' name='q_q4_8'type='text' id='q_q4_8' size='6'/>.
+
+There are <input class='' name='s_q4_9'type='text' id='s_q4_9' size='6'/> double precision registers starting from <input class='' name='q_q4_10'type='text' id='q_q4_10' size='6'/> to <input class='' name='q_q4_11'type='text' id='q_q4_11' size='6'/>.
+
+There are <input class='' name='q_q4_12'type='text' id='q_q4_12' size='6'/> single precision registers starting from <input class='' name='q_q4_13'type='text' id='q_q4_13' size='6'/> to <input class='' name='q_q4_14'type='text' id='q_q4_14' size='6'/>.
+
+We can say that register d1 and s2 <input class='' name='q_q4_15'type='text' id='q_q4_15' size='6'/>.
+</pre></div>
+<div class='q' id='q5'>5. Write a Function<span class='pts'> (10 points)</span></p>
+<pre class='pcode'>
+
+author: Andrew Desanti
+Using the above isLeap function, write the following function that counts how many leap years between 2020 and the year:
+<textarea rows='20' cols='80' id='T_q5_16'></textarea>
+</pre></div>
+<div class='q' id='q6'>6. gcd<span class='pts'> (10 points)</span></p>
+<pre class='pcode'>
+
+gcd(a,b)       // Complexity: <select class='' name='q_q6_17'><option value='O(n)'>O(n)</option>
 <option value='O(n^2)'>O(n^2)</option>
 <option value='O(n^3)'>O(n^3)</option>
 <option value='O(n^4)'>O(n^4)</option>
@@ -56,61 +110,12 @@ MillerRabin(n, k)	// Complexity: k*<select class='' name=''><option value='O(n)'
 <option value='O(n*log2(n)'>O(n*log2(n)</option>
 <option value='O(n*√n)'>O(n*√n)</option>
 </select>
-  for i ← 1 to k
-    a ← random(2, )
-    s ← number of zeros of n-1
-    d ← leading non-zero digits of n-1
-    x ← d
-    for i ← 1 to s
-      if powermod(, x, ) ≠ 1
-        return false
-      end
-      x ← x* mod 
-    end
-    if powermod(, x-1, x)  ≠ 1
-      return 
-    end
+  if <input class='' name='q_q6_18'type='text' id='q_q6_18' size='6'/> = 0
+    return a
   end
-  return true // probably!
-  
+  return <input class='' name='q_q6_19'type='text' id='q_q6_19' size='6'/>(b, a mod b)
 end
-</pre>
-</div>
-<div class='q' id='q2'>2. Multiple Choice Horizontal<span class='pts'> (35 points)</span></p><pre class=''>
-What's 2+2?
-<input class='mc' name=''type='radio' value='1'>1	<input class='mc' name=''type='radio' value='2'>2	<input class='mc' name=''type='radio' value='3'>3	<input class='mc' name=''type='radio' value='4'>4	
-
-Answer again I guess
-<input class='mc' name=''type='radio' value='1'>1	<input class='mc' name=''type='radio' value='2'>2	<input class='mc' name=''type='radio' value='3'>3	<input class='mc' name=''type='radio' value='4'>4	
-</pre>
-</div>
-<div class='q' id='q3'>3. Multiple Choice Vertical<span class='pts'> (40 points)</span></p><pre class=''>
-What's 2+2?
-<input class='mc' name=''type='radio' value='1'>1
-
-<input class='mc' name=''type='radio' value='2'>2
-
-<input class='mc' name=''type='radio' value='3'>3
-
-<input class='mc' name=''type='radio' value='4'>4
-</pre>
-</div>
-<div class='q' id='q4'>4. Multiple Answer Horizontal<span class='pts'> (45 points)</span></p><pre class=''>
-What's NOT 2+2?
-<input class='ma' name=''type='checkbox' value='1'>1	<input class='ma' name=''type='checkbox' value='2'>2	<input class='ma' name=''type='checkbox' value='3'>3	<input class='ma' name=''type='checkbox' value='4'>4	
-</pre>
-</div>
-<div class='q' id='q5'>5. Multiple Answer Vertical<span class='pts'> (50 points)</span></p><pre class=''>
-What's NOT 2+2?
-<input class='ma' name=''type='checkbox' value='1'>1
-
-<input class='ma' name=''type='checkbox' value='2'>2
-
-<input class='ma' name=''type='checkbox' value='3'>3
-
-<input class='ma' name=''type='checkbox' value='4'>4
-</pre>
-</div>
+</pre></div>
 
                     <div class='controls'>
                     <div style='position: flow'>Time Remaining</div>

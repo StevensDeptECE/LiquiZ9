@@ -8,8 +8,6 @@
 using namespace std;
 
 
-string definitions;
-
 
 inline const std::string& to_string(const std::string& s) {return s;}
 inline std::string to_string(char c) {
@@ -18,49 +16,13 @@ inline std::string to_string(char c) {
 }
 
 class QuestionType {
-    friend class LiQuizCompiler;
-    protected:
-        const static regex specials;
-        const static string DELIM;
-
-        const static string REGEX;
-        const static string SELECT; // selection (dropdown menu)
-        const static string IMAGE; // a picture
-        const static string IMAGEMAP; // an image map (interactive)
-        const static string AUDIO; // an audio file
-        const static string VIDEO; // a video
-        const static string TEXTAREA;
-        const static string SURVEY; // survey style, one line table including question
-        const static string MAT; //Matrix question
-        const static string EQ; //Matrix question
-        //TODO: support select, MCH, and MCV for lookup. Right now it's just select
-        //TODO: remove "" from stinking lookup!
-        const static string SUFFIXES[];
-        const static string PNG;
-        const static string JPG;
-        const static string MP4;
-        const static string MP3;
-        const static string OGG;
-
-        const static regex CASEINSENS;
-        const static regex SPACEINSENS;
-        const static regex NUMERIC;
-        const static regex SPACECASE;
-        const static regex LOOKUP;
-    private:
-        double points;
-    // is this the correct way?
     protected:
         string qID, replace, text;
 
     public:
         void setText(const string& t) { text = t; }
-        virtual void print(ostream& h, ostream& a, int& pN, int& qN) = 0;
+        virtual string print(ostream& a, int& pN, int& qN, double& p) = 0;
         virtual ~QuestionType() {}
-
-        void setPoints(double p, double questionCount) {
-            points = p / questionCount;
-        }
 
         void addAnswer(string& typeID, string& qID, const string& ans, double points, ostream &answersFile, int& partNum, int& questionNum) {
             partNum++;
@@ -74,84 +36,7 @@ class QuestionType {
             int unpack[]{0, (dest += to_string(args), 0)...};
             static_cast<void>(unpack);
         }
-
-        void buildStringSplitDelimiter(string& dest, const string& in, const char delimit, const string& start, const string& end, 
-                                            const string& pre, const string& post) {
-            dest = start;
-            int startIndex = 0, endIndex;
-            if (in[startIndex]=='"')
-                startIndex++; // skip surrounding quotes
-            for (int i = 0; i < in.length(); i++) {
-                if (in[i] == delimit) {
-                    endIndex = i-1;
-                    if (in[endIndex] == '"')
-                        endIndex--;
-                    dest += pre;
-                    for (int j = startIndex; j <= endIndex; j++)
-                        dest += in[j];
-                    dest += post;
-                    startIndex = i+1;
-                    if (in[startIndex] == '"')
-                        startIndex++;
-                }
-            }
-            dest += pre;
-            endIndex = in.length()-1;
-            if (in[endIndex] == '"')
-                endIndex--;
-            for (int j = startIndex; j < endIndex; j++)
-                dest += in[j];
-            dest += post;
-            dest += end;
-        }
-
-        void contentPrint(string& typeID, string& type, string& value, ostream& answersFile, int& partNum, int& questionNum) {
-            replace.reserve(4096);
-
-            if(type == IMAGE) {
-                buildString(replace, "<img src='", value, "'></img>");
-            } else if(type == AUDIO) {
-                string url = type;
-                string audioType = url.substr(url.length()-3);
-                buildString(replace, "<audio controls><source src='", type, "' type='audio/", audioType, "'></audio>");
-            } else if(type == VIDEO) {
-                string videoType = ""; // TODO: use this
-			    buildString(replace, "<video controls width='320' height='240'><source src='", value, "' type='video/mp4'></video>");
-            } else if(type == DELIM) {
-                addAnswer(typeID, qID, value, points, answersFile, partNum, questionNum);
-                buildString(replace, "<input class='' name='", qID, "'type='text' id='", qID, "' size='6'/>");
-            }
-        }
 };
-
-const regex QuestionType::specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
-const string QuestionType::DELIM = "---"; // fill in the blank
-
-const string QuestionType::REGEX = "re(";
-// $re(  $i( ignore case
-const string QuestionType::SELECT = "("; // selection (dropdown menu)
-const string QuestionType::IMAGE = "img("; // a picture
-const string QuestionType::IMAGEMAP = "map("; // an image map (interactive)
-const string QuestionType::AUDIO = "aud("; // an audio file
-const string QuestionType::VIDEO = "vid("; // a video
-const string QuestionType::TEXTAREA = "ta(";
-const string QuestionType::SURVEY = "sur("; // survey style, one line table including question
-const string QuestionType::MAT = "mat("; //Matrix question
-const string QuestionType::EQ = "eq("; //Matrix question
-//TODO: support select, MCH, and MCV for lookup. Right now it's just select
-//TODO: remove "" from stinking lookup!
-const string QuestionType::SUFFIXES[] = {"png", "jpg", "mp3", "mp4"};
-const string QuestionType::PNG = "png";
-const string QuestionType::JPG = "jpg";
-const string QuestionType::MP4 = "mp4";
-const string QuestionType::MP3 = "mp3";
-const string QuestionType::OGG = "ogg";
-
-const regex QuestionType::CASEINSENS("Q:");
-const regex QuestionType::SPACEINSENS("s:");
-const regex QuestionType::NUMERIC("n:");
-const regex QuestionType::SPACECASE("S:");
-const regex QuestionType::LOOKUP("%");
 
 class MultipleChoiceHorizontal : public QuestionType {
     private:
@@ -159,6 +44,7 @@ class MultipleChoiceHorizontal : public QuestionType {
         string typeID = "q";
     public:
         void getAnswer() {
+            input = "";
             for (int i = 0; i < answer.length(); i++) {
                     if (answer[i] == '*') {
                         for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
@@ -182,20 +68,12 @@ class MultipleChoiceHorizontal : public QuestionType {
             }
         }
 
-        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
-            string outText = text;
-            smatch m;
-            // TODO: formatting
-            htmlFile << "<pre class=''>\n";
-            while (regex_search(outText, m, specials)) {
-                string delim = m[1];
-                answer = m[2];
-                getAnswer();
-                contentPrint(typeID, delim, input, answersFile, partNum, questionNum);
-                getOptions();
-                outText.replace(m.position(), m.length(), replace);
-            }
-            htmlFile << outText << "</pre>\n";
+        string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            answer = text.erase(0,4);
+            getAnswer();
+            addAnswer(typeID, qID, input, points, answersFile, partNum, questionNum);
+            getOptions();
+            return replace;
         }
 };
 
@@ -205,6 +83,7 @@ class MultipleChoiceVertical : public QuestionType {
         string typeID = "q";
     public:
         void getAnswer() {
+            input = "";
             for (int i = 0; i < answer.length(); i++) {
                     if (answer[i] == '*') {
                         for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
@@ -230,20 +109,12 @@ class MultipleChoiceVertical : public QuestionType {
             replace.erase(replace.length()-1, 1);
         }
 
-        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
-            string outText = text;
-            smatch m;
-            // TODO: formatting
-            htmlFile << "<pre class=''>\n";
-            while (regex_search(outText, m, specials)) {
-                string delim = m[1];
-                answer = m[2];
-                getAnswer();
-                contentPrint(typeID, delim, input, answersFile, partNum, questionNum);
-                getOptions();
-                outText.replace(m.position(), m.length(), replace);
-            }
-            htmlFile << outText << "</pre>\n";
+        string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            answer = text.erase(0,4);
+            getAnswer();
+            addAnswer(typeID, qID, input, points, answersFile, partNum, questionNum);
+            getOptions();
+            return replace;
         }
 };
 
@@ -253,6 +124,7 @@ class MultipleAnswerHorizontal : public QuestionType {
         string typeID = "m";
     public:
         void getAnswer() {
+            input = "";
             for (int i = 0; i < answer.length(); i++) {
                     if (answer[i] == '*') {
                         for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
@@ -278,20 +150,12 @@ class MultipleAnswerHorizontal : public QuestionType {
             }
         }
 
-        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
-            string outText = text;
-            smatch m;
-            // TODO: formatting
-            htmlFile << "<pre class=''>\n";
-            while (regex_search(outText, m, specials)) {
-                string delim = m[1];
-                answer = m[2];
-                getAnswer();
-                contentPrint(typeID, delim, input, answersFile, partNum, questionNum);
-                getOptions();
-                outText.replace(m.position(), m.length(), replace);
-            }
-            htmlFile << outText << "</pre>\n";
+        string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            answer = text.erase(0,4);
+            getAnswer();
+            addAnswer(typeID, qID, input, points, answersFile, partNum, questionNum);
+            getOptions();
+            return replace;
         }
 };
 
@@ -328,163 +192,58 @@ class MultipleAnswerVertical : public QuestionType {
             replace.erase(replace.length()-1, 1);
         }
 
-        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
-            string outText = text;
-            smatch m;
-            // TODO: formatting
-            htmlFile << "<pre class=''>\n";
-            while (regex_search(outText, m, specials)) {
-                string delim = m[1];
-                answer = m[2];
-                getAnswer();
-                contentPrint(typeID, delim, input, answersFile, partNum, questionNum);
-                getOptions();
-                outText.replace(m.position(), m.length(), replace);
-            }
-            htmlFile << outText << "</pre>\n";
+        string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            answer = text.erase(0,4);
+            getAnswer();
+            addAnswer(typeID, qID, input, points, answersFile, partNum, questionNum);
+            getOptions();
+            return replace;
         }
 };
 
-class CodeQuestion : public QuestionType {
-private:
-        string temp, typeID, option, outText;
-    public:
-        void getAnswer(string& answer) {
-            for (int i = 0; i <= answer.length(); i++) {
-                if (answer[i] == ',' || i == answer.length()) {
-                    temp += "\t";
-                } else {
-                    temp += answer[i];
-                }
-            }
-            answer = temp;
-        }
-
-        void fillType(string& line) {
-            smatch m;
-            if (regex_search(line, m, CASEINSENS)) {
-                typeID = "Q";
-                line.replace(m.position(), m.length(), "");
-            } else if (regex_search(line, m, SPACEINSENS)) {
-                typeID = "s";
-                line.replace(m.position(), m.length(), "");
-            } else if (regex_search(line, m, NUMERIC)) {
-                typeID = "n";
-                getAnswer(line);
-                line.replace(m.position(), m.length(), "");
-            } else if (regex_search(line, m, SPACECASE)) {
-                typeID = "S";
-                line.replace(m.position(), m.length(), "");
-            } else if (regex_search(line, m, LOOKUP)) {
-                typeID = "L";
-                line.replace(m.position(), m.length(), "");
-            } else {
-                typeID = "q";
-            }
-        }
-
-        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
-            outText = text;
-            smatch m;
-            htmlFile << "<pre class='pcode'>\n";
-            while (regex_search(outText, m, specials)) {
-                string delim = m[1], value = m[2];
-                fillType(value);
-                if(typeID != "L") {
-                    outText.replace(m.position(), m.length(), replace);
-                } else {
-                    typeID = "q";
-                    outText.replace(m.position(), m.length(), definitions);
-                }
-                contentPrint(typeID, delim, value, answersFile, partNum, questionNum);
-            }
-            htmlFile << outText << "</pre>\n";
-        }
- };
-
-class PCodeQuestion : public QuestionType {
+class FillIn : public QuestionType {
     private:
-        string temp, typeID, option, outText;
+        static unordered_map<char, string> fillTypes;
+
+        string answer;
+        string typeID;
+
     public:
-        void getAnswer(string& answer) {
-            for (int i = 0; i <= answer.length(); i++) {
-                if (answer[i] == ',' || i == answer.length()) {
-                    temp += "\t";
-                } else {
-                    temp += answer[i];
-                }
-            }
-            answer = temp;
+        void getFillInType(const char& type) {
+            (fillTypes.find(type) != fillTypes.end()) ? typeID = type : typeID = "q";
         }
 
-        void fillType(string& line) {
-            smatch m;
-            if (regex_search(line, m, CASEINSENS)) {
-                typeID = "Q";
-                line.replace(m.position(), m.length(), "");
-            } else if (regex_search(line, m, SPACEINSENS)) {
-                typeID = "s";
-                line.replace(m.position(), m.length(), "");
-            } else if (regex_search(line, m, NUMERIC)) {
-                typeID = "n";
-                getAnswer(line);
-                line.replace(m.position(), m.length(), "");
-            } else if (regex_search(line, m, SPACECASE)) {
-                typeID = "S";
-                line.replace(m.position(), m.length(), "");
-            } else if (regex_search(line, m, LOOKUP)) {
-                typeID = "L";
-                line.replace(m.position(), m.length(), "");
+        string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            getFillInType(text[1]);
+
+            if (typeID != "q") {
+                answer = text.erase(0,3);
             } else {
-                typeID = "q";
+                answer = text.erase(0,2);
             }
-        }
 
-        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
-            outText = text;
-            smatch m;
-            htmlFile << "<pre class='pcode'>\n";
-            while (regex_search(outText, m, specials)) {
-                string delim = m[1], value = m[2];
-                fillType(value);
-                if(typeID != "L") {
-                    outText.replace(m.position(), m.length(), replace);
-                } else {
-                    typeID = "q";
-                    outText.replace(m.position(), m.length(), definitions);
-                }
-                contentPrint(typeID, delim, value, answersFile, partNum, questionNum);
-            }
-            htmlFile << outText << "</pre>\n";
+            addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
+            buildString(replace, "<input class='' name='", qID, "'type='text' id='", qID, "' size='6'/>");
+            return replace;
         }
 };
 
-class Definitions : public QuestionType {
-    private:
-        string temp, defselect, option, defs;
-        string typeID = "def";
-    public:
-        void getOptions() {
-            buildString(definitions, "<select class='' name='", qID, "'>");
-            for (int i = 0; i <= defs.length(); i++) {
-                if (defs[i] == ',' || i == defs.length()) {
-                    definitions += "<option value='" + option + "'>" + option + "</option>\n";
-                    option = "";
-                } else {
-                    option += defs[i];
-                }
-            }
-            definitions += "</select>";
-        }
+unordered_map<char, string> FillIn::fillTypes {
+    {'Q', "case insensitive"},
+    {'s', "space insensitive"},
+    {'n', "numeric"},
+    {'S', "space and case insensitive"},
+    {'L', "definition lookup"}
+};
 
-        void print(ostream& htmlFile, ostream& answersFile, int& partNum, int& questionNum) {
-            string outText = text;
-            smatch m;
-            if (regex_search(outText, m, specials)) {
-                defs = m[2];
-                getOptions();
-                answersFile << typeID << "\t\t\t" << defs << "\n";
-            }
+class TextQuestion : public QuestionType {
+    private:
+        string typeID = "T";
+    public:
+        string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+                addAnswer(typeID, qID, "-", points, answersFile, partNum, questionNum);
+                buildString(replace, "<textarea rows='20' cols='80' id='", qID, "'>", "</textarea>");
+                return replace;
         }
 };
 
@@ -492,25 +251,36 @@ class LiQuizCompiler {
     private:
         const static regex def;
 	    const static regex questionStart;
+        const static regex specials;
+
         static unordered_map<string, QuestionType*> questionTypes;
+        static unordered_map<string, string> definitions;
+
+        friend class Definition;
+
     private:
+        const string DELIM = "---";
         string questionText;
+        string inputText;
+
         ofstream html;
         ofstream answers;
         ifstream liquizFile;
+
         QuestionType* defaultQuestionType;
+
         int questionNum = 1;
         int partNum; // the subnumber within each question
         double questionCount = 0;
+        double points = 0;
         
 
-        void findQuestionType(const string& type, const string& questionText, const double& points) {
+        void findQuestionType(const string& type, double& points, string& delim) {
             QuestionType* question = (questionTypes.find(type) != questionTypes.end())
                 ? questionTypes[type] : defaultQuestionType;
             if (question != nullptr) {
-                question->setPoints(points, questionCount);
-                question->setText(questionText);
-                question->print(html, answers, partNum, questionNum);
+                question->setText(delim);
+                inputText = question->print(answers, partNum, questionNum, points);
             }
         }
 
@@ -523,11 +293,21 @@ class LiQuizCompiler {
             return string(fileName, i+1);
         }
 
+        static void findDefinitions(string& name, string& defs) {
+            if (definitions.find(name) == definitions.end()) {
+                name = "missing definitions name";
+                defs = "unavailable";
+            } else {
+                defs = definitions.at(name);
+            }
+        }
+
     public:
         LiQuizCompiler(const char liquizFileName[]) {
             questionText.reserve(1024);
             string baseFileName = removeExtension(liquizFileName);
-            liquizFile.open("quizzes/" + baseFileName + "lq");
+            //liquizFile.open("quizzes/" + baseFileName + "lq");
+            liquizFile.open(liquizFileName);
             html.open(baseFileName + "html");
             answers.open(baseFileName + "ans");
         }
@@ -555,7 +335,7 @@ class LiQuizCompiler {
             html <<
                 R"(
                 </title>
-                    <link rel="stylesheet" href="css/quiz.css" type="text/css">
+                    <link rel="stylesheet" type="text/css" href="css/quiz.css">
                     <script src='js/quiz.js'></script>
                 </head>
                 <body onload='startTime()'>
@@ -592,18 +372,44 @@ class LiQuizCompiler {
         }
 
         void makeQuestion(nlohmann::json& question) {
-            string temp = (question.at("points"));
-            string qType = question.at("qt");
-            double points = std::stod(temp);
-            if (qType != "def") {
+            string style = question.at("style");
+            string preStart;
+
+            if (style == "pcode" || style == "code") {
+                preStart = "<pre class='pcode'>\n";
+            } else {
+                preStart = "<pre>";
+            }
+
+            if (style != "def") {
+                string temp = question.at("points");
+                double points = std::stod(temp);
                 string questionName = question.at("name");
                 html << "<div class='q' id='q" << questionNum <<
                     "'>" << questionNum << ". " << questionName << "<span class='pts'> (" << points << " points)</span></p>";
-                findQuestionType(qType, questionText, points);
-                html << "</div>\n";
+                html << "\n" << preStart << "\n";
+                smatch m;
+                points = points / questionCount;
+                while (regex_search(questionText, m, specials)) {
+                    string delim = m[2];
+                    string type;
+                    if (delim[0] != 'f') {
+                        for (int i = 0; delim[i] != ':'; i++) {
+                            type += delim[i];
+                        }
+                    } else {
+                        type = delim[0];
+                    }
+                    findQuestionType(type, points, delim);
+                    questionText.replace(m.position(), m.length(), inputText);
+                }
+                html << questionText << "</pre>" << "</div>\n";
                 questionNum++;
             } else {
-                findQuestionType(qType, questionText, points);
+                string defs = question.at("values");
+                string name = question.at("name");
+                definitions[name] = defs;
+                answers << "defs" << "\t" << name << "\t" << defs << '\n';
             }
         }
 
@@ -615,10 +421,9 @@ class LiQuizCompiler {
                     istringstream s(line);
                     nlohmann::json question;
                     s >> question;
-                    string questionType = question.at("qt");
                     getline(liquizFile, line);
                     questionText = line + '\n';
-                    while (getline(liquizFile, line), !liquizFile.eof() && line != QuestionType::DELIM) {
+                    while (getline(liquizFile, line), !liquizFile.eof() && line != DELIM) {
                         questionText += line;
                         questionText += '\n';
                     }
@@ -664,15 +469,53 @@ class LiQuizCompiler {
 
 const regex LiQuizCompiler::def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}");
 const regex LiQuizCompiler::questionStart("^\\{");
+const regex LiQuizCompiler::specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
+
+unordered_map<string, string> LiQuizCompiler::definitions {};
+
+class Definition : public QuestionType {
+    private:
+        string defs, answer, name, option;
+        string typeID = "q";
+        int count = 0;
+    public:
+        void getOptions() {
+            buildString(replace, "<select class='' name='", qID, "'>");
+            for (int i = 0; i <= defs.length(); i++) {
+                if (defs[i] == ',' || i == defs.length()) {
+                    replace += "<option value='" + option + "'>" + option + "</option>\n";
+                    option = "";
+                } else {
+                    option += defs[i];
+                }
+            }
+            replace += "</select>";
+        }
+
+        string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            answer = text.erase(0,4);
+
+            for (int i = 0; answer[i] != ':'; i++) {
+                name += answer[i];
+                count++;
+            }
+
+            LiQuizCompiler::findDefinitions(name, defs);
+            answer = answer.erase(0, count+1);
+            addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
+            getOptions();
+            return replace;
+        }
+};
 
 unordered_map<string, QuestionType*> LiQuizCompiler::questionTypes {
-    {"pcode", new PCodeQuestion()},
-    {"code", new CodeQuestion()},
     {"mch", new MultipleChoiceHorizontal()},
     {"mcv", new MultipleChoiceVertical()},
     {"mah", new MultipleAnswerHorizontal()},
     {"mav", new MultipleAnswerVertical()},
-    {"def", new Definitions()}
+    {"f", new FillIn()},
+    {"tar", new TextQuestion()},
+    {"def", new Definition()},
 };
 
 

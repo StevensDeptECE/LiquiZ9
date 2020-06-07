@@ -1,1 +1,20 @@
-def			O(n),O(n^2),O(n^3),O(n^4),O(log2(n)),O(log3(n),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log2(n),O(n*√n)
+defs	comp	O(n),O(n^2),O(n^3),O(n^4),O(log2(n)),O(log3(n),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log2(n),O(n*√n)
+q_q1_1	40	4
+m_q2_2	45	1,2,3
+m_q3_3	50	1,2,3
+q_q4_4	0.833333	16
+Q_q4_5	0.833333	pc
+q_q4_6	0.833333	sp
+q_q4_7	0.833333	lr
+q_q4_8	0.833333	r11
+s_q4_9	0.833333	16
+q_q4_10	0.833333	d0
+q_q4_11	0.833333	d15
+q_q4_12	0.833333	32
+q_q4_13	0.833333	s0
+q_q4_14	0.833333	s31
+q_q4_15	0.833333	can be used independently,cannot be used at the same time,should never be used because they are reserved,are not valid in the arm architecture
+T_q5_16	10	-
+q_q6_17	3.33333	O(n^3)
+q_q6_18	3.33333	b
+q_q6_19	3.33333	gcd
