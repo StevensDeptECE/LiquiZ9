@@ -305,6 +305,26 @@ class DropDown : public QuestionType {
         }
 };
 
+class Image : public QuestionType {
+    public:
+        string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            text.erase(0,4);
+            string temp = "media/" + text;
+            buildString(replace, "<img src='", temp, "'></img>");
+            return replace;
+        }
+};
+
+class Video : public QuestionType {
+    public:
+        string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            text.erase(0,4);
+            string temp = "media/" + text;
+            buildString(replace, "<video controls width='320' height='240'><source src='", temp, "' type='video/mp4'></video>");
+            return replace;
+        }
+};
+
 class LiQuizCompiler {
     private:
         const static regex def;
@@ -581,7 +601,9 @@ unordered_map<string, QuestionType*> LiQuizCompiler::questionTypes {
     {"f", new FillIn()},
     {"tar", new TextQuestion()},
     {"def", new Definition()},
-    {"dro", new DropDown()}
+    {"dro", new DropDown()},
+    {"img", new Image()},
+    {"vid", new Video()}
 };
 
 

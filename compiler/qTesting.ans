@@ -1,4 +1,6 @@
 defs	comp	O(n),O(n^2),O(n^3),O(n^4),O(log2(n)),O(log3(n),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log2(n),O(n*√n)
+defs	ooterm	parent,child,object,class,message,method,encapsulation,instantiate,instantiation,abstract,interface,concrete,generic
+defs	cppterm	base,derived,public,private,protected,virtual,pure virtual,function,pointer,const,template,variadic,static
 q_q1_1	17.5	4
 q_q1_2	17.5	4
 q_q2_3	40	4
@@ -37,3 +39,9 @@ q_q9_35	1.25	ffffffff
 q_q9_36	1.25	1
 q_q9_37	1.25	0
 q_q9_38	1.25	1
+T_q11_39	10	N/A
+q_q12_40	10	kind of
+q_q12_41	10	instance of
+q_q12_42	10	instantiate
+q_q12_43	10	instantiation
+q_q12_44	10	encapsulation

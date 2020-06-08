@@ -1,6 +1,10 @@
 {"quizspec":"dkruger.qspec", "name":"Number Theoretic"}
 {"style":"def", "name":"comp", "values":"O(n),O(n^2),O(n^3),O(n^4),O(log2(n)),O(log3(n),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log2(n),O(n*√n)"}
 ---
+{"style":"def", "name":"ooterm", "values":"parent,child,object,class,message,method,encapsulation,instantiate,instantiation,abstract,interface,concrete,generic"}
+---
+{"style":"def", "name":"cppterm", "values":"base,derived,public,private,protected,virtual,pure virtual,function,pointer,const,template,variadic,static"}
+---
 {"style":"text", "name":"Multiple Choice Horizontal", "points":"35"}
 What's 2+2?
 $mch:1,2,3,*4$
@@ -60,4 +64,22 @@ After each of the following assembler instruction show the values in the registe
 000102bc: adds r0, #1    @r0=$f{8}:00000000$   V=$f{1}:1$ Z=$f{1}:1$ N=$f{1}:0$
 000102bc: adds r0, #1    @r0=$f{8}:00000000$   V=$f{1}:0$ Z=$f{1}:0$ N=$f{1}:0$
 000102bc: subs r0, #1    @r0=$f{8}:ffffffff$   V=$f{1}:1$ Z=$f{1}:0$ N=$f{1}:1$
+---
+{"style":"pcode", "name":"Where do computers come from?", "points":"10"}
+$img:Iceland.jpg$
+Click on the glacier in Iceland where computers are born.
+---
+{"style":"pcode", "name":"Watch and React", "points":"20"}
+Watch the movie on the Tacoma Narrows Bridge.
+Should engineers have known the bridge would collapse?
+What caused the collapse?
+$vid:TacomaNarrowsBridge.mp4$
+$tar:Type your essay here$
+---
+{"style":"text", "name":"Object Oriented Terminology", "points":"50"}
+A class is a $def:ooterm:kind of$ object. TODO: select options never made
+An object is a $def:ooterm:instance of$ a class. TODO: select options never made
+To create an object we $def:ooterm:instantiate$ a class.
+An object is an $def:ooterm:instantiation$ of a class.
+To hide the details of an object is called $def:ooterm:encapsulation$.
 ---
