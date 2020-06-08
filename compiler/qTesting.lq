@@ -1,5 +1,6 @@
 {"quizspec":"dkruger.qspec", "name":"Number Theoretic"}
 {"style":"def", "name":"comp", "values":"O(n),O(n^2),O(n^3),O(n^4),O(log2(n)),O(log3(n),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log2(n),O(n*√n)"}
+---
 {"style":"text", "name":"Multiple Choice Horizontal", "points":"35"}
 What's 2+2?
 $mch:1,2,3,*4$
@@ -21,25 +22,28 @@ $mav:*1,*2,*3,4$
 ---
 {"style":"text", "name":"Basic Knowledge", "points":"10"}
 Please enter all answers in lowercase until we add the case insensitive question.
-
 How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? $f:16$.
-
 Some of the registers are special and cannot be used as general registers.
-
 For example register r15 is the $fQ:pc$, r14 is the $f:sp$, and r13 is $f:lr$.
-
 The range of registers available for use is generally considered to be r0 to $f:r11$.
-
 There are $fs:16$ double precision registers starting from $f:d0$ to $f:d15$.
-
 There are $f:32$ single precision registers starting from $f:s0$ to $f:s31$.
-
-We can say that register d1 and s2 $f:can be used independently,cannot be used at the same time,should never be used because they are reserved,are not valid in the arm architecture$.
+We can say that register d1 and s2 $dro:can be used independently,cannot be used at the same time,*should never be used because they are reserved,are not valid in the arm architecture$.
+---
+{"style":"text", "name":"Write a Function", "points":"10"}
+author: Andrew Desanti
+In C++, write the function:
+bool isLeap(int year);
+that returns true if the year is a leap year and false if it is not.
+A year is a leap year if it is divisible by 4 but not divisible by 100, OR
+if it is divisible by 400. Recall that && is logical AND and || is logical OR.
+Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)
+$tar:$
 ---
 {"style":"text", "name":"Write a Function", "points":"10"}
 author: Andrew Desanti
 Using the above isLeap function, write the following function that counts how many leap years between 2020 and the year:
-$tar:$
+$tar:int countLeap(int year)$
 ---
 {"style":"pcode", "name":"gcd", "points":"10"}
 gcd(a,b)       // Complexity: $def:comp:O(n^3)$
@@ -48,4 +52,12 @@ gcd(a,b)       // Complexity: $def:comp:O(n^3)$
   end
   return $f:gcd$(b, a mod b)
 end
+---
+{"style":"code", "name":"Basic Instructions", "points":"20"}
+After each of the following assembler instruction show the values in the registers
+000102b4: mov  r0, #4    @r0=$f{8}:00000000$   pc=$f{8}:000102b8$
+000102b8: sub  r0, #5    @r0=$f{8}:ffffffff$   pc=$f{8}:000102bc$
+000102bc: adds r0, #1    @r0=$f{8}:00000000$   V=$f{1}:1$ Z=$f{1}:1$ N=$f{1}:0$
+000102bc: adds r0, #1    @r0=$f{8}:00000000$   V=$f{1}:0$ Z=$f{1}:0$ N=$f{1}:0$
+000102bc: subs r0, #1    @r0=$f{8}:ffffffff$   V=$f{1}:1$ Z=$f{1}:0$ N=$f{1}:1$
 ---

@@ -28,6 +28,7 @@ class QuestionType {
             partNum++;
             buildString(qID, typeID, "_", "q", questionNum, "_", partNum);
             answersFile << qID << "\t" << points << "\t" << ans << '\n';
+
         }
 
         template<typename... Args>
@@ -57,7 +58,7 @@ class MultipleChoiceHorizontal : public QuestionType {
 
         void getOptions() {
             replace = "";
-            buildString(temp, "<input class='mc' name='", qID, "'type='radio' value='");
+            buildString(temp, "<input class='mc' name='", qID, "' type='radio' value='");
             for (int i = 0; i <= answer.length(); i++) {
                 if (answer[i] == ',' || i == answer.length()) {
                     replace += temp + option + "'>" + option + "\t";
@@ -69,6 +70,7 @@ class MultipleChoiceHorizontal : public QuestionType {
         }
 
         string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            input = "";
             answer = text.erase(0,4);
             getAnswer();
             addAnswer(typeID, qID, input, points, answersFile, partNum, questionNum);
@@ -96,7 +98,7 @@ class MultipleChoiceVertical : public QuestionType {
 
         void getOptions() {
             replace = "";
-            buildString(temp, "<input class='mc' name='", qID, "'type='radio' value='");
+            buildString(temp, "<input class='mc' name='", qID, "' type='radio' value='");
             for (int i = 0; i <= answer.length(); i++) {
                 if (answer[i] == ',' || i == answer.length()) {
                     replace += temp + option + "'>" + option + "\n\n";
@@ -110,6 +112,7 @@ class MultipleChoiceVertical : public QuestionType {
         }
 
         string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            input = "";
             answer = text.erase(0,4);
             getAnswer();
             addAnswer(typeID, qID, input, points, answersFile, partNum, questionNum);
@@ -139,7 +142,7 @@ class MultipleAnswerHorizontal : public QuestionType {
 
         void getOptions() {
             replace = "";
-            buildString(temp, "<input class='ma' name='", qID, "'type='checkbox' value='");
+            buildString(temp, "<input class='ma' name='", qID, "' type='checkbox' value='");
             for (int i = 0; i <= answer.length(); i++) {
                 if (answer[i] == ',' || i == answer.length()) {
                     replace += temp + option + "'>" + option + "\t";
@@ -151,6 +154,7 @@ class MultipleAnswerHorizontal : public QuestionType {
         }
 
         string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            input = "";
             answer = text.erase(0,4);
             getAnswer();
             addAnswer(typeID, qID, input, points, answersFile, partNum, questionNum);
@@ -179,7 +183,7 @@ class MultipleAnswerVertical : public QuestionType {
 
         void getOptions() {
             replace = "";
-            buildString(temp, "<input class='ma' name='", qID, "'type='checkbox' value='");
+            buildString(temp, "<input class='ma' name='", qID, "' type='checkbox' value='");
             for (int i = 0; i <= answer.length(); i++) {
                 if (answer[i] == ',' || i == answer.length()) {
                     replace += temp + option + "'>" + option + "\n\n";
@@ -193,6 +197,7 @@ class MultipleAnswerVertical : public QuestionType {
         }
 
         string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            input = "";
             answer = text.erase(0,4);
             getAnswer();
             addAnswer(typeID, qID, input, points, answersFile, partNum, questionNum);
@@ -205,8 +210,9 @@ class FillIn : public QuestionType {
     private:
         static unordered_map<char, string> fillTypes;
 
-        string answer;
-        string typeID;
+        string answer, typeID, size, orig;
+
+        int len = 6;
 
     public:
         void getFillInType(const char& type) {
@@ -218,12 +224,21 @@ class FillIn : public QuestionType {
 
             if (typeID != "q") {
                 answer = text.erase(0,3);
+            } else if (text[1] == '{') {
+                for (int i = 2; text[i] != '}'; i++) {
+                    size += text[i];
+                }
+
+                len = stoi(size);
+                answer = text.erase(0, size.length()+4);
             } else {
                 answer = text.erase(0,2);
             }
 
             addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
-            buildString(replace, "<input class='' name='", qID, "'type='text' id='", qID, "' size='6'/>");
+            buildString(replace, "<input class='' name='", qID, "' type='text' id='", qID, "' size='", len, "'/>");
+            size = "";
+            answer = "";
             return replace;
         }
 };
@@ -232,18 +247,61 @@ unordered_map<char, string> FillIn::fillTypes {
     {'Q', "case insensitive"},
     {'s', "space insensitive"},
     {'n', "numeric"},
-    {'S', "space and case insensitive"},
-    {'L', "definition lookup"}
+    {'S', "space and case insensitive"}
 };
 
 class TextQuestion : public QuestionType {
     private:
+        string answer = "N/A";
         string typeID = "T";
     public:
         string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
-                addAnswer(typeID, qID, "-", points, answersFile, partNum, questionNum);
-                buildString(replace, "<textarea rows='20' cols='80' id='", qID, "'>", "</textarea>");
-                return replace;
+            addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
+            text.erase(0,4);
+            buildString(replace, "<textarea rows='20' cols='80' id='", qID, "' name='", qID, "'>", text, "</textarea>");
+            return replace;
+        }
+};
+
+class DropDown : public QuestionType {
+    private:
+        string answer, option, input;
+        string typeID = "q";
+        int count = 0;
+    public:
+        void getAnswer() {
+            input = "";
+            for (int i = 0; i < answer.length(); i++) {
+                    if (answer[i] == '*') {
+                        for (int j = i+1; answer[j] != ',' && j < answer.length(); j++) {
+                            input += answer[j];
+                        }
+                        answer.erase(i, 1);
+                    }
+                }
+        }
+
+        void getOptions() {
+            buildString(replace, "<select class='' name='", qID, "'>");
+            for (int i = 0; i <= answer.length(); i++) {
+                if (answer[i] == ',' || i == answer.length()) {
+                    replace += "<option value='" + option + "'>" + option + "</option>\n";
+                    option = "";
+                } else {
+                    option += answer[i];
+                }
+            }
+            replace += "</select>";
+        }
+
+        string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
+            input = "";
+            answer = text.erase(0,4);
+            getAnswer();
+            addAnswer(typeID, qID, input, points, answersFile, partNum, questionNum);
+            getOptions();
+            answer = "";
+            return replace;
         }
 };
 
@@ -373,12 +431,14 @@ class LiQuizCompiler {
 
         void makeQuestion(nlohmann::json& question) {
             string style = question.at("style");
-            string preStart;
+            string preStart, preEnd;
 
             if (style == "pcode" || style == "code") {
                 preStart = "<pre class='pcode'>\n";
+                preEnd = "</pre>";
             } else {
-                preStart = "<pre>";
+                preStart = "<pre class='text'>";
+                preEnd = "<pre>";
             }
 
             if (style != "def") {
@@ -403,7 +463,7 @@ class LiQuizCompiler {
                     findQuestionType(type, points, delim);
                     questionText.replace(m.position(), m.length(), inputText);
                 }
-                html << questionText << "</pre>" << "</div>\n";
+                html << questionText << preEnd << "</div>\n";
                 questionNum++;
             } else {
                 string defs = question.at("values");
@@ -423,16 +483,18 @@ class LiQuizCompiler {
                     s >> question;
                     getline(liquizFile, line);
                     questionText = line + '\n';
-                    while (getline(liquizFile, line), !liquizFile.eof() && line != DELIM) {
-                        questionText += line;
-                        questionText += '\n';
-                    }
-                    for (int i = 0; i < questionText.length(); i++) {
-                        if (questionText[i] == '$') {
-                            questionCount++;
+                    if (line != DELIM) {
+                        while (getline(liquizFile, line), !liquizFile.eof() && line != DELIM) {
+                            questionText += line;
+                            questionText += '\n';
                         }
+                        for (int i = 0; i < questionText.length(); i++) {
+                            if (questionText[i] == '$') {
+                                questionCount++;
+                            }
+                        }
+                        questionCount /= 2;
                     }
-                    questionCount /= 2;
                     makeQuestion(question);
                     questionCount = 0;
                 }
@@ -502,8 +564,11 @@ class Definition : public QuestionType {
 
             LiQuizCompiler::findDefinitions(name, defs);
             answer = answer.erase(0, count+1);
+
             addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
             getOptions();
+            answer, name = "";
+            count = 0;
             return replace;
         }
 };
@@ -516,6 +581,7 @@ unordered_map<string, QuestionType*> LiQuizCompiler::questionTypes {
     {"f", new FillIn()},
     {"tar", new TextQuestion()},
     {"def", new Definition()},
+    {"dro", new DropDown()}
 };
 
 

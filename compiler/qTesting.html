@@ -39,62 +39,83 @@
                 </div>
                 </div>
 
-                <div class='q' id='q1'>1. Multiple Choice Vertical<span class='pts'> (40 points)</span></p>
-<pre>
+                <div class='q' id='q1'>1. Multiple Choice Horizontal<span class='pts'> (35 points)</span></p>
+<pre class='text'>
 What's 2+2?
-<input class='mc' name='q_q1_1'type='radio' value='1'>1
+<input class='mc' name='q_q1_1' type='radio' value='1'>1	<input class='mc' name='q_q1_1' type='radio' value='2'>2	<input class='mc' name='q_q1_1' type='radio' value='3'>3	<input class='mc' name='q_q1_1' type='radio' value='4'>4	
 
-<input class='mc' name='q_q1_1'type='radio' value='2'>2
+Answer again I guess
+<input class='mc' name='q_q1_2' type='radio' value='1'>1
 
-<input class='mc' name='q_q1_1'type='radio' value='3'>3
+<input class='mc' name='q_q1_2' type='radio' value='2'>2
 
-<input class='mc' name='q_q1_1'type='radio' value='4'>4
-</pre></div>
-<div class='q' id='q2'>2. Multiple Answer Horizontal<span class='pts'> (45 points)</span></p>
-<pre>
+<input class='mc' name='q_q1_2' type='radio' value='3'>3
+
+<input class='mc' name='q_q1_2' type='radio' value='4'>4
+<pre></div>
+<div class='q' id='q2'>2. Multiple Choice Vertical<span class='pts'> (40 points)</span></p>
+<pre class='text'>
+What's 2+2?
+<input class='mc' name='q_q2_3' type='radio' value='1'>1
+
+<input class='mc' name='q_q2_3' type='radio' value='2'>2
+
+<input class='mc' name='q_q2_3' type='radio' value='3'>3
+
+<input class='mc' name='q_q2_3' type='radio' value='4'>4
+<pre></div>
+<div class='q' id='q3'>3. Multiple Answer Horizontal<span class='pts'> (45 points)</span></p>
+<pre class='text'>
 What's NOT 2+2?
-<input class='ma' name='m_q2_2'type='checkbox' value='1'>1	<input class='ma' name='m_q2_2'type='checkbox' value='2'>2	<input class='ma' name='m_q2_2'type='checkbox' value='3'>3	<input class='ma' name='m_q2_2'type='checkbox' value='4'>4	
-</pre></div>
-<div class='q' id='q3'>3. Multiple Answer Vertical<span class='pts'> (50 points)</span></p>
-<pre>
+<input class='ma' name='m_q3_4' type='checkbox' value='1'>1	<input class='ma' name='m_q3_4' type='checkbox' value='2'>2	<input class='ma' name='m_q3_4' type='checkbox' value='3'>3	<input class='ma' name='m_q3_4' type='checkbox' value='4'>4	
+<pre></div>
+<div class='q' id='q4'>4. Multiple Answer Vertical<span class='pts'> (50 points)</span></p>
+<pre class='text'>
 What's NOT 2+2?
-<input class='ma' name='m_q3_3'type='checkbox' value='1'>1
+<input class='ma' name='m_q4_5' type='checkbox' value='1'>1
 
-<input class='ma' name='m_q3_3'type='checkbox' value='2'>2
+<input class='ma' name='m_q4_5' type='checkbox' value='2'>2
 
-<input class='ma' name='m_q3_3'type='checkbox' value='3'>3
+<input class='ma' name='m_q4_5' type='checkbox' value='3'>3
 
-<input class='ma' name='m_q3_3'type='checkbox' value='4'>4
-</pre></div>
-<div class='q' id='q4'>4. Basic Knowledge<span class='pts'> (10 points)</span></p>
-<pre>
+<input class='ma' name='m_q4_5' type='checkbox' value='4'>4
+<pre></div>
+<div class='q' id='q5'>5. Basic Knowledge<span class='pts'> (10 points)</span></p>
+<pre class='text'>
 Please enter all answers in lowercase until we add the case insensitive question.
-
-How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? <input class='' name='q_q4_4'type='text' id='q_q4_4' size='6'/>.
-
+How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? <input class='' name='q_q5_6' type='text' id='q_q5_6' size='6'/>.
 Some of the registers are special and cannot be used as general registers.
-
-For example register r15 is the <input class='' name='Q_q4_5'type='text' id='Q_q4_5' size='6'/>, r14 is the <input class='' name='q_q4_6'type='text' id='q_q4_6' size='6'/>, and r13 is <input class='' name='q_q4_7'type='text' id='q_q4_7' size='6'/>.
-
-The range of registers available for use is generally considered to be r0 to <input class='' name='q_q4_8'type='text' id='q_q4_8' size='6'/>.
-
-There are <input class='' name='s_q4_9'type='text' id='s_q4_9' size='6'/> double precision registers starting from <input class='' name='q_q4_10'type='text' id='q_q4_10' size='6'/> to <input class='' name='q_q4_11'type='text' id='q_q4_11' size='6'/>.
-
-There are <input class='' name='q_q4_12'type='text' id='q_q4_12' size='6'/> single precision registers starting from <input class='' name='q_q4_13'type='text' id='q_q4_13' size='6'/> to <input class='' name='q_q4_14'type='text' id='q_q4_14' size='6'/>.
-
-We can say that register d1 and s2 <input class='' name='q_q4_15'type='text' id='q_q4_15' size='6'/>.
-</pre></div>
-<div class='q' id='q5'>5. Write a Function<span class='pts'> (10 points)</span></p>
-<pre class='pcode'>
-
+For example register r15 is the <input class='' name='Q_q5_7' type='text' id='Q_q5_7' size='6'/>, r14 is the <input class='' name='q_q5_8' type='text' id='q_q5_8' size='6'/>, and r13 is <input class='' name='q_q5_9' type='text' id='q_q5_9' size='6'/>.
+The range of registers available for use is generally considered to be r0 to <input class='' name='q_q5_10' type='text' id='q_q5_10' size='6'/>.
+There are <input class='' name='s_q5_11' type='text' id='s_q5_11' size='6'/> double precision registers starting from <input class='' name='q_q5_12' type='text' id='q_q5_12' size='6'/> to <input class='' name='q_q5_13' type='text' id='q_q5_13' size='6'/>.
+There are <input class='' name='q_q5_14' type='text' id='q_q5_14' size='6'/> single precision registers starting from <input class='' name='q_q5_15' type='text' id='q_q5_15' size='6'/> to <input class='' name='q_q5_16' type='text' id='q_q5_16' size='6'/>.
+We can say that register d1 and s2 <select class='' name='q_q5_17'><option value='can be used independently'>can be used independently</option>
+<option value='cannot be used at the same time'>cannot be used at the same time</option>
+<option value='should never be used because they are reserved'>should never be used because they are reserved</option>
+<option value='are not valid in the arm architecture'>are not valid in the arm architecture</option>
+</select>.
+<pre></div>
+<div class='q' id='q6'>6. Write a Function<span class='pts'> (10 points)</span></p>
+<pre class='text'>
+author: Andrew Desanti
+In C++, write the function:
+bool isLeap(int year);
+that returns true if the year is a leap year and false if it is not.
+A year is a leap year if it is divisible by 4 but not divisible by 100, OR
+if it is divisible by 400. Recall that && is logical AND and || is logical OR.
+Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)
+<textarea rows='20' cols='80' id='T_q6_18' name='T_q6_18'></textarea>
+<pre></div>
+<div class='q' id='q7'>7. Write a Function<span class='pts'> (10 points)</span></p>
+<pre class='text'>
 author: Andrew Desanti
 Using the above isLeap function, write the following function that counts how many leap years between 2020 and the year:
-<textarea rows='20' cols='80' id='T_q5_16'></textarea>
-</pre></div>
-<div class='q' id='q6'>6. gcd<span class='pts'> (10 points)</span></p>
+<textarea rows='20' cols='80' id='T_q7_19' name='T_q7_19'>int countLeap(int year)</textarea>
+<pre></div>
+<div class='q' id='q8'>8. gcd<span class='pts'> (10 points)</span></p>
 <pre class='pcode'>
 
-gcd(a,b)       // Complexity: <select class='' name='q_q6_17'><option value='O(n)'>O(n)</option>
+gcd(a,b)       // Complexity: <select class='' name='q_q8_20'><option value='O(n)'>O(n)</option>
 <option value='O(n^2)'>O(n^2)</option>
 <option value='O(n^3)'>O(n^3)</option>
 <option value='O(n^4)'>O(n^4)</option>
@@ -110,11 +131,21 @@ gcd(a,b)       // Complexity: <select class='' name='q_q6_17'><option value='O(n
 <option value='O(n*log2(n)'>O(n*log2(n)</option>
 <option value='O(n*√n)'>O(n*√n)</option>
 </select>
-  if <input class='' name='q_q6_18'type='text' id='q_q6_18' size='6'/> = 0
+  if <input class='' name='q_q8_21' type='text' id='q_q8_21' size='6'/> = 0
     return a
   end
-  return <input class='' name='q_q6_19'type='text' id='q_q6_19' size='6'/>(b, a mod b)
+  return <input class='' name='q_q8_22' type='text' id='q_q8_22' size='6'/>(b, a mod b)
 end
+</pre></div>
+<div class='q' id='q9'>9. Basic Instructions<span class='pts'> (20 points)</span></p>
+<pre class='pcode'>
+
+After each of the following assembler instruction show the values in the registers
+000102b4: mov  r0, #4    @r0=<input class='' name='q_q9_23' type='text' id='q_q9_23' size='8'/>   pc=<input class='' name='q_q9_24' type='text' id='q_q9_24' size='8'/>
+000102b8: sub  r0, #5    @r0=<input class='' name='q_q9_25' type='text' id='q_q9_25' size='8'/>   pc=<input class='' name='q_q9_26' type='text' id='q_q9_26' size='8'/>
+000102bc: adds r0, #1    @r0=<input class='' name='q_q9_27' type='text' id='q_q9_27' size='8'/>   V=<input class='' name='q_q9_28' type='text' id='q_q9_28' size='1'/> Z=<input class='' name='q_q9_29' type='text' id='q_q9_29' size='1'/> N=<input class='' name='q_q9_30' type='text' id='q_q9_30' size='1'/>
+000102bc: adds r0, #1    @r0=<input class='' name='q_q9_31' type='text' id='q_q9_31' size='8'/>   V=<input class='' name='q_q9_32' type='text' id='q_q9_32' size='1'/> Z=<input class='' name='q_q9_33' type='text' id='q_q9_33' size='1'/> N=<input class='' name='q_q9_34' type='text' id='q_q9_34' size='1'/>
+000102bc: subs r0, #1    @r0=<input class='' name='q_q9_35' type='text' id='q_q9_35' size='8'/>   V=<input class='' name='q_q9_36' type='text' id='q_q9_36' size='1'/> Z=<input class='' name='q_q9_37' type='text' id='q_q9_37' size='1'/> N=<input class='' name='q_q9_38' type='text' id='q_q9_38' size='1'/>
 </pre></div>
 
                     <div class='controls'>
