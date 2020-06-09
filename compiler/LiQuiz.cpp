@@ -223,22 +223,28 @@ class FillIn : public QuestionType {
             getFillInType(text[1]);
 
             if (typeID != "q") {
-                answer = text.erase(0,3);
-            } else if (text[1] == '{') {
-                for (int i = 2; text[i] != '}'; i++) {
-                    size += text[i];
+                answer = text.erase(0,2);
+            } else {
+                answer = text.erase(0,1);
+            }
+
+            if (answer[0] == '{') {
+                for (int i = 1; answer[i] != '}'; i++) {
+                    size += answer[i];
                 }
 
                 len = stoi(size);
-                answer = text.erase(0, size.length()+4);
+                answer.erase(0, size.length()+3);
             } else {
-                answer = text.erase(0,2);
+                answer.erase(0, 1);
             }
 
             addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
             buildString(replace, "<input class='' name='", qID, "' type='text' id='", qID, "' size='", len, "'/>");
             size = "";
             answer = "";
+            len = 6;
+            typeID = "";
             return replace;
         }
 };
