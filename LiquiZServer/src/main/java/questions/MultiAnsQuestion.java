@@ -41,18 +41,19 @@ public class MultiAnsQuestion extends Question {
   public double checkAnswer(String studentAns[]) {
     double finishedGradeVal = 0.0;
     final double pointsPerAnswer = gradeVal/answers.length;
-    for(String a : studentAns){
+    for(String answer : answers){
       int index = 0;
-      for(String answer : answers) {
+      for(String a : studentAns) {
         index++;
         if(answer.equals(a)){
           finishedGradeVal += pointsPerAnswer;
           break;
         }
-        else if(index == answers.length && subWrongAns)
+        else if(index == studentAns.length && subWrongAns)
           finishedGradeVal -= pointsPerAnswer;
       }
     }
-    return Math.round(finishedGradeVal*1000)/1000;
+    finishedGradeVal = Math.round(finishedGradeVal*1000)/1000;
+    return (finishedGradeVal > 0.0) ? finishedGradeVal : 0.0;
   }
 }

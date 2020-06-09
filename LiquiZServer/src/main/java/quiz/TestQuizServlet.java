@@ -47,11 +47,11 @@ public class TestQuizServlet extends HttpServlet {
           inputsMap.putAll(paramsMap);
           
           //TODO: recieve the quiz name from the previous servlet
-          String quizName = "quiz1";
-          //TODO: get userID from Auth0
-          String userID = paramsMap.get("q1_1")[0];
+          HttpSession session=request.getSession(false);  
+          String quizName=(String)session.getAttribute("quizName");  
+          //TODO: get userID from lti session
 
-          QuizToGrade quiz = new QuizToGrade("../../../LiquiZServer/data/answerFiles/cpe390_intro.ans", inputsMap);
+          QuizToGrade quiz = new QuizToGrade("../webapps/LiquiZServer-1.0-SNAPSHOT/answerFiles/cpe390-armasm.ans", inputsMap);//"../../../LiquiZ9/LiquiZServer/data/answerFiles/cpe390-armasm.ans", inputsMap);
           double grade = quiz.getGrade();
           boolean graded = quiz.isGraded();
           
@@ -59,11 +59,12 @@ public class TestQuizServlet extends HttpServlet {
               out.println("<h2>Your grade is " + grade + "</h2>");
           try{
               //TODO: think about directory structure
-              File quizFolder = new File("../../../LiquiZServer/data/studentAnswers/" + quizName);
+              File quizFolder = new File("../webapps/LiquiZServer-1.0-SNAPSHOT/studentAnswers/" + quizName);//"../../../LiquiZ9/LiquiZServer/data/studentAnswers/" + quizName);
               if(!quizFolder.exists()){
                   quizFolder.mkdir();
               }
-              try (FileWriter myWriter = new FileWriter("../../../LiquiZServer/data/studentAnswers/" + quizName + "/" + userID + ".txt")) {
+              //TODO: setup to use students username
+              try (FileWriter myWriter = new FileWriter("../webapps/LiquiZServer-1.0-SNAPSHOT/studentAnswers/" + quizName + "/" + "ejones" + ".txt")) { //"../../../LiquiZServer/data/studentAnswers/"
                 while(forms.hasMoreElements()){
                     //creates an object from the element in forms and sets it to a string obj
                     Object objOri = forms.nextElement();

@@ -8,6 +8,7 @@ package quiz;
  *
  * @author ejone
  */
+import java.util.InputMismatchException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -46,17 +47,20 @@ public class QuizToGrade{
   private void updateAnswers(String filename){
     try {
       File myObj = new File(filename);
-      Scanner myReader = new Scanner(myObj);
-      while (myReader.hasNextLine()) {
-        String qType = myReader.next();
-        double gVal = myReader.nextDouble();
-        String qAnsLine = myReader.nextLine();
-        String qAns = qAnsLine.trim();
-        System.out.println(qType + ", " + qAns);
-
-        addQuestion(qType, qAns, gVal);
-      }
-      myReader.close();
+        try (Scanner myReader = new Scanner(myObj)) {
+            while (myReader.hasNextLine()) {
+                String qType = myReader.next();
+                double gVal = myReader.nextDouble();
+                String qAnsLine = myReader.nextLine();
+                String qAns = qAnsLine.trim();
+                System.out.println(qType + ", " + qAns);
+                
+                addQuestion(qType, qAns, gVal);
+            } 
+        }  
+        catch(InputMismatchException ex){
+            System.out.println("An error occurred reading in the file.");
+        }
     }
     //TODO: respond on server side, log it, major problem
     catch (FileNotFoundException e) {

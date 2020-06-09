@@ -1,0 +1,351 @@
+
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <meta charset="UTF-8"/>
+                <title>
+                "Final Study Questions"
+                </title>
+                    <link rel="stylesheet" type="text/css" href="css/quiz.css">
+                    <script src='js/quiz.js'></script>
+                </head>
+                <body onload='startTime()'>
+                <form method="get" action="gradquiz.jsp">
+                <div id='header' class='header'>
+                <div style='background-color: #ccc;text-align: center;border-radius: 10px; width: 240px; float: left'>
+                    <img src='media/StevensLogo380x326.png' width='190' height='163'/>
+                </div>
+                <div style='margin-left: 250px'>
+                    <table>
+                    <tr><td class='headtext'>Userid</div></td><td><input class='ctrl' id='userid' type='text' name='userid'/></td><td></td></tr>
+                    <tr><td class='headtext'>Passwd</td><td><input class='ctrl' id='passwd' type='password' name='passwd'/></td></tr>
+                    <tr><td class='headtext'>Name</td><td><input class='ctrl' id='name' type='text' name='name'/></td></tr>
+                    <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledge'/></td>
+                    <td class='headtext' colspan='2'>I pledge my honor that I have abided by the Stevens Honor System</td></tr>
+                    <tr><td class='headtext'>Time Remaining</td><td id='topTime' class='time'></td><td><input id='audioControl' class='controls' type='button' value='turn audio ON' onClick='scheduleAudio()'/>
+                </td></tr>
+                    </table>
+                <audio id="alert25"><source src="media/25min.ogg" type="audio/ogg"/></audio>
+                <audio id="alert20"><source src="media/20min.ogg" type="audio/ogg"></audio>
+                <audio id="alert15"><source src="media/15min.ogg" type="audio/ogg"></audio>
+                <audio id="alert10"><source src="media/10min.ogg" type="audio/ogg"></audio>
+                <audio id="alert5"><source src="media/5min.ogg" type="audio/ogg"></audio>
+                <audio id="alertover"><source src="media/over.ogg" type="audio/ogg"></audio>
+                <audio id="classical">
+                <source src="media/JohnLewisGrant_BachPrelude_01.mp3" type="audio/mp3"/>
+                    <source src="media/JohnLewisGrant_BachPrelude_02.mp3" type="audio/mp3"/>
+                    <source src="media/JohnLewisGrant_BachPrelude_03.mp3" type="audio/mp3"/>
+                </audio>
+                </div>
+                </div>
+
+                <div class='q' id='q1'>1. Basic Knowledge<span class='pts'> (10 points)</span></p><pre class='pcode'>
+Please enter all answers in lowercase until we add the case insensitive question.
+
+How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? <input class='' name='Q_q1_1'type='text' id='Q_q1_1' size='6'/>.
+
+Some of the registers are special and cannot be used as general registers.
+
+For example register r15 is the <input class='' name='Q_q1_2'type='text' id='Q_q1_2' size='6'/>, r14 is the <input class='' name='Q_q1_3'type='text' id='Q_q1_3' size='6'/>, and r13 is <input class='' name='Q_q1_4'type='text' id='Q_q1_4' size='6'/>.
+
+The range of registers available for use is generally considered to be r0 to <input class='' name='Q_q1_5'type='text' id='Q_q1_5' size='6'/>.
+
+There are <input class='' name='Q_q1_6'type='text' id='Q_q1_6' size='6'/> double precision registers starting from <input class='' name='Q_q1_7'type='text' id='Q_q1_7' size='6'/> to <input class='' name='Q_q1_8'type='text' id='Q_q1_8' size='6'/>.
+
+There are <input class='' name='Q_q1_9'type='text' id='Q_q1_9' size='6'/> single precision registers starting from <input class='' name='Q_q1_10'type='text' id='Q_q1_10' size='6'/> to <input class='' name='Q_q1_11'type='text' id='Q_q1_11' size='6'/>.
+
+We can say that register d1 and s2 <select id='Q_q1_12'>
+<option></option><option>can be used independently</option><option>cannot be used at the same time</option><option>should never be used because they are reserved</option><option>are not valid in the arm architectur</option></select>.
+</pre>
+</div>
+<div class='q' id='q2'>2. Overflow<span class='pts'> (10 points)</span></p><pre class='pcode'>
+Given that the maximum value for a 16 bit unsigned number is 65535
+uint16_t x = 65533;
+x += 3;
+The result in x is <input class='' name='q_q2_13'type='text' id='q_q2_13' size='6'/>.
+A value is being computed:
+int seconds = age * 365 * 24 * 60 * 60;
+</pre>
+</div>
+<div class='q' id='q3'>3. Basic Instructions<span class='pts'> (10 points)</span></p><pre class='pcode'>
+After each of the following assembler instruction show the values in the registers
+000102b4: mov  r0, #4    @r0=<input class='' name='q_q3_14'type='text' id='q_q3_14' size='10'/>   pc=<input class='' name='q_q3_15'type='text' id='q_q3_15' size='10'/>
+000102b8: sub  r0, #5    @r0=<input class='' name='q_q3_16'type='text' id='q_q3_16' size='10'/>   pc=<input class='' name='q_q3_17'type='text' id='q_q3_17' size='10'/>
+000102bc: adds r0, #1    @r0=<input class='' name='q_q3_18'type='text' id='q_q3_18' size='10'/>   V=<input class='' name='q_q3_19'type='text' id='q_q3_19' size='6'/> Z=<input class='' name='q_q3_20'type='text' id='q_q3_20' size='6'/> N=<input class='' name='q_q3_21'type='text' id='q_q3_21' size='6'/>
+000102bc: adds r0, #1    @r0=<input class='' name='q_q3_22'type='text' id='q_q3_22' size='10'/>   V=<input class='' name='q_q3_23'type='text' id='q_q3_23' size='6'/> Z=<input class='' name='q_q3_24'type='text' id='q_q3_24' size='6'/> N=<input class='' name='q_q3_25'type='text' id='q_q3_25' size='6'/>
+000102bc: subs r0, #1    @r0=<input class='' name='q_q3_26'type='text' id='q_q3_26' size='10'/>   V=<input class='' name='q_q3_27'type='text' id='q_q3_27' size='6'/> Z=<input class='' name='q_q3_28'type='text' id='q_q3_28' size='6'/> N=<input class='' name='q_q3_29'type='text' id='q_q3_29' size='6'/>
+</pre>
+</div>
+<div class='q' id='q4'>4. Push and Pop<span class='pts'> (10 points)</span></p><pre class='pcode'>
+Enter all values as 8-digit hex in lower case. If there is not enough information
+to determine a digit, write a question mark (?) for that digit
+assume sp = 7fff1c10
+</pre>
+</div>
+<div class='q' id='q5'>5. Branching Instructions<span class='pts'> (10 points)</span></p><pre class='pcode'>
+000104c8: mov  r0, #0    @r0=<input class='' name='q_q5_30'type='text' id='q_q5_30' size='10'/>   pc=<input class='' name='q_q5_31'type='text' id='q_q5_31' size='10'/>
+000104cc: add  r0, #4    @r0=<input class='' name='q_q5_32'type='text' id='q_q5_32' size='10'/>   pc=<input class='' name='q_q5_33'type='text' id='q_q5_33' size='10'/>
+000104d0: subs r0, #3    @Z=<input class='' name='q_q5_34'type='text' id='q_q5_34' size='6'/> N=<input class='' name='q_q5_34'type='text' id='q_q5_34' size='6'/> pc=<input class='' name='q_q5_35'type='text' id='q_q5_35' size='10'/>
+000104d4: beq  000104e8  @pc=<input class='' name='q_q5_36'type='text' id='q_q5_36' size='10'/>
+000104d8: bgt  000104e8  @pc=<input class='' name='q_q5_37'type='text' id='q_q5_37' size='10'/>
+000104dc: bl   000104f0  @lr=<input class='' name='q_q5_38'type='text' id='q_q5_38' size='10'/>   pc=<input class='' name='q_q5_39'type='text' id='q_q5_39' size='10'/>
+000104e0: cmp  r0, #3    @Z=<input class='' name='q_q5_40'type='text' id='q_q5_40' size='6'/> N=<input class='' name='q_q5_40'type='text' id='q_q5_40' size='6'/>
+000104e4: blt  000104ec
+000104e8:
+000104ec:
+000104f0: add
+</pre>
+</div>
+<div class='q' id='q6'>6. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Samuel Ciocca
+With r0 pointing at an array of integers and r1 the value of the desired element
+return the position of the desired element in r0.
+For example, with r0 pointing to {1,2,3,5,7,9,12} and r1=7, the value returned
+should be 4 since 7 is in position 4.
+_Z15countTillNumberPii:
+        push    {<input class='' name='q_q6_41'type='text' id='q_q6_41' size='6'/>}
+        mov     r4, #0
+1:
+        ldr     r3, <input class='' name='q_q6_42'type='text' id='q_q6_42' size='6'/>
+        <input class='' name='q_q6_43'type='text' id='q_q6_43' size='6'/>   r0, #4
+        add     r4, #1
+        cmp     r3, <input class='' name='q_q6_44'type='text' id='q_q6_44' size='6'/>
+        <input class='' name='q_q6_45'type='text' id='q_q6_45' size='6'/>  1b
+        <input class='' name='q_q6_46'type='text' id='q_q6_46' size='6'/>  r0, r4, #1
+        pop     {r4}
+        bx      <input class='' name='q_q6_47'type='text' id='q_q6_47' size='6'/>
+</pre>
+</div>
+<div class='q' id='q7'>7. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Zachary Fazal
+Divide all even elements by 2
+(starting at the zeroth location, ie the first one)
+Example, given r0 pointing to {3, 4, 6, 9, 1} r1=5
+the resulting array should be {1, 4, 3, 9, 0}
+_Z8althalvePii:
+1:
+        <input class='' name='q_q7_48'type='text' id='q_q7_48' size='6'/>   r2, [r0]
+        lsr     r2, <input class='' name='q_q7_49'type='text' id='q_q7_49' size='6'/>        @divide this element by 2
+        <input class='' name='q_q7_50'type='text' id='q_q7_50' size='6'/>   r2, <input class='' name='q_q7_51'type='text' id='q_q7_51' size='6'/>      @write back into memory
+        add     r0, <input class='' name='q_q7_52'type='text' id='q_q7_52' size='6'/>        @skip two elements
+        subs    r1, <input class='' name='q_q7_53'type='text' id='q_q7_53' size='6'/>        @count down
+        <input class='' name='q_q7_54'type='text' id='q_q7_54' size='6'/>   1b              @jump back and do it all again
+        <input class='' name='q_q7_55'type='text' id='q_q7_55' size='6'/>    lr              @return to the caller
+</pre>
+</div>
+<div class='q' id='q8'>8. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Joshua Hornilla
+@r0 points to array, r1 = number of elements
+@return the sum of the array in r0
+_Z8sumArrayPii:
+        <input class='' name='q_q8_56'type='text' id='q_q8_56' size='6'/>   r3, #0          @set register to zero
+1:
+        <input class='' name='q_q8_57'type='text' id='q_q8_57' size='6'/>   r2, [r0]        @read the first element from the array
+        add     r3, <input class='' name='q_q8_58'type='text' id='q_q8_58' size='6'/>        @add to running total
+        <input class='' name='q_q8_59'type='text' id='q_q8_59' size='6'/>   r0, <input class='' name='q_q8_60'type='text' id='q_q8_60' size='6'/>        
+        <input class='' name='q_q8_61'type='text' id='q_q8_61' size='6'/>  r1, <input class='' name='q_q8_62'type='text' id='q_q8_62' size='6'/>
+        <input class='' name='q_q8_63'type='text' id='q_q8_63' size='6'/>   1b              @branch back and do it until the array is done
+        <input class='' name='q_q8_64'type='text' id='q_q8_64' size='6'/>   r0, r3
+        bx      lr
+</pre>
+</div>
+<div class='q' id='q9'>9. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Chloe Sharpe
+r0 points to an array of integers, r1 contains the length of the array
+_Z1fPii:
+1:
+        ldr     r2, <input class='' name='q_q9_65'type='text' id='q_q9_65' size='6'/>
+        add     r0, <input class='' name='q_q9_66'type='text' id='q_q9_66' size='6'/>
+        <input class='' name='q_q9_67'type='text' id='q_q9_67' size='6'/>  r1, #1
+        <input class='' name='q_q9_68'type='text' id='q_q9_68' size='6'/>   1b
+        bx      lr
+</pre>
+</div>
+<div class='q' id='q10'>10. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Dov Kruger
+Read in a string until the last character which has a value 0
+and add each letter onto a sum, then shift left by 1
+Example "ABC"  sum = 0 + 65 then shift left by 1 (130) then add 66 (196) then
+shift left by 1 (392) then add 67 (459) then shift left by 2 
+_Z1fPii:
+        mov     r3, #0
+1:
+        <input class='' name='q_q10_69'type='text' id='q_q10_69' size='6'/>  r2, [r0]
+        <input class='' name='q_q10_70'type='text' id='q_q10_70' size='6'/>   r2, #0
+        beq     2f
+        add     <input class='' name='q_q10_71'type='text' id='q_q10_71' size='6'/>, r2
+        lsl     r3, <input class='' name='q_q10_72'type='text' id='q_q10_72' size='6'/>
+        add     r0, <input class='' name='q_q10_73'type='text' id='q_q10_73' size='6'/>
+        <input class='' name='q_q10_74'type='text' id='q_q10_74' size='6'/>  r1, #1
+        <input class='' name='q_q10_75'type='text' id='q_q10_75' size='6'/>   1b
+2:
+        mov     <input class='' name='q_q10_76'type='text' id='q_q10_76' size='6'/>, r3
+        bx      lr
+</pre>
+</div>
+<div class='q' id='q11'>11. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Anisha Shin
+r0 points to an array, r1 = length of the array
+Fill in the missing assembler instructions and parameters.
+The function is supposed to read in all elements of the array, compute
+2 to the power of each element, and writ the number back.
+Example:  If the array r0 = {1,3,5},
+the function should compute 2^1, 2^3, 2^5 and upon return the array should be
+{2,8,32}.
+_Z5powerPii:
+1:
+        <input class='' name='q_q11_77'type='text' id='q_q11_77' size='6'/>  r2, [r0]
+        mov    r3, <input class='' name='q_q11_78'type='text' id='q_q11_78' size='6'/>
+        <input class='' name='q_q11_79'type='text' id='q_q11_79' size='6'/>  r3, <input class='' name='q_q11_80'type='text' id='q_q11_80' size='6'/>
+        str    <input class='' name='q_q11_81'type='text' id='q_q11_81' size='6'/>,[r0]
+        add    r0,  <input class='' name='q_q11_82'type='text' id='q_q11_82' size='6'/>
+        subs   <input class='' name='q_q11_83'type='text' id='q_q11_83' size='6'/>, #1
+        <input class='' name='q_q11_84'type='text' id='q_q11_84' size='6'/>  1b
+        <input class='' name='q_q11_85'type='text' id='q_q11_85' size='6'/>   lr
+</pre>
+</div>
+<div class='q' id='q12'>12. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Andrew Desanti and Dov Kruger
+given r0 = a number, return true (1) if the number is a multiple of 4
+and false (0) if the number is NOT a multiple of 4
+_Z7isMult4i:
+        ands     r0, <input class='' name='q_q12_86'type='text' id='q_q12_86' size='6'/>        @test only last two bits
+        <input class='' name='q_q12_87'type='text' id='q_q12_87' size='6'/>  r0, #0          @if it's not zero, put a zero in r0
+        <input class='' name='q_q12_88'type='text' id='q_q12_88' size='6'/>  r0, #1          @if it is zero, put a 1 in r0
+        bx       lr
+</pre>
+</div>
+<div class='q' id='q13'>13. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Tyler Wright and Andrew Desanti
+Complete this function where r0 points to an array and r1 is the length
+Return the sum of all elements that are multiples of 4.
+_Z13summultiples4:
+        mov     r3, #0
+1:
+        <input class='' name='q_q13_89'type='text' id='q_q13_89' size='6'/>   r2, [r0]
+        tst     r2, <input class='' name='q_q13_90'type='text' id='q_q13_90' size='6'/>        @check whether multiple of 4
+        <input class='' name='q_q13_91'type='text' id='q_q13_91' size='6'/> r3, r2          @sum if exact multiple
+        add     r0, <input class='' name='q_q13_92'type='text' id='q_q13_92' size='6'/>        @advance to next element
+        <input class='' name='q_q13_93'type='text' id='q_q13_93' size='6'/>  r1, <input class='' name='q_q13_94'type='text' id='q_q13_94' size='6'/>        @count down
+        <input class='' name='q_q13_95'type='text' id='q_q13_95' size='6'/>   1b              @branch back until we process the whole array
+        mov     <input class='' name='q_q13_96'type='text' id='q_q13_96' size='6'/>, r3        @mov the answer into the desired register
+        <input class='' name='q_q13_97'type='text' id='q_q13_97' size='6'/>    lr              @return
+</pre>
+</div>
+<div class='q' id='q14'>14. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Serafin Fernandez and Dov Kruger
+This function computes the difference between the squares of two numbers.
+It uses this formula, X^2 - Y^2 =(X-Y)*(X+Y).
+Fill in the missing assembler instructions and parameters.
+r0 = X, r1 = Y
+_Z5DifSqii:
+        <input class='' name='q_q14_98'type='text' id='q_q14_98' size='6'/>   r2, r0, <input class='' name='q_q14_99'type='text' id='q_q14_99' size='6'/>
+        sub     r3, <input class='' name='q_q14_100'type='text' id='q_q14_100' size='6'/>, r1
+        mul     <input class='' name='q_q14_101'type='text' id='q_q14_101' size='6'/>, r3, r2    @compute the answer and store in the right reg
+        <input class='' name='q_q14_102'type='text' id='q_q14_102' size='6'/>    lr              @return
+</pre>
+</div>
+<div class='q' id='q15'>15. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Serafin Fernandez and Dov Kruger
+Given r0=x and r1=y, two numbers compute (x+y)^3 * (x-y)^3
+Fill in the missing assembler instructions and parameters, all in lowercase.
+_Z6cubish:
+          push  {<input class='' name='q_q15_103'type='text' id='q_q15_103' size='6'/>,<input class='' name='q_q15_104'type='text' id='q_q15_104' size='6'/>}
+          add   r2, r0, r1
+          sub   r3, r0, r1
+          <input class='' name='q_q15_105'type='text' id='q_q15_105' size='6'/> r4, r2, r2
+          mul   r5, r3, r3
+          mul   r0, <input class='' name='q_q15_106'type='text' id='q_q15_106' size='6'/>, r2
+          mla   <input class='' name='q_q15_107'type='text' id='q_q15_107' size='6'/>, <input class='' name='q_q15_108'type='text' id='q_q15_108' size='6'/>, r3
+          pop   {<input class='' name='q_q15_109'type='text' id='q_q15_109' size='6'/>, <input class='' name='q_q15_110'type='text' id='q_q15_110' size='6'/>}
+          bx    lr
+</pre>
+</div>
+<div class='q' id='q16'>16. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Nathan Renner
+_Z9squareSumPii:
+        mov     r2, #0
+1:
+        <input class='' name='q_q16_111'type='text' id='q_q16_111' size='6'/>   r3, [r0]
+        <input class='' name='q_q16_112'type='text' id='q_q16_112' size='6'/>   r3, r3
+        <input class='' name='q_q16_113'type='text' id='q_q16_113' size='6'/>   r0, #4
+        add     <input class='' name='q_q16_114'type='text' id='q_q16_114' size='6'/>, r3
+        <input class='' name='q_q16_115'type='text' id='q_q16_115' size='6'/>  r1, #1
+        bne     1b
+        mov     <input class='' name='q_q16_116'type='text' id='q_q16_116' size='6'/>, r2
+        bx      <input class='' name='q_q16_117'type='text' id='q_q16_117' size='6'/>
+</pre>
+</div>
+<div class='q' id='q17'>17. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Princeton Nwosu:
+Fill in the missing assembler instructions and parameters.
+This function has four parameters.
+r0 = pointer to destination array (C)
+r1 = pointer to array A
+r2 = pointer to array B
+r3 is the number of elements in each array
+Compute each element c[i] = A[i] * B[i]
+Example:  r1 = {5,7}, r2 = {3,2}, r3 = 2
+The function should return r0 = {15,14}.
+_Z3mulPiPKiS1_i:
+1:
+        <input class='' name='q_q17_118'type='text' id='q_q17_118' size='6'/>    r5, [r1]
+        ldr      r6, [r2]
+        mul      <input class='' name='q_q17_119'type='text' id='q_q17_119' size='6'/>,r5,r6
+        str      r5, [r0]
+        add      r0, <input class='' name='q_q17_120'type='text' id='q_q17_120' size='6'/>
+        add      r1, <input class='' name='q_q17_121'type='text' id='q_q17_121' size='6'/>
+        add      r2, <input class='' name='q_q17_122'type='text' id='q_q17_122' size='6'/>
+        subs     <input class='' name='q_q17_123'type='text' id='q_q17_123' size='6'/>, #1
+        bne      1b
+        bx       lr
+</pre>
+</div>
+<div class='q' id='q18'>18. Fill in the missing code<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Dov Kruger
+Given
+r0 = pointer to an array of double
+r1 = number of elements
+The array contains coordinates x1,y1,z1,x2,y2,z2, ... etc
+Go through the array setting every third (Z) coordinate to zero
+_Z3mulPiPKiS1_i:
+        <input class='' name='q_q18_124'type='text' id='q_q18_124' size='10'/>    d0, .ZERO
+        mov           r2, #24
+1:
+        <input class='' name='q_q18_125'type='text' id='q_q18_125' size='10'/>    d0, [r0]
+        add           r0, <input class='' name='q_q18_126'type='text' id='q_q18_126' size='6'/>
+        subs          <input class='' name='q_q18_127'type='text' id='q_q18_127' size='6'/>, #1
+        bne           1b
+        bx            lr
+.ZERO:
+        .word 0x00000000
+        .word 0x00000000
+</pre>
+</div>
+<div class='q' id='q19'>19. Write a Function<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Andrew Desanti
+In C++, write the function:
+bool isLeap(int year);
+that returns true if the year is a leap year and false if it is not.
+A year is a leap year if it is divisible by 4 but not divisible by 100, OR
+if it is divisible by 400. Recall that && is logical AND and || is logical OR.
+Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)
+<textarea rows='20' cols='80' id='Q_q19_128'></textarea>
+</pre>
+</div>
+<div class='q' id='q20'>20. Write a Function<span class='pts'> (10 points)</span></p><pre class='pcode'>
+author: Andrew Desanti
+Using the above isLeap function, write the following function that counts how many leap years between 2020 and the year:
+<textarea rows='20' cols='80' id='Q_q20_129'></textarea>
+</pre>
+</div>
+
+                    <div class='controls'>
+                    <div style='position: flow'>Time Remaining</div>
+                    <div id='bottomTime' class='time'></div>
+                    <input class='controls' type='button' value='Submit Quiz' onClick='checkAndSubmit()'/>
+                    </div>
+                    </form>
+                </body>
+                </html>
+                

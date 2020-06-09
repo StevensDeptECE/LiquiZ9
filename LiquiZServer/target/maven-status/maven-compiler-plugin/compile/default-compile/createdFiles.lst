@@ -4,4 +4,5 @@ quiz\QuizToGrade.class
 questions\Question.class
 quiz\quizChoice.class
 questions\NumQuestion.class
+.netbeans_automatic_build
 quiz\TestQuizServlet.class
