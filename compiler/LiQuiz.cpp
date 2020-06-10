@@ -8,7 +8,6 @@
 using namespace std;
 
 
-
 inline const std::string& to_string(const std::string& s) {return s;}
 inline std::string to_string(char c) {
     char s[2] = {c, '\0'};
@@ -18,6 +17,7 @@ inline std::string to_string(char c) {
 class QuestionType {
     protected:
         string qID, replace, text;
+        int fillSize;
 
     public:
         void setText(const string& t) { text = t; }
@@ -36,6 +36,10 @@ class QuestionType {
             dest.clear();
             int unpack[]{0, (dest += to_string(args), 0)...};
             static_cast<void>(unpack);
+        }
+
+        void setSize(int size) {
+            fillSize = size;
         }
 };
 
@@ -209,9 +213,7 @@ class MultipleAnswerVertical : public QuestionType {
 class FillIn : public QuestionType {
     private:
         static unordered_map<char, string> fillTypes;
-
         string answer, typeID, size, orig;
-
         int len = 6;
 
     public:
@@ -221,6 +223,8 @@ class FillIn : public QuestionType {
 
         string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
             getFillInType(text[1]);
+
+            len = fillSize;
 
             if (typeID != "q") {
                 answer = text.erase(0,2);
@@ -350,6 +354,7 @@ class LiQuizCompiler {
         ofstream html;
         ofstream answers;
         ifstream liquizFile;
+        ifstream specFile;
 
         QuestionType* defaultQuestionType;
 
@@ -357,6 +362,8 @@ class LiQuizCompiler {
         int partNum; // the subnumber within each question
         double questionCount = 0;
         double points = 0;
+        int fillSize;
+        string specText, imgFile, styleSheet;
         
 
         void findQuestionType(const string& type, double& points, string& delim) {
@@ -364,6 +371,9 @@ class LiQuizCompiler {
                 ? questionTypes[type] : defaultQuestionType;
             if (question != nullptr) {
                 question->setText(delim);
+                if(type == "f") {
+                    question->setSize(fillSize);
+                }
                 inputText = question->print(answers, partNum, questionNum, points);
             }
         }
@@ -413,20 +423,45 @@ class LiQuizCompiler {
                 <meta charset="UTF-8"/>
                 <title>
                 )";
-            if (header.find("name") != header.end()) {
-                html << header["name"];
+
+            if (header.find("quizspec") != header.end()) {
+                string specName = header.at("quizspec");
+                string quizName = header.at("name");
+                string line;
+                nlohmann::json specInfo;
+
+                specFile.open("spec/" + specName);
+                while (!specFile.eof()) {
+                    getline(specFile, line);
+                    specText += line;
+                    specText += '\n';
+                }
+
+                specInfo = nlohmann::json::parse(specText);
+                imgFile = specInfo.at("defaults").at("img");
+                styleSheet = specInfo.at("defaults").at("stylesheet");
+                fillSize = specInfo.at("defaults").at("fillInTheBlankSize");
+
+                specFile.close();
             }
+
             html <<
                 R"(
                 </title>
-                    <link rel="stylesheet" type="text/css" href="css/quiz.css">
+                    <link rel="stylesheet" type="text/css" href='css/)"; 
+            html << styleSheet << "'>" << "\n";
+            html <<
+                R"( 
                     <script src='js/quiz.js'></script>
                 </head>
                 <body onload='startTime()'>
                 <form method="get" action="gradquiz.jsp">
                 <div id='header' class='header'>
                 <div style='background-color: #ccc;text-align: center;border-radius: 10px; width: 240px; float: left'>
-                    <img src='media/StevensLogo380x326.png' width='190' height='163'/>
+                    <img src='media/)";
+            html << imgFile << "' width='190' height='163'/>" << "\n";
+            html <<
+                R"(
                 </div>
                 <div style='margin-left: 250px'>
                     <table>
