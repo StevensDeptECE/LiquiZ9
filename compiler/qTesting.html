@@ -10,20 +10,21 @@
  
                     <script src='js/quiz.js'></script>
                 </head>
-                <body onload='startTime()'>
+                <body onload='startTime(0)'>
+
                 <form method="get" action="gradquiz.jsp">
                 <div id='header' class='header'>
                 <div style='background-color: #ccc;text-align: center;border-radius: 10px; width: 240px; float: left'>
-                    <img src='media/StevensLogo380x326.png' width='190' height='163'/>
+                    <img class='header' src='media/StevensLogo380x326.png'/>
 
                 </div>
                 <div style='margin-left: 250px'>
                     <table>
-                    <tr><td class='headtext'>Userid</div></td><td><input class='ctrl' id='userid' type='text' name='userid'/></td><td></td></tr>
-                    <tr><td class='headtext'>Passwd</td><td><input class='ctrl' id='passwd' type='password' name='passwd'/></td></tr>
-                    <tr><td class='headtext'>Name</td><td><input class='ctrl' id='name' type='text' name='name'/></td></tr>
-                    <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledge'/></td>
-                    <td class='headtext' colspan='2'>I pledge my honor that I have abided by the Stevens Honor System</td></tr>
+                    <tr><td class='headtext'>Number Theoretic</div></td><td></td></tr>
+<tr><td class='headtext'>Dov Kruger</td></tr>
+<tr><td class='headtext'>Email  Dov.Kruger@stevens.edu  if you have any questions!</td></tr>
+
+                    <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledged' value='pledged'/><label for='pledge'> I pledge my honor that I have abided by the Stevens Honor System</label></td>
                     <tr><td class='headtext'>Time Remaining</td><td id='topTime' class='time'></td><td><input id='audioControl' class='controls' type='button' value='turn audio ON' onClick='scheduleAudio()'/>
                 </td></tr>
                     </table>
@@ -44,54 +45,54 @@
                 <div class='q' id='q1'>1. Multiple Choice Horizontal<span class='pts'> (35 points)</span></p>
 <pre class='text'>
 What's 2+2?
-<input class='mc' name='q_q1_32765' type='radio' value='1'>1	<input class='mc' name='q_q1_32765' type='radio' value='2'>2	<input class='mc' name='q_q1_32765' type='radio' value='3'>3	<input class='mc' name='q_q1_32765' type='radio' value='4'>4	
+<input class='mc' name='q_q1_1' type='radio' value='1'>1	<input class='mc' name='q_q1_1' type='radio' value='2'>2	<input class='mc' name='q_q1_1' type='radio' value='3'>3	<input class='mc' name='q_q1_1' type='radio' value='4'>4	
 
 Answer again I guess
-<input class='mc' name='q_q1_32766' type='radio' value='1'>1
+<input class='mc' name='q_q1_2' type='radio' value='1'>1
 
-<input class='mc' name='q_q1_32766' type='radio' value='2'>2
+<input class='mc' name='q_q1_2' type='radio' value='2'>2
 
-<input class='mc' name='q_q1_32766' type='radio' value='3'>3
+<input class='mc' name='q_q1_2' type='radio' value='3'>3
 
-<input class='mc' name='q_q1_32766' type='radio' value='4'>4
+<input class='mc' name='q_q1_2' type='radio' value='4'>4
 <pre></div>
 <div class='q' id='q2'>2. Multiple Choice Vertical<span class='pts'> (40 points)</span></p>
 <pre class='text'>
 What's 2+2?
-<input class='mc' name='q_q2_32767' type='radio' value='1'>1
+<input class='mc' name='q_q2_3' type='radio' value='1'>1
 
-<input class='mc' name='q_q2_32767' type='radio' value='2'>2
+<input class='mc' name='q_q2_3' type='radio' value='2'>2
 
-<input class='mc' name='q_q2_32767' type='radio' value='3'>3
+<input class='mc' name='q_q2_3' type='radio' value='3'>3
 
-<input class='mc' name='q_q2_32767' type='radio' value='4'>4
+<input class='mc' name='q_q2_3' type='radio' value='4'>4
 <pre></div>
 <div class='q' id='q3'>3. Multiple Answer Horizontal<span class='pts'> (45 points)</span></p>
 <pre class='text'>
 What's NOT 2+2?
-<input class='ma' name='m_q3_32768' type='checkbox' value='1'>1	<input class='ma' name='m_q3_32768' type='checkbox' value='2'>2	<input class='ma' name='m_q3_32768' type='checkbox' value='3'>3	<input class='ma' name='m_q3_32768' type='checkbox' value='4'>4	
+<input class='ma' name='m_q3_4' type='checkbox' value='1'>1	<input class='ma' name='m_q3_4' type='checkbox' value='2'>2	<input class='ma' name='m_q3_4' type='checkbox' value='3'>3	<input class='ma' name='m_q3_4' type='checkbox' value='4'>4	
 <pre></div>
 <div class='q' id='q4'>4. Multiple Answer Vertical<span class='pts'> (50 points)</span></p>
 <pre class='text'>
 What's NOT 2+2?
-<input class='ma' name='m_q4_32769' type='checkbox' value='1'>1
+<input class='ma' name='m_q4_5' type='checkbox' value='1'>1
 
-<input class='ma' name='m_q4_32769' type='checkbox' value='2'>2
+<input class='ma' name='m_q4_5' type='checkbox' value='2'>2
 
-<input class='ma' name='m_q4_32769' type='checkbox' value='3'>3
+<input class='ma' name='m_q4_5' type='checkbox' value='3'>3
 
-<input class='ma' name='m_q4_32769' type='checkbox' value='4'>4
+<input class='ma' name='m_q4_5' type='checkbox' value='4'>4
 <pre></div>
 <div class='q' id='q5'>5. Basic Knowledge<span class='pts'> (10 points)</span></p>
 <pre class='text'>
 Please enter all answers in lowercase until we add the case insensitive question.
-How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? <input class='' name='q_q5_32770' type='text' id='q_q5_32770' size='4'/>.
+How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? <input class='' name='q_q5_6' type='text' id='q_q5_6' size='4'/>.
 Some of the registers are special and cannot be used as general registers.
-For example register r15 is the <input class='' name='Q_q5_32771' type='text' id='Q_q5_32771' size='4'/>, r14 is the <input class='' name='q_q5_32772' type='text' id='q_q5_32772' size='4'/>, and r13 is <input class='' name='q_q5_32773' type='text' id='q_q5_32773' size='4'/>.
-The range of registers available for use is generally considered to be r0 to <input class='' name='q_q5_32774' type='text' id='q_q5_32774' size='4'/>.
-There are <input class='' name='s_q5_32775' type='text' id='s_q5_32775' size='4'/> double precision registers starting from <input class='' name='q_q5_32776' type='text' id='q_q5_32776' size='4'/> to <input class='' name='q_q5_32777' type='text' id='q_q5_32777' size='4'/>.
-There are <input class='' name='q_q5_32778' type='text' id='q_q5_32778' size='4'/> single precision registers starting from <input class='' name='q_q5_32779' type='text' id='q_q5_32779' size='4'/> to <input class='' name='q_q5_32780' type='text' id='q_q5_32780' size='4'/>.
-We can say that register d1 and s2 <select class='' name='q_q5_32781'><option value='can be used independently'>can be used independently</option>
+For example register r15 is the <input class='' name='Q_q5_7' type='text' id='Q_q5_7' size='4'/>, r14 is the <input class='' name='q_q5_8' type='text' id='q_q5_8' size='4'/>, and r13 is <input class='' name='q_q5_9' type='text' id='q_q5_9' size='4'/>.
+The range of registers available for use is generally considered to be r0 to <input class='' name='q_q5_10' type='text' id='q_q5_10' size='4'/>.
+There are <input class='' name='s_q5_11' type='text' id='s_q5_11' size='4'/> double precision registers starting from <input class='' name='q_q5_12' type='text' id='q_q5_12' size='4'/> to <input class='' name='q_q5_13' type='text' id='q_q5_13' size='4'/>.
+There are <input class='' name='q_q5_14' type='text' id='q_q5_14' size='4'/> single precision registers starting from <input class='' name='q_q5_15' type='text' id='q_q5_15' size='4'/> to <input class='' name='q_q5_16' type='text' id='q_q5_16' size='4'/>.
+We can say that register d1 and s2 <select class='' name='q_q5_17'><option value='can be used independently'>can be used independently</option>
 <option value='cannot be used at the same time'>cannot be used at the same time</option>
 <option value='should never be used because they are reserved'>should never be used because they are reserved</option>
 <option value='are not valid in the arm architecture'>are not valid in the arm architecture</option>
@@ -106,18 +107,18 @@ that returns true if the year is a leap year and false if it is not.
 A year is a leap year if it is divisible by 4 but not divisible by 100, OR
 if it is divisible by 400. Recall that && is logical AND and || is logical OR.
 Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)
-<textarea rows='20' cols='80' id='T_q6_32782' name='T_q6_32782'></textarea>
+<textarea rows='20' cols='80' id='T_q6_18' name='T_q6_18'></textarea>
 <pre></div>
 <div class='q' id='q7'>7. Write a Function<span class='pts'> (10 points)</span></p>
 <pre class='text'>
 author: Andrew Desanti
 Using the above isLeap function, write the following function that counts how many leap years between 2020 and the year:
-<textarea rows='20' cols='80' id='T_q7_32783' name='T_q7_32783'>int countLeap(int year)</textarea>
+<textarea rows='20' cols='80' id='T_q7_19' name='T_q7_19'>int countLeap(int year)</textarea>
 <pre></div>
 <div class='q' id='q8'>8. gcd<span class='pts'> (10 points)</span></p>
 <pre class='pcode'>
 
-gcd(a,b)       // Complexity: <select class='' name='q_q8_32784'><option value='O(n)'>O(n)</option>
+gcd(a,b)       // Complexity: <select class='' name='q_q8_20'><option value='O(n)'>O(n)</option>
 <option value='O(n^2)'>O(n^2)</option>
 <option value='O(n^3)'>O(n^3)</option>
 <option value='O(n^4)'>O(n^4)</option>
@@ -133,21 +134,21 @@ gcd(a,b)       // Complexity: <select class='' name='q_q8_32784'><option value='
 <option value='O(n*log2(n)'>O(n*log2(n)</option>
 <option value='O(n*√n)'>O(n*√n)</option>
 </select>
-  if <input class='' name='q_q8_32785' type='text' id='q_q8_32785' size='4'/> = 0
+  if <input class='' name='q_q8_21' type='text' id='q_q8_21' size='4'/> = 0
     return a
   end
-  return <input class='' name='q_q8_32786' type='text' id='q_q8_32786' size='4'/>(b, a mod b)
+  return <input class='' name='q_q8_22' type='text' id='q_q8_22' size='4'/>(b, a mod b)
 end
 </pre></div>
 <div class='q' id='q9'>9. Basic Instructions<span class='pts'> (20 points)</span></p>
 <pre class='pcode'>
 
 After each of the following assembler instruction show the values in the registers
-000102b4: mov  r0, #4    @r0=<input class='' name='q_q9_32787' type='text' id='q_q9_32787' size='8'/>   pc=<input class='' name='q_q9_32788' type='text' id='q_q9_32788' size='8'/>
-000102b8: sub  r0, #5    @r0=<input class='' name='q_q9_32789' type='text' id='q_q9_32789' size='8'/>   pc=<input class='' name='q_q9_32790' type='text' id='q_q9_32790' size='8'/>
-000102bc: adds r0, #1    @r0=<input class='' name='q_q9_32791' type='text' id='q_q9_32791' size='8'/>   V=<input class='' name='q_q9_32792' type='text' id='q_q9_32792' size='1'/> Z=<input class='' name='q_q9_32793' type='text' id='q_q9_32793' size='1'/> N=<input class='' name='q_q9_32794' type='text' id='q_q9_32794' size='1'/>
-000102bc: adds r0, #1    @r0=<input class='' name='q_q9_32795' type='text' id='q_q9_32795' size='8'/>   V=<input class='' name='q_q9_32796' type='text' id='q_q9_32796' size='1'/> Z=<input class='' name='q_q9_32797' type='text' id='q_q9_32797' size='1'/> N=<input class='' name='q_q9_32798' type='text' id='q_q9_32798' size='1'/>
-000102bc: subs r0, #1    @r0=<input class='' name='q_q9_32799' type='text' id='q_q9_32799' size='8'/>   V=<input class='' name='q_q9_32800' type='text' id='q_q9_32800' size='1'/> Z=<input class='' name='q_q9_32801' type='text' id='q_q9_32801' size='1'/> N=<input class='' name='q_q9_32802' type='text' id='q_q9_32802' size='1'/>
+000102b4: mov  r0, #4    @r0=<input class='' name='q_q9_23' type='text' id='q_q9_23' size='8'/>   pc=<input class='' name='q_q9_24' type='text' id='q_q9_24' size='8'/>
+000102b8: sub  r0, #5    @r0=<input class='' name='q_q9_25' type='text' id='q_q9_25' size='8'/>   pc=<input class='' name='q_q9_26' type='text' id='q_q9_26' size='8'/>
+000102bc: adds r0, #1    @r0=<input class='' name='q_q9_27' type='text' id='q_q9_27' size='8'/>   V=<input class='' name='q_q9_28' type='text' id='q_q9_28' size='1'/> Z=<input class='' name='q_q9_29' type='text' id='q_q9_29' size='1'/> N=<input class='' name='q_q9_30' type='text' id='q_q9_30' size='1'/>
+000102bc: adds r0, #1    @r0=<input class='' name='q_q9_31' type='text' id='q_q9_31' size='8'/>   V=<input class='' name='q_q9_32' type='text' id='q_q9_32' size='1'/> Z=<input class='' name='q_q9_33' type='text' id='q_q9_33' size='1'/> N=<input class='' name='q_q9_34' type='text' id='q_q9_34' size='1'/>
+000102bc: subs r0, #1    @r0=<input class='' name='q_q9_35' type='text' id='q_q9_35' size='8'/>   V=<input class='' name='q_q9_36' type='text' id='q_q9_36' size='1'/> Z=<input class='' name='q_q9_37' type='text' id='q_q9_37' size='1'/> N=<input class='' name='q_q9_38' type='text' id='q_q9_38' size='1'/>
 </pre></div>
 <div class='q' id='q10'>10. Where do computers come from?<span class='pts'> (10 points)</span></p>
 <pre class='pcode'>
@@ -162,11 +163,11 @@ Watch the movie on the Tacoma Narrows Bridge.
 Should engineers have known the bridge would collapse?
 What caused the collapse?
 <video controls width='320' height='240'><source src='media/TacomaNarrowsBridge.mp4' type='video/mp4'></video>
-<textarea rows='20' cols='80' id='T_q11_32803' name='T_q11_32803'>Type your essay here</textarea>
+<textarea rows='20' cols='80' id='T_q11_39' name='T_q11_39'>Type your essay here</textarea>
 </pre></div>
 <div class='q' id='q12'>12. Object Oriented Terminology<span class='pts'> (50 points)</span></p>
 <pre class='text'>
-A class is a <select class='' name='q_q12_32804'><option value='parent'>parent</option>
+A class is a <select class='' name='q_q12_40'><option value='parent'>parent</option>
 <option value='child'>child</option>
 <option value='object'>object</option>
 <option value='class'>class</option>
@@ -180,7 +181,7 @@ A class is a <select class='' name='q_q12_32804'><option value='parent'>parent</
 <option value='concrete'>concrete</option>
 <option value='generic'>generic</option>
 </select> object. TODO: select options never made
-An object is a <select class='' name='q_q12_32805'><option value='parent'>parent</option>
+An object is a <select class='' name='q_q12_41'><option value='parent'>parent</option>
 <option value='child'>child</option>
 <option value='object'>object</option>
 <option value='class'>class</option>
@@ -194,7 +195,7 @@ An object is a <select class='' name='q_q12_32805'><option value='parent'>parent
 <option value='concrete'>concrete</option>
 <option value='generic'>generic</option>
 </select> a class. TODO: select options never made
-To create an object we <select class='' name='q_q12_32806'><option value='parent'>parent</option>
+To create an object we <select class='' name='q_q12_42'><option value='parent'>parent</option>
 <option value='child'>child</option>
 <option value='object'>object</option>
 <option value='class'>class</option>
@@ -208,7 +209,7 @@ To create an object we <select class='' name='q_q12_32806'><option value='parent
 <option value='concrete'>concrete</option>
 <option value='generic'>generic</option>
 </select> a class.
-An object is an <select class='' name='q_q12_32807'><option value='parent'>parent</option>
+An object is an <select class='' name='q_q12_43'><option value='parent'>parent</option>
 <option value='child'>child</option>
 <option value='object'>object</option>
 <option value='class'>class</option>
@@ -222,7 +223,7 @@ An object is an <select class='' name='q_q12_32807'><option value='parent'>paren
 <option value='concrete'>concrete</option>
 <option value='generic'>generic</option>
 </select> of a class.
-To hide the details of an object is called <select class='' name='q_q12_32808'><option value='parent'>parent</option>
+To hide the details of an object is called <select class='' name='q_q12_44'><option value='parent'>parent</option>
 <option value='child'>child</option>
 <option value='object'>object</option>
 <option value='class'>class</option>

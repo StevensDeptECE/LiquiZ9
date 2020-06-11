@@ -15,7 +15,7 @@
 }
 .time {
     font-family: Courier;
-    font-size: 18pt;
+    font-size: 16pt;
 }
 
 body {
@@ -82,6 +82,10 @@ video {
     padding: 10px;
     margin: 10px;
     background-color: red;
+}
+
+img.header {
+    width: 70%;
 }
 
 textarea {

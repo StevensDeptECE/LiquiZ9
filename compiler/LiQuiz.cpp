@@ -362,8 +362,8 @@ class LiQuizCompiler {
         int partNum; // the subnumber within each question
         double questionCount = 0;
         double points = 0;
-        int fillSize;
-        string specText, imgFile, styleSheet;
+        int fillSize, timeLimit;
+        string specText, imgFile, styleSheet, quizName, license, copyright, author, email;
         
 
         void findQuestionType(const string& type, double& points, string& delim) {
@@ -426,7 +426,7 @@ class LiQuizCompiler {
 
             if (header.find("quizspec") != header.end()) {
                 string specName = header.at("quizspec");
-                string quizName = header.at("name");
+                quizName = header.at("name");
                 string line;
                 nlohmann::json specInfo;
 
@@ -441,6 +441,9 @@ class LiQuizCompiler {
                 imgFile = specInfo.at("defaults").at("img");
                 styleSheet = specInfo.at("defaults").at("stylesheet");
                 fillSize = specInfo.at("defaults").at("fillInTheBlankSize");
+                timeLimit = specInfo.at("defaults").at("timeLimit");
+                email = specInfo.at("email");
+                author = specInfo.at("author");
 
                 specFile.close();
             }
@@ -454,23 +457,28 @@ class LiQuizCompiler {
                 R"( 
                     <script src='js/quiz.js'></script>
                 </head>
-                <body onload='startTime()'>
+                <body onload='startTime()";
+            html << timeLimit << ")'>" << '\n';
+            html <<
+                R"(
                 <form method="get" action="gradquiz.jsp">
                 <div id='header' class='header'>
                 <div style='background-color: #ccc;text-align: center;border-radius: 10px; width: 240px; float: left'>
-                    <img src='media/)";
-            html << imgFile << "' width='190' height='163'/>" << "\n";
+                    <img class='header' src='media/)";
+            html << imgFile << "'/>" << "\n";
             html <<
                 R"(
                 </div>
                 <div style='margin-left: 250px'>
                     <table>
-                    <tr><td class='headtext'>Userid</div></td><td><input class='ctrl' id='userid' type='text' name='userid'/></td><td></td></tr>
-                    <tr><td class='headtext'>Passwd</td><td><input class='ctrl' id='passwd' type='password' name='passwd'/></td></tr>
-                    <tr><td class='headtext'>Name</td><td><input class='ctrl' id='name' type='text' name='name'/></td></tr>
-                    <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledge'/></td>
-                    <td class='headtext' colspan='2'>I pledge my honor that I have abided by the Stevens Honor System</td></tr>
-                    <tr><td class='headtext'>Time Remaining</td><td id='topTime' class='time'></td><td><input id='audioControl' class='controls' type='button' value='turn audio ON' onClick='scheduleAudio()'/>
+                    <tr><td class='headtext'>)";
+            html << quizName << "</div></td><td></td></tr>" << "\n";
+            html << "<tr><td class='headtext'>" << author << "</td></tr>" << "\n";
+            html << "<tr><td class='headtext'>Email  " << email << "  if you have any questions!</td></tr>" << "\n";
+            html <<
+                R"(
+                    <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledged' value='pledged'/><label for='pledge'> I pledge my honor that I have abided by the Stevens Honor System</label></td>
+                    <tr><td class='headtext'>Time Remaining:</td><td id='topTime' class='time'></td><td><input id='audioControl' class='controls' type='button' value='turn audio ON' onClick='scheduleAudio()'/>
                 </td></tr>
                     </table>
                 <audio id="alert25"><source src="media/25min.ogg" type="audio/ogg"/></audio>
