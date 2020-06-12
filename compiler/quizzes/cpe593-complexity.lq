@@ -1,0 +1,96 @@
+{"quizspec":"cpe593.qspec", "name":"Complexity"}
+{"style":"code", "name":"complexity of c code", "points":"20"}
+for (int i = 0; i < n; i++)
+{}
+
+for (int j = 5; j < 2*n; j++)
+{}
+
+for (int k = 3; k < n; k += 7)
+{}
+
+for (int i = 0; i < n; i += n/10)
+{}
+---
+{"style":"code", "name":"complexity of pseudocode", "points":"20"}
+f() {     // complexity of the whole function: O($f:n^2$)
+  for (int i = 0; i < n; i++)       //O($f:n$)
+    for (int j = 0; j < n; j++)     //O($f:n$)
+      {}
+}
+
+f() { // O($n^2$)
+  for (int i = 0; i < n; i++)         //O($f:n$)
+    for (int j = 0; j < i; j++)       //O($f:n$)
+      {}
+}
+f() { // O($f:nlogn$)
+  for (int i = 0; i < n; i++)     //O($f:n$)
+    for (int j = 0; j < i; j*=i)  //O($f:logn$)
+      {}
+}
+f() { // O($f:n$)
+  for (int i = 0; i < n; i*=2)
+    for (int j = 0; j < i; j++)
+      {}
+}
+
+f() { // O($f:n*sqrt(n)$)
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < sqrt(i); j++)
+      {}
+}
+
+f() { // O($f:n^2$)
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < n-sqrt(n); j++)
+      {}
+}
+
+f() { // O($f:nsqrt(n)$)
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < n/sqrt(n); j++)
+      {}
+}
+
+f() { // O($f:n^3$)
+  for (int i = 0; i < n; i++)
+    for (int j = 0; j < n; j++)
+      for (int k = 0; k < n; k++)
+        {}
+}
+
+f() { // O($f:n^2$)
+  for (int i = 0; i < n; i++)          //O($f:n$)
+    for (int j = 0; j < n; j++)        //O($f:n$)
+      for (int k = j-1; k <= j+1; k++) //O($f:1$)
+        {}
+}
+---
+{"style":"pcode", "name":"complexity", "points":"10:}
+f() { // O($f:n^2$)
+  for i <-- 1 to n          //O($f:n$)
+    for j <-- 3 to n/2      //O($f:n$)
+      for j<-- j-1 to j+1   //O($f:1$)
+      end
+    end
+  end
+end
+}
+---
+{"style":"pcode", "name":"fill in code", "points":"30"}
+gcd(a,b)
+  if b == 0
+    return $f:a$
+  end
+  return $f:gcd$($f:b$, a mod b)
+end
+---
+{stylet":"pcode", "name":"fill in code", "points":"20"}
+lcm(a,b) = a*b*$f:gcd$(a,b)
+
+Boyer-Moore
+complexity
+This is a test. this is a test.
+         y         y          y
+---

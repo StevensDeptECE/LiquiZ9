@@ -16,8 +16,9 @@ inline std::string to_string(char c) {
 
 class QuestionType {
     protected:
-        string qID, replace, text;
+        string qID, replace, text, defName;
         int fillSize;
+        static regex dSet;
 
     public:
         void setText(const string& t) { text = t; }
@@ -42,6 +43,8 @@ class QuestionType {
             fillSize = size;
         }
 };
+
+regex QuestionType::dSet("(:.*:)");
 
 class MultipleChoiceHorizontal : public QuestionType {
     private:
@@ -75,7 +78,21 @@ class MultipleChoiceHorizontal : public QuestionType {
 
         string print(ostream& answersFile, int& partNum, int& questionNum, double& points) {
             input = "";
-            answer = text.erase(0,4);
+            answer = text;
+            smatch m;
+            
+            if(regex_search(answer, m, dSet)) {
+                cout << "found d set" << endl;
+                answer = text.erase(0,4);
+                defName = "";
+                for (int i = 0; answer[i] != ':'; i++) {
+                    defName += answer[i];
+                }
+                answer.erase(0, defName.length()+1);
+            } else {
+                answer = text.erase(0,4);
+            }
+
             getAnswer();
             addAnswer(typeID, qID, input, points, answersFile, partNum, questionNum);
             getOptions();
@@ -337,7 +354,6 @@ class Video : public QuestionType {
 
 class LiQuizCompiler {
     private:
-        const static regex def;
 	    const static regex questionStart;
         const static regex specials;
 
@@ -400,10 +416,10 @@ class LiQuizCompiler {
         LiQuizCompiler(const char liquizFileName[]) {
             questionText.reserve(1024);
             string baseFileName = removeExtension(liquizFileName);
-            //liquizFile.open("quizzes/" + baseFileName + "lq");
-            liquizFile.open(liquizFileName);
+            liquizFile.open("quizzes/" + baseFileName + "lq");
+            //liquizFile.open(liquizFileName);
             html.open(baseFileName + "html");
-            answers.open(baseFileName + "ans");
+            answers.open("quizzes/" + baseFileName + "ans");
         }
 
         nlohmann::json getJSONHeader() {
@@ -598,7 +614,6 @@ class LiQuizCompiler {
         }
 };
 
-const regex LiQuizCompiler::def("^\\{def\\s+(\\w+)\\s*=\\s*\\[(.*\\])\\}");
 const regex LiQuizCompiler::questionStart("^\\{");
 const regex LiQuizCompiler::specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
 

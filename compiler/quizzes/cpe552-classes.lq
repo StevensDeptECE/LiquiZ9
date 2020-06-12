@@ -1,0 +1,59 @@
+{"quizspec":"cpe552.qspec", "name":"Classes in Java"}
+{"style":"code", "name":"Class types", "points":"10"}
+Fill in the missing code
+public $f:class$ A {
+  private int x;
+}
+public $f:abstract class$ B {
+  public abstract void f();
+}
+public $f:interface$ C {
+  public void f();
+}
+public $f:interface$ D extends C {
+  public void g();
+}
+public $f:abstract class$ E $f:implements$ C {
+  public abstract void g();
+  public E() { System.out.println("What am I?"); }
+}
+public $f:abstract class$ F $f:extends$ E {
+  public void g() {
+    System.out.println("implementing!");
+  }
+}
+public $f:class$ G $f:extends$ F {
+  public void f() {
+    System.out.println("implementing!");
+  }
+}
+---
+{"style":"code", "name":"Class types", "points":"40"}
+Select legal or illegal
+public class A {         $f:legal$
+  public A() {}
+}
+public class B {         $f:legal$
+}
+public abstract class C {         $f:legal$
+  public abstract void f();
+  public C(int x) {}
+}
+public interface D {
+  public void f();
+}
+public class TestInstantiation {
+  public static void main(String[] args) {
+    new A();         $f:legal$
+    new A(2);        $f:illegal$
+    new B();         $f:legal$
+    new B(2);        $f:illegal$
+    new C();         $f:illegal$
+    new C(2);        $f:legal$
+    new D();         $f:illegal$
+    new D() {        $f:legal$
+      public void f() { System.println("imp"); }
+    }
+  }
+}
+---

@@ -1,0 +1,14 @@
+{"quizspec":"survey.qspec", "name":"My Dietary Preferences"}
+{"qt":"likert", "q":"I like ice cream."}
+{"qt":"likert", "q":"I like frogs' legs."}
+{"qt":"likert", "q":"I like sushi."}
+{"qt":"likert", "q":"I like live crickets."}
+{"qt":"likert", "q":"I like steak."}
+{"qt":"likert", "q":"I am a vegetarian."}
+{"qt":"likert", "q":"I am a vegan."}
+{"qt":"likert", "q":"I am a pain in the butt."}
+{"qt":"likert", "q":"I eat anything."}
+{"qt":"likert", "q":"Raw foods only."}
+{"qt":"likert", "q":"Celiac."}
+{"qt":"likert", "q":"Epicac."}
+{"qt":"likert", "q":"I like snails."}

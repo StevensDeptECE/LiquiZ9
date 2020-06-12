@@ -1,0 +1,11 @@
+{"quizspec":"cpe553.qspec", "name":"CPE553 Integer Rules"}
+{"style":"code", "name":"What is output", "points":"20"}
+int a = 3 / 2;
+int b = 19 % 3;
+int c = 0;
+for (int i = 0; i < 10; i++)
+  c += i+1;
+cout << a << '\n'; // $f:1$
+cout << b << '\n'; // $f:1$
+cout << c << '\n'; // $f:55$
+---
