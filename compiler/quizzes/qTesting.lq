@@ -50,7 +50,7 @@ Using the above isLeap function, write the following function that counts how ma
 $tar:int countLeap(int year)$
 ---
 {"style":"pcode", "name":"gcd", "points":"10"}
-gcd(a,b)       // Complexity: $def:comp:O(n^3)$
+gcd(a,b)       // Complexity: $def:test:O(n^3)$
   if $f:b$ = 0
     return a
   end
