@@ -1,0 +1,91 @@
+{
+    "version": "0.2.0",
+    "env": {
+        "linux_gdb_path" : "/usr/bin/gdb",  // linux users : specify path linux_gdb_path here if the default is no good
+        // linux gdb example: "/usr/bin/gdb"
+
+         // windows env variables are bugged in the current build of vscode. Instead just hard code your GDB and GRAIL paths at the locations marked with *
+        },                                                                   
+    "configurations": [
+    
+         //Grail repo must be active workspace folder 
+        {
+            "name": "make & run testFile",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/${fileBasenameNoExtension}" , //default works on linux
+            "cwd": "${workspaceFolder}/test",                                //default works on linux
+            "miDebuggerPath": "${env:linux_gdb_path}",  
+
+            "windows" : { // overrides for windows 
+                "program": "${workspaceFolder}/bin/${fileBasenameNoExtension}.exe", 
+                "cwd": "d:/msys64/home/jakef/git/Grail",            // windows users : hard code path to Grail here                         *
+                "miDebuggerPath" : "D:/msys64/mingw64/bin/gdb.exe", // windows users : hard code path to mingw64/bin/gdb.exe here           *
+            },
+            "args": [],                                                             
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "make -B active file", 
+        },
+        {
+            "name": "make src/grail, make & run testFile",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/${fileBasenameNoExtension}" , //default works on linux
+            "cwd": "${workspaceFolder}/test",                                //default works on linux
+            "miDebuggerPath": "${env:linux_gdb_path}",  
+
+            "windows" : { // overrides for windows 
+                "program": "${workspaceFolder}/bin/${fileBasenameNoExtension}.exe", 
+                "cwd": "d:/msys64/home/jakef/git/Grail",            // windows users : hard code path to Grail here                         *
+                "miDebuggerPath" : "d:/msys64/mingw64/bin/gdb.exe", // windows users : hard code path to mingw64/bin/gdb.exe here           *
+            },
+            "args": [],                                                             
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "make src/grail, make -B active file"
+        },
+        {
+            "name": "make -B src/grail, make & run testFile",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/${fileBasenameNoExtension}" , //default works on linux
+            "cwd": "${workspaceFolder}/test",                                //default works on linux
+            "miDebuggerPath": "${env:linux_gdb_path}",  
+
+            "windows" : { // overrides for windows 
+                "program": "${workspaceFolder}/bin/${fileBasenameNoExtension}.exe", 
+                "cwd": "d:/msys64/home/jakef/git/Grail",            // windows users : hard code path to Grail here                         *
+                "miDebuggerPath" : "d:/msys64/mingw64/bin/gdb.exe", // windows users : hard code path to mingw64/bin/gdb.exe here           *
+            },
+            "args": [],                                                             
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "make -B src/grail, make -B active file"
+        },
+    ]
+}
