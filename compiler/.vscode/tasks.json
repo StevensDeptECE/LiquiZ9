@@ -1,0 +1,51 @@
+{
+    "version": "2.0.0",
+    "tasks": [  //REQUIREMENTS : Grail repo must be active workspace folder,
+                // for each testFile.cc, there must be a test/Makefile handler labeled testFile (no extension on linux, or .exe on windows)
+        {
+            "type": "shell",
+            "label": "make -B active file",
+            "options": {
+                "cwd" : "${workspaceFolder}"
+            },
+            "args": [],
+			"command": "pushd ${fileDirname}; make -B ${workspaceFolder}/bin/${fileBasenameNoExtension}; popd",
+            "windows" : { 
+                //"command" : "export GRAIL=$(pwd); pushd test; make -B $GRAIL/bin/${fileBasenameNoExtension}; popd; "  
+                "command" : "export GRAIL=$(pwd); cd test;  make -B $GRAIL/bin/${fileBasenameNoExtension}; bash --init-file <(echo \"$GRAIL/bin/${fileBasenameNoExtension}.exe\")"  
+                // for windows users, we run the program directly after building because launch wont work due to GDB issues
+            }, 
+        },
+        {
+            "type": "shell",
+            "label": "make src/grail, make -B active file",
+             "options": {
+                "cwd" : "${workspaceFolder}"
+            },
+            "args": [],
+
+            "command": "pushd ${workspaceFolder}/src/grail; make; popd; pushd ${fileDirname}; make -B ${workspaceFolder}/bin/${fileBasenameNoExtension}; popd",
+            "windows" : { 
+                //"command" : "export GRAIL=$(pwd); pushd src/grail; make; popd; pushd test; make -B $GRAIL/bin/${fileBasenameNoExtension}; popd", 
+                "command" : "export GRAIL=$(pwd); pushd src/grail; make; popd; cd test; make -B $GRAIL/bin/${fileBasenameNoExtension};  bash --init-file <(echo \"$GRAIL/bin/${fileBasenameNoExtension}.exe\")"
+                // for windows users, we run the program directly after building because launch wont work due to GDB issues
+            },
+            
+        },
+        {
+            "type": "shell",
+            "label": "make -B src/grail, make -B active file",
+            "options": {
+                "cwd" :  "${workspaceFolder}"
+            },
+            "args": [],
+            "command": "pushd ${workspaceFolder}/src/grail; make -B; popd; pushd ${fileDirname}; make -B ${workspaceFolder}/bin/${fileBasenameNoExtension}; popd",
+            "windows" : { 
+                //"command" : "export GRAIL=$(pwd); pushd src/grail; make -B; popd; pushd test; make -B $GRAIL/bin/${fileBasenameNoExtension}; popd"
+                "command" : "export GRAIL=$(pwd); pushd src/grail; make -B; popd; cd test; make -B $GRAIL/bin/${fileBasenameNoExtension};  bash --init-file <(echo \"$GRAIL/bin/${fileBasenameNoExtension}.exe\")"
+                // for windows users, we run the program directly after building because launch wont work due to GDB issues
+            },
+            
+        }
+    ]
+}
