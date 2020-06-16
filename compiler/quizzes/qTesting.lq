@@ -7,7 +7,7 @@
 ---
 {"style":"text", "name":"Multiple Choice Horizontal", "points":"35"}
 What's 2+2?
-$mch:comp:1,2,3,*4$
+$mch:1,2,3,*4$
 
 Answer again I guess
 $mcv:1,2,3,*4$
@@ -50,7 +50,7 @@ Using the above isLeap function, write the following function that counts how ma
 $tar:int countLeap(int year)$
 ---
 {"style":"pcode", "name":"gcd", "points":"10"}
-gcd(a,b)       // Complexity: $def:test:O(n^3)$
+gcd(a,b)       // Complexity: $def:comp:O(n^3)$
   if $f:b$ = 0
     return a
   end
@@ -64,6 +64,7 @@ After each of the following assembler instruction show the values in the registe
 000102bc: adds r0, #1    @r0=$f{8}:00000000$   V=$f{1}:1$ Z=$f{1}:1$ N=$f{1}:0$
 000102bc: adds r0, #1    @r0=$f{8}:00000000$   V=$f{1}:0$ Z=$f{1}:0$ N=$f{1}:0$
 000102bc: subs r0, #1    @r0=$f{8}:ffffffff$   V=$f{1}:1$ Z=$f{1}:0$ N=$f{1}:1$
+$def:test:O(n^3)$
 ---
 {"style":"pcode", "name":"Where do computers come from?", "points":"10"}
 $img:Iceland.jpg$

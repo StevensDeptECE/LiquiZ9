@@ -1,6 +1,7 @@
+#include "LiQuizCompiler.hh"
+
 #include <sstream>
 
-#include "LiQuizCompiler.hh"
 #include "Questions.hh"
 using namespace std;
 
@@ -26,7 +27,7 @@ string LiQuizCompiler::removeExtension(const char fileName[]) {
 
 void LiQuizCompiler::findDefinitions(const string &name, string &defs) const {
   if (definitions.find(name) == definitions.end()) {
-    cerr << "missing definition " << name << " on line" << lineNumber << endl;
+    cerr << "missing definition " << name << " on line " << questionLineNumber << endl;
   } else {
     defs = definitions.at(name);
   }
@@ -36,7 +37,6 @@ LiQuizCompiler::LiQuizCompiler(const char liquizFileName[]) {
   questionText.reserve(1024);
   string baseFileName = removeExtension(liquizFileName);
   liquizFile.open("quizzes/" + baseFileName + "lq");
-  // liquizFile.open(liquizFileName);
   html.open(baseFileName + "html");
   answers.open("quizzes/" + baseFileName + "ans");
 }
@@ -161,8 +161,19 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     html << "\n" << preStart << "\n";
     smatch m;
     points = points / questionCount;
+
     while (regex_search(questionText, m, specials)) {
       string delim = m[2];
+
+      int pos = questionText.find("<p hidden>", m.position());
+      string end = "</p>";
+      int endPos = questionText.find(end, m.position());
+      string qLine;
+      for (int i = pos+10; i < endPos; i++) {
+        qLine += questionText[i];
+      }
+      questionLineNumber = stoi(qLine);
+      
       string type;
       if (delim[0] != 'f') {
         for (int i = 0; delim[i] != ':'; i++) {
@@ -174,6 +185,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
       findQuestionType(type, points, delim);
       questionText.replace(m.position(), m.length(), inputText);
     }
+
     html << questionText << preEnd << "</div>\n";
     questionNum++;
   } else {
@@ -194,26 +206,27 @@ void LiQuizCompiler::grabQuestions() {
             line, m,
             questionStart)) {  // looking for the beginning of a question
       istringstream s(line);
-      nlohmann::json question;
+      nlohmann::json question;  // gets the question header
       s >> question;
-      getline(liquizFile, line);
-      questionText = line + '\n';
-      if (line != DELIM) {
-        while (getline(liquizFile, line), !liquizFile.eof() && line != DELIM) {
-          questionText += line;
-          questionText += '\n';
+      lineNumber++;
+        while (getline(liquizFile, line), !liquizFile.eof() && line != DELIM) { // gets line within question section
+            //questionText += line;
+            lineNumber++;
+            questionText = questionText + line + "<p hidden>" + to_string(lineNumber) + "</p>";
+            questionText += '\n';
+            // makeQuestion(question);
         }
+        lineNumber++;
         for (int i = 0; i < questionText.length(); i++) {
           if (questionText[i] == '$') {
             questionCount++;
           }
         }
         questionCount /= 2;
-      }
       makeQuestion(question);
       questionCount = 0;
+      questionText = "";
     }
-    lineNumber++;
   }
 }
 

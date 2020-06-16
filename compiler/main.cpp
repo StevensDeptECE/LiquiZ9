@@ -1,5 +1,4 @@
 #include "LiQuizCompiler.hh"
-//#include <exception>
 using namespace std;
 
 int main(int argc, char *argv[]) {

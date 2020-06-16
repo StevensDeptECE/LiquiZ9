@@ -32,6 +32,7 @@ class LiQuizCompiler {
   int questionNum = 1;
   int partNum;  // the subnumber within each question
   int lineNumber;
+  int questionLineNumber;
   double questionCount = 0;
   double points = 0;
   int fillSize, timeLimit;

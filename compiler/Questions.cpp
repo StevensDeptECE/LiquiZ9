@@ -201,7 +201,7 @@ string FillIn::print(const LiQuizCompiler *compiler, ostream &answersFile,
                      int &partNum, int &questionNum, double &points) {
   getFillInType(text[1]);
 
-  len = fillSize;
+  //len = fillSize;
 
   if (typeID != "q") {
     answer = text.erase(0, 2);
