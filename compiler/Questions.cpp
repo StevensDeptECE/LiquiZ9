@@ -240,7 +240,7 @@ string TextQuestion::print(const LiQuizCompiler *compiler, ostream &answersFile,
                            int &partNum, int &questionNum, double &points) {
   addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
   text.erase(0, 4);
-  buildString(replace, "<textarea rows='20' cols='80' id='", qID, "' name='",
+  buildString(replace, "<textarea rows='10' cols='60' id='", qID, "' name='",
               qID, "'>", text, "</textarea>");
   return replace;
 }

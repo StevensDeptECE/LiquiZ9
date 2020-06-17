@@ -46,9 +46,6 @@ function startTime(limit) {
 }
 
 function checkAndSubmit() {
-    var userid = document.getElementById("userid");
-    var passwd = document.getElementById("passwd");
-    var name = document.getElementById("name");
     var pledge = document.getElementById("pledge");
     console.log(userid + ", " + passwd);
     console.log(name + ", " + pledge);
@@ -73,4 +70,8 @@ function checkAndSubmit() {
 
 function selectMusic(v) {
     document.getElementById(v).play();
+}
+
+function protestRequest() {
+    window.open('protest-window.html','Ratting','width=550,height=500,left=150,top=200,toolbar=0,status=0');
 }

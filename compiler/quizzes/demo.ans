@@ -1,6 +1,5 @@
-defs	comp	O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)
-defs	ooterm	parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of
-defs	cppterm	base,derived,public,private,protected,virtual,pure virtual,function,pointer,const,template,variadic,static
+defs	comp	 ,O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)
+defs	ooterm	 ,parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of
 defs	likert5	 ,strongly disagree,disagree,no opinion,agree,strongly agree
 q_q1_1	10	cat
 q_q2_2	15	Kruger

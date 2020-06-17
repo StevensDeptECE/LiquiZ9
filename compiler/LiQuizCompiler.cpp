@@ -190,10 +190,8 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
 
     html << questionText << preEnd;
     html << endl;
-    html << "<input type=button class='protestButton'"
-            "onClick=window.open('protest-window.html','Ratting','width=550,"
-            "height=170,left=150,top=200,toolbar=0,status=0,'); value='There is a "
-            "problem with this question'>"
+    html << "<input type='button' class='protestButton'"
+            "onClick='protestRequest()' value='Click to report a problem'>"
          << "</div>\n";
     questionNum++;
   } else {
