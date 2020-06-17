@@ -47,7 +47,7 @@ gcd(a,b)       // Complexity: $def:comp:O(log(n))$
     return a
   end
   return $f:gcd$(b, a mod b)
-end
+end 
 ---
 {"style":"code", "name":"Basic Instructions", "points":"20"}
 After each of the following assembler instruction show the values in the registers
