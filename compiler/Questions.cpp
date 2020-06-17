@@ -120,8 +120,8 @@ void MultipleAnswerHorizontal::getAnswer() {
     if (answer[i] == '*') {
       for (int j = i + 1; answer[j] != ',' && j < answer.length(); j++) {
         input += answer[j];
-        input += ",";
       }
+      input += ",";
       answer.erase(i, 1);
     }
   }
@@ -158,8 +158,8 @@ void MultipleAnswerVertical::getAnswer() {
     if (answer[i] == '*') {
       for (int j = i + 1; answer[j] != ',' && j < answer.length(); j++) {
         input += answer[j];
-        input += ",";
       }
+      input += ",";
       answer.erase(i, 1);
     }
   }

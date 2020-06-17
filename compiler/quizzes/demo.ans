@@ -1,11 +1,11 @@
 defs	comp	O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)
-defs	ooterm	parent,child,object,class,message,method,encapsulation,instantiate,instantiation,abstract,interface,concrete,generic
+defs	ooterm	parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of
 defs	cppterm	base,derived,public,private,protected,virtual,pure virtual,function,pointer,const,template,variadic,static
 defs	likert5	 ,strongly disagree,disagree,no opinion,agree,strongly agree
 q_q1_1	10	cat
 q_q2_2	15	Kruger
-m_q3_3	45	K,r,u,g,e,r,F,a,v,a,r,d,i,n,S,o,n,g,L,u
-m_q4_4	50	H,o,b,o,k,e,n,U,n,i,t,e,d, ,S,t,a,t,e,s,N,e,w, ,J,e,r,s,e,y
+m_q3_3	45	Kruger,Favardin,Song,Lu
+m_q4_4	50	Hoboken,United States,New Jersey
 q_q5_5	12.5	 
 q_q5_6	12.5	 
 q_q5_7	12.5	 
