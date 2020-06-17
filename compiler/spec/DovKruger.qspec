@@ -11,7 +11,7 @@
      "stylesheet":"quiz.css",
      
      "numberOfTries":4,
-     "timeLimit":0,
+     "timeLimit":30,
      "fillInTheBlankSize":4,
      "openDate":            "2020-05-01 23:59:59",
      "closeDate":           "+0 00:30:00"

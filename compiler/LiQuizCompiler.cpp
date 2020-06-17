@@ -184,6 +184,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
       }
       findQuestionType(type, points, delim);
       questionText.replace(m.position(), m.length(), inputText);
+      //answerText = "<input type='text' id='a_2_2' hidden/>";
     }
 
     html << questionText << preEnd << "</div>\n";
@@ -210,11 +211,9 @@ void LiQuizCompiler::grabQuestions() {
       s >> question;
       lineNumber++;
         while (getline(liquizFile, line), !liquizFile.eof() && line != DELIM) { // gets line within question section
-            //questionText += line;
             lineNumber++;
             questionText = questionText + line + "<p hidden>" + to_string(lineNumber) + "</p>";
             questionText += '\n';
-            // makeQuestion(question);
         }
         lineNumber++;
         for (int i = 0; i < questionText.length(); i++) {

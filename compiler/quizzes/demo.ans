@@ -1,0 +1,43 @@
+defs	comp	O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)
+defs	ooterm	parent,child,object,class,message,method,encapsulation,instantiate,instantiation,abstract,interface,concrete,generic
+defs	cppterm	base,derived,public,private,protected,virtual,pure virtual,function,pointer,const,template,variadic,static
+defs	likert5	 ,strongly disagree,disagree,no opinion,agree,strongly agree
+q_q1_1	10	cat
+q_q2_2	15	Kruger
+m_q3_3	45	K,r,u,g,e,r,F,a,v,a,r,d,i,n,S,o,n,g,L,u
+m_q4_4	50	H,o,b,o,k,e,n,U,n,i,t,e,d, ,S,t,a,t,e,s,N,e,w, ,J,e,r,s,e,y
+q_q5_5	12.5	 
+q_q5_6	12.5	 
+q_q5_7	12.5	 
+q_q5_8	12.5	 
+Q_q6_9	2.5	pc
+Q_q6_10	2.5	sp
+Q_q6_11	2.5	lr
+q_q6_12	2.5	share the same bits
+T_q7_13	10	N/A
+q_q8_14	3.33333	O(log(n))
+q_q8_15	3.33333	b
+q_q8_16	3.33333	gcd
+Q_q9_17	1.25	00000000
+Q_q9_18	1.25	000102b8
+Q_q9_19	1.25	ffffffff
+Q_q9_20	1.25	000102bc
+Q_q9_21	1.25	00000000
+q_q9_22	1.25	1
+q_q9_23	1.25	1
+q_q9_24	1.25	0
+Q_q9_25	1.25	00000000
+q_q9_26	1.25	0
+q_q9_27	1.25	0
+q_q9_28	1.25	0
+Q_q9_29	1.25	ffffffff
+q_q9_30	1.25	1
+q_q9_31	1.25	0
+q_q9_32	1.25	1
+q_q10_33	5	AND
+T_q11_34	10	N/A
+q_q12_35	10	kind of
+q_q12_36	10	instance of
+q_q12_37	10	instantiate
+q_q12_38	10	instantiation
+q_q12_39	10	encapsulation
