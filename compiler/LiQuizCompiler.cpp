@@ -27,7 +27,8 @@ string LiQuizCompiler::removeExtension(const char fileName[]) {
 
 void LiQuizCompiler::findDefinitions(const string &name, string &defs) const {
   if (definitions.find(name) == definitions.end()) {
-    cerr << "missing definition " << name << " on line " << questionLineNumber << endl;
+    cerr << "missing definition " << name << " on line " << questionLineNumber
+         << endl;
   } else {
     defs = definitions.at(name);
   }
@@ -169,11 +170,11 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
       string end = "</p>";
       int endPos = questionText.find(end, m.position());
       string qLine;
-      for (int i = pos+10; i < endPos; i++) {
+      for (int i = pos + 10; i < endPos; i++) {
         qLine += questionText[i];
       }
       questionLineNumber = stoi(qLine);
-      
+
       string type;
       if (delim[0] != 'f') {
         for (int i = 0; delim[i] != ':'; i++) {
@@ -184,10 +185,16 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
       }
       findQuestionType(type, points, delim);
       questionText.replace(m.position(), m.length(), inputText);
-      //answerText = "<input type='text' id='a_2_2' hidden/>";
+      // answerText = "<input type='text' id='a_2_2' hidden/>";
     }
 
-    html << questionText << preEnd << "</div>\n";
+    html << questionText << preEnd;
+    html << endl;
+    html << "<input type=button class='protestButton'"
+            "onClick=window.open('protest-window.html','Ratting','width=550,"
+            "height=170,left=150,top=200,toolbar=0,status=0,'); value='There is a "
+            "problem with this question'>"
+         << "</div>\n";
     questionNum++;
   } else {
     string defs = question.at("values");
@@ -210,18 +217,21 @@ void LiQuizCompiler::grabQuestions() {
       nlohmann::json question;  // gets the question header
       s >> question;
       lineNumber++;
-        while (getline(liquizFile, line), !liquizFile.eof() && line != DELIM) { // gets line within question section
-            lineNumber++;
-            questionText = questionText + line + "<p hidden>" + to_string(lineNumber) + "</p>";
-            questionText += '\n';
-        }
+      while (getline(liquizFile, line),
+             !liquizFile.eof() &&
+                 line != DELIM) {  // gets line within question section
         lineNumber++;
-        for (int i = 0; i < questionText.length(); i++) {
-          if (questionText[i] == '$') {
-            questionCount++;
-          }
+        questionText =
+            questionText + line + "<p hidden>" + to_string(lineNumber) + "</p>";
+        questionText += '\n';
+      }
+      lineNumber++;
+      for (int i = 0; i < questionText.length(); i++) {
+        if (questionText[i] == '$') {
+          questionCount++;
         }
-        questionCount /= 2;
+      }
+      questionCount /= 2;
       makeQuestion(question);
       questionCount = 0;
       questionText = "";

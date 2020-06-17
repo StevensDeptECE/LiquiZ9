@@ -43,6 +43,11 @@ input {
     border-style: solid;
 }
 
+.protestButton {
+    font-family: Tims;
+    font-size: 14pt;
+}
+
 div.q {
     background-color: #000;
     border-color: #ff0;

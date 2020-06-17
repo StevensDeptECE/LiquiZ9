@@ -24,8 +24,9 @@ class QuestionType {
 
 class MultipleChoiceHorizontal : public QuestionType {
  private:
-  std::string temp, input, answer, option;
+  std::string temp, input, answer;
   std::string typeID = "q";
+  std::string option = " ";
 
  public:
   void getAnswer();
@@ -37,8 +38,9 @@ class MultipleChoiceHorizontal : public QuestionType {
 
 class MultipleChoiceVertical : public QuestionType {
  private:
-  std::string temp, input, answer, option;
+  std::string temp, input, answer;
   std::string typeID = "q";
+  std::string option = " ";
 
  public:
   void getAnswer();
@@ -50,8 +52,9 @@ class MultipleChoiceVertical : public QuestionType {
 
 class MultipleAnswerHorizontal : public QuestionType {
  private:
-  std::string temp, input, answer, option;
+  std::string temp, input, answer;
   std::string typeID = "m";
+  std::string option = " ";
 
  public:
   void getAnswer();
@@ -63,8 +66,9 @@ class MultipleAnswerHorizontal : public QuestionType {
 
 class MultipleAnswerVertical : public QuestionType {
  private:
-  std::string temp, input, answer, option;
+  std::string temp, input, answer;
   std::string typeID = "m";
+  std::string option = " ";
 
  public:
   void getAnswer();

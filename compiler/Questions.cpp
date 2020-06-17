@@ -45,7 +45,7 @@ void MultipleChoiceHorizontal::getOptions() {
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
       replace += temp + option + "'>" + option + "\t";
-      option = "";
+      option = " ";
     } else {
       option += answer[i];
     }
@@ -94,7 +94,7 @@ void MultipleChoiceVertical::getOptions() {
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
       replace += temp + option + "'>" + option + "\n\n";
-      option = "";
+      option = " ";
     } else {
       option += answer[i];
     }
@@ -134,8 +134,8 @@ void MultipleAnswerHorizontal::getOptions() {
               "' type='checkbox' value='");
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += temp + option + "'>" + option + "\t";
-      option = "";
+      replace += temp + option + "'>" + option + "     ";
+      option = " ";
     } else {
       option += answer[i];
     }
@@ -173,7 +173,7 @@ void MultipleAnswerVertical::getOptions() {
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
       replace += temp + option + "'>" + option + "\n\n";
-      option = "";
+      option = " ";
     } else {
       option += answer[i];
     }
