@@ -23,6 +23,7 @@ void QuestionType::addAnswer(string &typeID, string &qID, const string &ans,
   partNum++;
   buildString(qID, typeID, "_", "q", questionNum, "_", partNum);
   answersFile << qID << "\t" << points << "\t" << ans << '\n';
+  
 }
 
 static regex dSet("(:.*:)");

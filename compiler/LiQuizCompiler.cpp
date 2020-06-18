@@ -149,19 +149,19 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     preEnd = "</pre>";
   } else {
     preStart = "<pre class='text'>";
-    preEnd = "<pre>";
+    preEnd = "</pre>";
   }
 
   if (style != "def") {
     string temp = question.at("points");
-    double points = std::stod(temp);
+    double totalPoints = std::stod(temp);
     string questionName = question.at("name");
     html << "<div class='q' id='q" << questionNum << "'>" << questionNum << ". "
          << questionName << "<span class='pts'> (" << points
          << " points)</span></p>";
     html << "\n" << preStart << "\n";
     smatch m;
-    points = points / questionCount;
+    double points = totalPoints / questionCount;
 
     while (regex_search(questionText, m, specials)) {
       string delim = m[2];
@@ -191,8 +191,8 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     html << questionText << preEnd;
     html << endl;
     html << "<input type='button' class='protestButton'"
-            "onClick='protestRequest()' value='Click to report a problem'>"
-         << "</div>\n";
+            "onClick='protestRequest()' value='Click to report a problem'><br><br>";
+    html << "<div id='" << questionNum << "'></div></div>\n";
     questionNum++;
   } else {
     string defs = question.at("values");
@@ -243,7 +243,7 @@ void LiQuizCompiler::generateFooter() {
           <div class='controls'>
           <div style='position: flow'>Time Remaining</div>
           <div id='bottomTime' class='time'></div>
-          <input class='controls' type='button' value='Submit Quiz' onClick='checkAndSubmit()'/>
+          <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
           </div>
           </form>
       </body>
