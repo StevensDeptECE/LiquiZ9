@@ -81,6 +81,20 @@ void LiQuizCompiler::generateHeader() {
     email = specInfo.at("email");
     author = specInfo.at("author");
 
+    for (nlohmann::json::iterator it = specInfo.at("def").begin(); it != specInfo.at("def").end(); ++it) {
+      string name = it.key();
+      string defs;
+
+      for (int i = 0; i < it.value().size(); i++) {
+        string defVal = it.value()[i];
+        defs += defVal;
+        defs += ",";
+      }
+
+      definitions[name] = defs;
+      answers << "defs" << "\t" << name << "\t" << defs << "\n";
+    }
+
     specFile.close();
   }
 
