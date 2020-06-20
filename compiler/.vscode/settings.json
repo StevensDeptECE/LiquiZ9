@@ -48,6 +48,14 @@
     "stdexcept": "cpp",
     "streambuf": "cpp",
     "typeinfo": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "hash_map": "cpp",
+    "chrono": "cpp",
+    "condition_variable": "cpp",
+    "list": "cpp",
+    "random": "cpp",
+    "ratio": "cpp",
+    "shared_mutex": "cpp",
+    "bit": "cpp"
   }
 }

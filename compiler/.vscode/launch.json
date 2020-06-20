@@ -12,14 +12,15 @@
       "type": "cppdbg",
       "request": "launch",
       "windows" : {
-      "program": "${workspaceFolder}/${fileBaseNameNoExtension}.exe",
-      "cwd": "${workspaceFolder}",
-      "miDebuggerPath": "gdb"
+        "program": "${workspaceFolder}/${fileBaseNameNoExtension}.exe",
+        "cwd": "${workspaceFolder}",
+        "miDebuggerPath": "gdb"
       },
-      "program": "${workspaceFolder}/${fileBaseNameNoExtension}",
+      "program": "${workspaceFolder}/LiQuiz",
+      "cwd": "${workspaceFolder}",
+      "miDebuggerPath": "gdb",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
       "preLaunchTask": "make"
