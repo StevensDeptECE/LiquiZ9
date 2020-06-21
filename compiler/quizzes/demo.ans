@@ -1,9 +1,9 @@
-defs	likert	strongly disagree,disagree,neutral,agree,strongly agree,
-defs	tf	true,false,
-defs	yn	yes,no,
-defs	comp	 ,O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)
-defs	ooterm	 ,parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of
-defs	likert5	 ,strongly disagree,disagree,no opinion,agree,strongly agree
+defs	likert	strongly disagree,disagree,neutral,agree,strongly agree
+defs	tf	true,false
+defs	yn	yes,no
+defs	comp	O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)
+defs	ooterm	parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of
+defs	likert5	strongly disagree,disagree,no opinion,agree,strongly agree
 q_q1_1	10	cat
 q_q2_2	15	Kruger
 m_q3_3	45	Kruger,Favardin,Song,Lu

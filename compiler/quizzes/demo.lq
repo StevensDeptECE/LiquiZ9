@@ -1,9 +1,9 @@
 {"quizspec":"DovKruger.QSPEC", "name":"Demo Quiz"}
-{"style":"def", "name":"comp", "values":" ,O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)"}
+{"style":"def", "name":"comp", "values":"O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)"}
 ---
-{"style":"def", "name":"ooterm", "values":" ,parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of"}
+{"style":"def", "name":"ooterm", "values":"parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of"}
 ---
-{"style":"def", "name":"likert5", "values":" ,strongly disagree,disagree,no opinion,agree,strongly agree"}
+{"style":"def", "name":"likert5", "values":"strongly disagree,disagree,no opinion,agree,strongly agree"}
 ---
 {"style":"text", "name":"Multiple Choice Horizontal", "points":"10"}
 Which of the following is a mammal?
@@ -71,7 +71,7 @@ $vid:TacomaNarrowsBridge.mp4$
 $tar:Type your essay here$
 ---
 {"style":"text", "name":"Object Oriented Terminology", "points":"50"}
-A class is a $def:ooterm:kind of$ object.
+A class is a $def:tf:kind of$ object.
 An object is a $def:ooterm:instance of$ a class.
 To create an object we $def:ooterm:instantiate$ a class.
 An object is an $def:ooterm:instantiation$ of a class.

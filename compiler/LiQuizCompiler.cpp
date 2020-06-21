@@ -90,6 +90,7 @@ void LiQuizCompiler::generateHeader() {
         defs += defVal;
         defs += ",";
       }
+      defs.erase(defs.size()-1,1);
 
       definitions[name] = defs;
       answers << "defs" << "\t" << name << "\t" << defs << "\n";
