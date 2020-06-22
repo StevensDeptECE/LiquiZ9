@@ -3,6 +3,8 @@ package org.liquiz.stevens.service;
 import edu.ksu.canvas.CanvasApiFactory;
 import edu.ksu.canvas.interfaces.SubmissionWriter;
 import edu.ksu.canvas.model.Progress;
+import edu.ksu.canvas.oauth.OauthToken;
+import edu.ksu.canvas.requestOptions.MultipleSubmissionsOptions;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.model.LtiLaunchData;
 import edu.ksu.lti.launch.model.LtiSession;
@@ -10,12 +12,8 @@ import edu.ksu.lti.launch.oauth.LtiLaunch;
 import edu.ksu.lti.launch.service.LtiSessionService;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
-import sun.rmi.runtime.Log;
-import edu.ksu.canvas.requestOptions.MultipleSubmissionsOptions;
-import edu.ksu.canvas.oauth.OauthToken;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
