@@ -118,7 +118,16 @@ function showResult() {
   for (var i = 0; i < answerSections.length; i++) {
     answerSections[i].style.display = "inline";
   }
-  
+  var inputs = document.getElementsByTagName('input');
+  for (var i = 0; i < inputs.length; i++) {
+    if (inputs[i].checked === true) {
+      inputs[i].disabled = false;
+    } else {
+      inputs[i].readOnly = true;
+      inputs[i].disabled = true;
+    }
+  }
+
   getJSON("http://localhost:8080/LiquiZServer/getAnswers", function (err,data) {
     if (err !== null) {
       alert("Something went wrong: " + err);
@@ -138,8 +147,12 @@ function showResult() {
               options[j].disabled = false;
             } else if (options[j].type === "checkbox") {
               options[j].checked = true;
+            } else {
+              options[j].diabled = false;
+              options[j].value = answer;
             }
           }
+          options[j].value = answer;
         }
 
           // for (var questionCount = 1; questionCount <= questionAmount; questionCount++) {

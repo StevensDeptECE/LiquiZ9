@@ -71,7 +71,7 @@ $vid:TacomaNarrowsBridge.mp4$
 $tar:Type your essay here$
 ---
 {"style":"text", "name":"Object Oriented Terminology", "points":"50"}
-A class is a $def:tf:kind of$ object.
+A class is a $def:ooterm:kind of$ object.
 An object is a $def:ooterm:instance of$ a class.
 To create an object we $def:ooterm:instantiate$ a class.
 An object is an $def:ooterm:instantiation$ of a class.
