@@ -11,6 +11,7 @@ class LiQuizCompiler {
  private:
   const static std::regex questionStart;
   const static std::regex specials;
+  const static std::regex qID;
 
   static std::unordered_map<std::string, QuestionType *> questionTypes;
   std::unordered_map<std::string, std::string> definitions;
@@ -21,6 +22,8 @@ class LiQuizCompiler {
   const std::string DELIM = "---";
   std::string questionText;
   std::string inputText;
+  std::string answerText;
+  std::string answerInput;
 
   std::ofstream html;
   std::ofstream answers;
@@ -40,13 +43,15 @@ class LiQuizCompiler {
       author, email;
 
   void findQuestionType(const std::string &type, double &points,
-                        std::string &delim);
+                        std::string &delim, int pos, int len);
 
   std::string removeExtension(const char fileName[]);
 
   void findDefinitions(const std::string &name, std::string &defs) const;
 
   nlohmann::json getJSONHeader();
+
+  void setAnswer();
 
   void generateHeader();
   void makeQuestion(nlohmann::json &question);

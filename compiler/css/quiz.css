@@ -128,3 +128,7 @@ textarea {
     font-family: Arial;
     font-size: 14pt;
 }
+
+.answer {
+    display: none;
+}

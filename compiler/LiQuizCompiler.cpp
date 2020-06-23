@@ -6,13 +6,15 @@
 using namespace std;
 
 void LiQuizCompiler::findQuestionType(const string &type, double &points,
-                                      string &delim) {
+                                      string &delim, int pos, int len) {
   QuestionType *question = (questionTypes.find(type) != questionTypes.end())
                                ? questionTypes[type]
                                : defaultQuestionType;
   if (question != nullptr) {
     question->setText(delim);
     inputText = question->print(this, answers, partNum, questionNum, points);
+    questionText.replace(pos, len, inputText);
+    // answerText = question->setAnswer(questionText);
   }
 }
 
@@ -81,7 +83,8 @@ void LiQuizCompiler::generateHeader() {
     email = specInfo.at("email");
     author = specInfo.at("author");
 
-    for (nlohmann::json::iterator it = specInfo.at("def").begin(); it != specInfo.at("def").end(); ++it) {
+    for (nlohmann::json::iterator it = specInfo.at("def").begin();
+         it != specInfo.at("def").end(); ++it) {
       string name = it.key();
       string defs;
 
@@ -90,10 +93,11 @@ void LiQuizCompiler::generateHeader() {
         defs += defVal;
         defs += ",";
       }
-      defs.erase(defs.size()-1,1);
+      defs.erase(defs.size() - 1, 1);
 
       definitions[name] = defs;
-      answers << "defs" << "\t" << name << "\t" << defs << "\n";
+      answers << "defs"
+              << "\t" << name << "\t" << defs << "\n";
     }
 
     specFile.close();
@@ -155,6 +159,32 @@ void LiQuizCompiler::generateHeader() {
                 )";
 }
 
+void LiQuizCompiler::setAnswer() {
+  smatch m;
+  answerText = questionText;
+  int pos, end;
+  while (regex_search(answerText, m, qID)) {
+    pos = m.position();
+    for (int i = m.position(); answerText[i] != '='; i++) {
+      pos++;
+    }
+    answerText.insert(pos+2, "a");
+  }
+  //   string result = m[0];
+  //   pos = m.position();
+  //   for (int i = m.position(); answerText[i] != '_'; i++) {
+  //     pos++;
+  //   }
+  //   pos+=2;
+  //   end = pos;
+  //   for (int i = pos; answerText[i] != '_'; i++) {
+  //     end++;
+  //   }
+  //   int len = end-pos;
+  //   answerText.replace(pos-1, len, "a");
+  // }
+}
+
 void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
   string style = question.at("style");
   string preStart, preEnd;
@@ -172,7 +202,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     double totalPoints = std::stod(temp);
     string questionName = question.at("name");
     html << "<div class='q' id='q" << questionNum << "'>" << questionNum << ". "
-         << questionName << "<span class='pts'> (" << points
+         << questionName << "<span class='pts'> (" << totalPoints
          << " points)</span></p>";
     html << "\n" << preStart << "\n";
     smatch m;
@@ -192,22 +222,26 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
 
       string type;
       if (delim[0] != 'f') {
-        for (int i = 0; delim[i] != ':'; i++) {
+        for (int i = 0; delim[i] != ':' && delim[i] != '{'; i++) {
           type += delim[i];
         }
       } else {
         type = delim[0];
       }
-      findQuestionType(type, points, delim);
-      questionText.replace(m.position(), m.length(), inputText);
-      // answerText = "<input type='text' id='a_2_2' hidden/>";
+      findQuestionType(type, points, delim, m.position(), m.length());
+      // questionText.replace(m.position(), m.length(), inputText);
+      //answerText.replace(m.position(), m.length(), answerInput);
     }
+    
+    setAnswer();
 
     html << questionText << preEnd;
     html << endl;
+    html << "<div class='answer'> " << preStart << answerText << preEnd
+         << "</div>\n";
     html << "<input type='button' class='protestButton'"
-            "onClick='protestRequest()' value='Click to report a problem'><br><br>";
-    html << "<div id='" << questionNum << "'></div></div>\n";
+            "onClick='protestRequest()' value='Click to report a "
+            "problem'><br></div>";
     questionNum++;
   } else {
     string defs = question.at("values");
@@ -282,6 +316,7 @@ void LiQuizCompiler::generateQuiz() {
 const regex LiQuizCompiler::questionStart("^\\{");
 const regex LiQuizCompiler::specials(
     "\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
+const regex LiQuizCompiler::qID("name='[q||T||Q||m||s||n||S]_[0-9]*_[0-9]*'");
 
 unordered_map<string, QuestionType *> LiQuizCompiler::questionTypes{
     {"mch", new MultipleChoiceHorizontal()},
@@ -293,4 +328,5 @@ unordered_map<string, QuestionType *> LiQuizCompiler::questionTypes{
     {"def", new Definition()},
     {"dro", new DropDown()},
     {"img", new Image()},
-    {"vid", new Video()}};
+    {"vid", new Video()},
+    {"rnd", new RandomQuestion}};
