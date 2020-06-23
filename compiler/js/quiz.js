@@ -118,7 +118,7 @@ function showResult() {
   for (var i = 0; i < answerSections.length; i++) {
     answerSections[i].style.display = "inline";
   }
-  var inputs = document.getElementsByTagName('input');
+  var inputs = document.getElementsByTagName("input");
   for (var i = 0; i < inputs.length; i++) {
     if (inputs[i].checked === true) {
       inputs[i].disabled = false;
@@ -128,17 +128,41 @@ function showResult() {
     }
   }
 
-  getJSON("http://localhost:8080/LiquiZServer/getAnswers", function (err,data) {
+  getJSON("http://localhost:8080/LiquiZServer/getAnswers", function (
+    err,
+    data
+  ) {
     if (err !== null) {
       alert("Something went wrong: " + err);
     } else {
       var answerObj = data;
       var questionAmount = Object.keys(answerObj).length;
+      var sectionCurrent, sectionLast = answerObj[0]["id"].split("_")[1];
+      var pointsTotal = 0;
+      var pointsEarned = 0;
 
       for (var i = 0; i < questionAmount; i++) {
         var qID = "a" + answerObj[i]["id"];
         var answer = answerObj[i]["answers"];
         var options = document.getElementsByName(qID);
+        sectionCurrent = answerObj[i]["id"].split("_")[1];
+
+        if (sectionCurrent != sectionLast) {
+          var section = document.getElementById(sectionLast);
+          section.innerHTML =
+            "You earned: " +
+            Math.ceil(100 * pointsEarned) / 100 +
+            " points out of: " +
+            Math.ceil(100 * pointsTotal) / 100 +
+            " points.";
+
+          pointsTotal = 0;
+          pointsEarned = 0;
+          sectionLast = sectionCurrent;
+        }
+        pointsTotal += answerObj[i]["pointsT"];
+        pointsEarned += answerObj[i]["pointsE"];
+
         for (var j = 0; j < options.length; j++) {
           options[j].setAttribute("disabled", true);
           if (answer.includes(options[j].value)) {
@@ -154,26 +178,7 @@ function showResult() {
           }
           options[j].value = answer;
         }
-
-          // for (var questionCount = 1; questionCount <= questionAmount; questionCount++) {
-          //   var answerPlace = document.getElementsByName(questionCount);
-          //   var answer = answerObj[questionCount]["answers"].split(",");
-          //   console.log(answerPlace);
-          //   // for (var i = 0; i < answerPlace.length; i++) {
-          //   //   for (var j = 0; j < answer.length; i++) {
-          //   //     if (answerPlace[i].value === answer[j]) {
-          //   //       if (answerPlace[i].type === "radio" || answerPlace[i].type === "checkbox") {
-          //   //         answerPlace[i].checked = true;
-          //   //       }
-          //   //     }
-          //   //   }
-          //   // }
-          // }
-
-          //   var x = document.getElementById(questionCount);
-          //   x.innerHTML = "You earned " + answerObj[questionCount]["points earned"] + " points. The answer(s) are: " + answerObj[questionCount].answer;
-          
-        }
       }
+    }
   });
 }

@@ -170,19 +170,6 @@ void LiQuizCompiler::setAnswer() {
     }
     answerText.insert(pos+2, "a");
   }
-  //   string result = m[0];
-  //   pos = m.position();
-  //   for (int i = m.position(); answerText[i] != '_'; i++) {
-  //     pos++;
-  //   }
-  //   pos+=2;
-  //   end = pos;
-  //   for (int i = pos; answerText[i] != '_'; i++) {
-  //     end++;
-  //   }
-  //   int len = end-pos;
-  //   answerText.replace(pos-1, len, "a");
-  // }
 }
 
 void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
@@ -229,8 +216,6 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
         type = delim[0];
       }
       findQuestionType(type, points, delim, m.position(), m.length());
-      // questionText.replace(m.position(), m.length(), inputText);
-      //answerText.replace(m.position(), m.length(), answerInput);
     }
     
     setAnswer();
@@ -238,7 +223,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     html << questionText << preEnd;
     html << endl;
     html << "<div class='answer'> " << preStart << answerText << preEnd
-         << "</div>\n";
+         << "<div id='" << questionNum << "'></div></div>\n";
     html << "<input type='button' class='protestButton'"
             "onClick='protestRequest()' value='Click to report a "
             "problem'><br></div>";
