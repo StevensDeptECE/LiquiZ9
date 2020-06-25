@@ -26,11 +26,11 @@ void QuestionType::addAnswer(string &typeID, string &qID, const string &ans,
   answersFile << qID << "\t" << points << "\t" << ans << '\n';
 }
 
-std::string QuestionType::setAnswer(const string &ogText){
-  string searchText = ogText;
+std::string QuestionType::setAnswer(const string &origText){
+  string searchText = origText;
   size_t pos;
   std::string id = "name='";
-  char dash = '_';
+  const char dash = '_';
 
   pos = qID.find(dash);
   pos = qID.find(dash, pos+1);

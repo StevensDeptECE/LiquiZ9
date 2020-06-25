@@ -116,8 +116,10 @@ function getJSON(url, callback) {
 function showResult() {
   var answerSections = document.getElementsByClassName("answer");
   for (var i = 0; i < answerSections.length; i++) {
-    answerSections[i].style.display = "inline";
+    answerSections[i].style.display = "block";
+    // answerSections[i].style.color = "#ff0000";
   }
+
   var inputs = document.getElementsByTagName("input");
   for (var i = 0; i < inputs.length; i++) {
     if (inputs[i].checked === true) {
@@ -125,6 +127,9 @@ function showResult() {
     } else {
       inputs[i].readOnly = true;
       inputs[i].disabled = true;
+    }
+    if (inputs[i].type === "checkbox") {
+      inputs[i].style.borderColor = "#ff0000";
     }
   }
 

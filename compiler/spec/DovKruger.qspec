@@ -7,7 +7,7 @@
   "license":"Gnu 3.0 see license.txt",
 
   "defaults": {
-     "img":"StevensLogo380x326.png",
+     "img":"stevenslogotrans.png",
      "stylesheet":"quiz.css",
      
      "numberOfTries":4,

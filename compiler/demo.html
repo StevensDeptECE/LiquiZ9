@@ -1,48 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+    <link rel="stylesheet" type="text/css" href='css/quiz.css'> 
+    <script src='js/quiz.js'></script>
+</head>
+<body onload='startTime(30)'>
+  <form method="get" action="gradquiz.jsp"></form>
 
-                <!DOCTYPE html>
-                <html>
-                <head>
-                <meta charset="UTF-8"/>
-                <title>
-                
-                </title>
-                    <link rel="stylesheet" type="text/css" href='css/quiz.css'>
- 
-                    <script src='js/quiz.js'></script>
-                </head>
-                <body onload='startTime(30)'>
+  <!-- Header -->
+  <div id='header' class='header'>
+    <img class='logo' src='media/stevenslogotrans.png'/>
+    <div class='headerText'>
+      <div class='quizTitle'>
+        Demo Quiz
+      </div>
 
-                <form method="get" action="gradquiz.jsp">
-                <div id='header' class='header'>
-                <div style='background-color: #ccc;text-align: center;border-radius: 10px; width: 240px; float: left'>
-                    <img class='header' src='media/StevensLogo380x326.png'/>
+      <div class='headerDetails'>
+        <div class='headerRow'>
+          Dov Kruger
+        </div>
+        <div class='headerRow'>
+          Email  Dov.Kruger@stevens.edu  if you have any questions!
+        </div>
+        <div class='headerRow'>
+          <input id='pledge' type='checkbox' name='pledged' value='pledged'/>
+          <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
+        </div>
+        <span class='headerRow'>Time Remaining:</span>
+      </div>
+    </div>
+    <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
+  </div>
 
-                </div>
-                <div style='margin-left: 250px'>
-                    <table>
-                    <tr><td class='headtext'>Demo Quiz</div></td><td></td></tr>
-<tr><td class='headtext'>Dov Kruger</td></tr>
-<tr><td class='headtext'>Email  Dov.Kruger@stevens.edu  if you have any questions!</td></tr>
-
-                    <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledged' value='pledged'/><label for='pledge'> I pledge my honor that I have abided by the Stevens Honor System</label></td>
-                    <tr><td class='headtext'>Time Remaining:</td><td id='topTime' class='time'></td><td><input id='audioControl' class='controls' type='button' value='turn audio ON' onClick='scheduleAudio()'/>
-                </td></tr>
-                    </table>
-                <audio id="alert25"><source src="media/25min.ogg" type="audio/ogg"/></audio>
-                <audio id="alert20"><source src="media/20min.ogg" type="audio/ogg"></audio>
-                <audio id="alert15"><source src="media/15min.ogg" type="audio/ogg"></audio>
-                <audio id="alert10"><source src="media/10min.ogg" type="audio/ogg"></audio>
-                <audio id="alert5"><source src="media/5min.ogg" type="audio/ogg"></audio>
-                <audio id="alertover"><source src="media/over.ogg" type="audio/ogg"></audio>
-                <audio id="classical">
-                <source src="media/JohnLewisGrant_BachPrelude_01.mp3" type="audio/mp3"/>
-                    <source src="media/JohnLewisGrant_BachPrelude_02.mp3" type="audio/mp3"/>
-                    <source src="media/JohnLewisGrant_BachPrelude_03.mp3" type="audio/mp3"/>
-                </audio>
-                </div>
-                </div>
-
-                <div class='q' id='q1'>1. Multiple Choice Horizontal<span class='pts'> (10 points)</span></p>
+<div class='q' id='q1'>1. Multiple Choice Horizontal<span class='pts'> (10 points)</span></p>
 <pre class='text'>
 Which of the following is a mammal?<p hidden>9</p>
 <input class='mc' name='q_1_1' type='radio' value=' fish'>  fish	<input class='mc' name='q_1_1' type='radio' value='bird'> bird	<input class='mc' name='q_1_1' type='radio' value='cat'> cat	<p hidden>10</p>

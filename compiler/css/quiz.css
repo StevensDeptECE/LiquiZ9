@@ -1,134 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin&display=swap');
+
+
 #header {
-    background-color: #b01010;
-    color: #d0d0d0;
-    border-radius: 20px;
-    padding: 10px;
+    background-color: #A32638;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.title {
-    font-family: Times;
-    font-size: 24pt;
-    font-weight: bold;
+.logo {
+    width: 250px;
+    height: auto;
+    margin: 20px;
+    margin-right: 30px;
 }
-.inst {
-    font-size: 18pt;
+
+.headerText {
+    flex-direction: column;
+    display: flex;
+    margin: auto;
 }
-.time {
-    font-family: Courier;
-    font-size: 16pt;
+
+.quizTitle {
+    max-width: 50%;
+    font-size: 2rem;
+}
+
+.headerDetails {
+    margin-bottom: 5px;
+}
+
+.headerRow {
+    display: flex;
+    margin: 2px;
+}
+
+.audioControl {
+    align-self: center;
+    display: flex;
+    margin: auto;
 }
 
 body {
-    background-color: #444;
+    background-color: #ffffff;
     color: #fff;
     font-family: Times;
     font-size: 16pt;
-}
-
-.code {
-    background-color: black;
-    color: #ffffff;
-    font-family: Courier;
-    font-size: 16pt;
-    font-weight: 900;
-}
-
-input {
-    font-family: Courier;
-    font-size: 18pt;
-    background-color: #202020;
-    color: #fff;
-    border-color: #ff0000;
-    border-width: 1;
-    border-style: solid;
-}
-
-.protestButton {
-    font-family: Tims;
-    font-size: 14pt;
+    margin: 0;
+    font-family: 'Libre Franklin', sans-serif;
 }
 
 div.q {
-    background-color: #000;
-    border-color: #ff0;
-    border-width: 1;
-    width: 80%;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 20px;
-}
-
-td.orig {
-    border-color: #fff;
-    border-width: 1;
-    border-style: solid;
-}
-.qh {
-    font-size: 14pt;
-}
-.pts {
-    font-size: 12pt;
-}
-
-.headtext {
-    font-family: Times;
-    font-size: 16pt;
-}
-.ctrl {
-    font-family: Times;
-    font-size: 16pt;
-    border-radius: 5px;
-    background-color: #888;
+    background-color: #9A989A;
+    margin: 20px;
 }
 
 video {
-    width: 320;
-    height: 240;
+    width: 320px;
+    height: 240px;
     padding: 10px;
     margin: 10px;
     background-color: red;
 }
 
-img.header {
-    width: 70%;
-}
-
-textarea {
-    font-family: Times, serif;
-    font-size: 14pt;
-    width: 100%;
-    height: 50%;
-}
-
-.mat {
-    font-family: Courier, fixed;
-    font-size: 12pt;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #000080;
-}
-
-.mc {
-    font-family: Times;
-    font-size:16pt;
-    font-weight: bold;
-}
-.mch {
-    font-family: Times;
-    font-size:16pt;
-    font-weight: bold;
-    width: 20%;
-}
-
-.survey {
-    table-layout: fixed;
-    width: 100%;
-}
-.text {
-    font-family: Arial;
-    font-size: 14pt;
-}
-
 .answer {
     display: none;
+    background-color: #444;
 }

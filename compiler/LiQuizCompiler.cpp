@@ -54,13 +54,11 @@ nlohmann::json LiQuizCompiler::getJSONHeader() {
 void LiQuizCompiler::generateHeader() {
   nlohmann::json header = getJSONHeader();
   html <<
-      R"(
-                <!DOCTYPE html>
-                <html>
-                <head>
-                <meta charset="UTF-8"/>
-                <title>
-                )";
+R"(<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+    <link rel="stylesheet" type="text/css" href='css/)";
 
   if (header.find("quizspec") != header.end()) {
     string specName = header.at("quizspec");
@@ -103,60 +101,55 @@ void LiQuizCompiler::generateHeader() {
     specFile.close();
   }
 
+  html << styleSheet << "'>";
   html <<
-      R"(
-                </title>
-                    <link rel="stylesheet" type="text/css" href='css/)";
-  html << styleSheet << "'>"
-       << "\n";
+R"( 
+    <script src='js/quiz.js'></script>
+</head>
+<body onload='startTime()";
+  html << timeLimit << ")'>";
   html <<
-      R"( 
-                    <script src='js/quiz.js'></script>
-                </head>
-                <body onload='startTime()";
-  html << timeLimit << ")'>" << '\n';
-  html <<
-      R"(
-                <form method="get" action="gradquiz.jsp">
-                <div id='header' class='header'>
-                <div style='background-color: #ccc;text-align: center;border-radius: 10px; width: 240px; float: left'>
-                    <img class='header' src='media/)";
-  html << imgFile << "'/>"
-       << "\n";
-  html <<
-      R"(
-                </div>
-                <div style='margin-left: 250px'>
-                    <table>
-                    <tr><td class='headtext'>)";
-  html << quizName << "</div></td><td></td></tr>"
-       << "\n";
-  html << "<tr><td class='headtext'>" << author << "</td></tr>"
-       << "\n";
-  html << "<tr><td class='headtext'>Email  " << email
-       << "  if you have any questions!</td></tr>"
-       << "\n";
-  html <<
-      R"(
-                    <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledged' value='pledged'/><label for='pledge'> I pledge my honor that I have abided by the Stevens Honor System</label></td>
-                    <tr><td class='headtext'>Time Remaining:</td><td id='topTime' class='time'></td><td><input id='audioControl' class='controls' type='button' value='turn audio ON' onClick='scheduleAudio()'/>
-                </td></tr>
-                    </table>
-                <audio id="alert25"><source src="media/25min.ogg" type="audio/ogg"/></audio>
-                <audio id="alert20"><source src="media/20min.ogg" type="audio/ogg"></audio>
-                <audio id="alert15"><source src="media/15min.ogg" type="audio/ogg"></audio>
-                <audio id="alert10"><source src="media/10min.ogg" type="audio/ogg"></audio>
-                <audio id="alert5"><source src="media/5min.ogg" type="audio/ogg"></audio>
-                <audio id="alertover"><source src="media/over.ogg" type="audio/ogg"></audio>
-                <audio id="classical">
-                <source src="media/JohnLewisGrant_BachPrelude_01.mp3" type="audio/mp3"/>
-                    <source src="media/JohnLewisGrant_BachPrelude_02.mp3" type="audio/mp3"/>
-                    <source src="media/JohnLewisGrant_BachPrelude_03.mp3" type="audio/mp3"/>
-                </audio>
-                </div>
-                </div>
+R"(
+  <form method="get" action="gradquiz.jsp"></form>
 
-                )";
+  <!-- Header -->
+  <div id='header' class='header'>
+    <img class='logo' src='media/)";
+  html << imgFile << "'/>";
+  html <<
+R"(
+    <div class='headerText'>
+      <div class='quizTitle'>
+        )";
+  html << quizName;
+  html <<
+R"(
+      </div>
+
+      <div class='headerDetails'>
+        <div class='headerRow'>
+          )";
+  html << author;
+  html << 
+R"(
+        </div>
+        <div class='headerRow'>
+          )";
+  html << "Email  " << email << "  if you have any questions!";
+  html <<
+R"(
+        </div>
+        <div class='headerRow'>
+          <input id='pledge' type='checkbox' name='pledged' value='pledged'/>
+          <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
+        </div>
+        <span class='headerRow'>Time Remaining:</span>
+      </div>
+    </div>
+    <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
+  </div>
+
+)";
 }
 
 void LiQuizCompiler::setAnswer() {
