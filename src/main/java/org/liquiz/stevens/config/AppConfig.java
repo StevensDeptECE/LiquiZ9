@@ -1,5 +1,7 @@
 package org.liquiz.stevens.config;
 
+import edu.ksu.canvas.CanvasApiFactory;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.liquiz.stevens.service.LtiLaunchKeyServiceImpl;
@@ -12,12 +14,14 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 import javax.servlet.DispatcherType;
 
 @Configuration
+@EnableAutoConfiguration
 @ComponentScan({"org.liquiz.stevens", "edu.ksu.lti.launch"})
 public class AppConfig {
 

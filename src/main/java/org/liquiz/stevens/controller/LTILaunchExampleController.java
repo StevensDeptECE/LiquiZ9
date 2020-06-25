@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@Scope
+@Scope("session")
 public class LTILaunchExampleController extends LtiLaunchController{
     private static final Logger LOG = Logger.getLogger(LTILaunchExampleController.class);
 
@@ -48,7 +48,7 @@ public class LTILaunchExampleController extends LtiLaunchController{
         LOG.info("Showing Activity Reporting configuration XML");
         String ltiLaunchUrl = OauthController.getApplicationBaseUrl(request, true) + "/launch";
         LOG.debug("LTI launch URL: " + ltiLaunchUrl);
-        return new ModelAndView("ltiConfigure"/*, "url", ltiLaunchUrl*/);
+        return new ModelAndView("ltiConfigure", "url", ltiLaunchUrl);
     }
 
     @RequestMapping("/helloWorld")
@@ -58,7 +58,7 @@ public class LTILaunchExampleController extends LtiLaunchController{
             throw new AccessDeniedException("You cannot access this content without a valid session");
         }
         System.out.println(ltiSession.getEid());
-        return new ModelAndView("helloworld", "username", ltiSession.getEid());
+        return new ModelAndView("grade", "username", ltiSession.getEid());
     }
 
     @RequestMapping(value = "/grade", method = RequestMethod.POST)
@@ -111,11 +111,11 @@ public class LTILaunchExampleController extends LtiLaunchController{
      */
     @Override
     protected String getInitialViewPath() {
-        return "/grade";
+        return "/helloWorld";
     }
 
     @Override
     protected String getApplicationName() {
-        return "lti-test";
+        return "Liquiz_test2";
     }
 }

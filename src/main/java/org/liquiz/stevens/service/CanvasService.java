@@ -11,7 +11,11 @@ import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.oauth.LtiLaunch;
 import edu.ksu.lti.launch.service.LtiSessionService;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,16 +23,23 @@ import java.util.Optional;
 
 //https://github.com/kstateome/lti-attendance/blob/374acac3aefbfe89fd148c5e353e19e422f03e1c/src/main/java/edu/ksu/canvas/attendance/services/CanvasApiWrapperService.java
 
+@Component
 @Scope(value = "session")
+@Service
+@Qualifier
 public class CanvasService {
 
     private static Logger LOG = Logger.getLogger(CanvasService.class);
 
+    @Autowired
     protected LtiLaunch ltiLaunch;
 
+    @Autowired
     private LtiSessionService ltiSessionService;
 
+    @Autowired
     private CanvasApiFactory canvasApiFactory;
+
 
     public void ensureApiTokenPresent() throws NoLtiSessionException {
         ltiLaunch.ensureApiTokenPresent();

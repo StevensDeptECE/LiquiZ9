@@ -6,7 +6,7 @@ public class Assignment {
 
     public Assignment(String url, String sourcedid){
         this.lis_outcome_service_url = url;
-        this.lis_result_sourcedid = url;
+        this.lis_result_sourcedid = sourcedid;
     }
 
     public String getLis_outcome_service_url(){

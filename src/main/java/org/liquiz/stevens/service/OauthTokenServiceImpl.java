@@ -1,6 +1,7 @@
 package org.liquiz.stevens.service;
 
 import edu.ksu.lti.launch.service.OauthTokenService;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
