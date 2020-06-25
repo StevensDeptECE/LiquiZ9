@@ -173,18 +173,31 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     preStart = "<pre class='pcode'>\n";
     preEnd = "</pre>";
   } else {
-    preStart = "<pre class='text'>";
-    preEnd = "</pre>";
+    preStart = "<p class='text'>";
+    preEnd = "</p>";
   }
 
   if (style != "def") {
     string temp = question.at("points");
     double totalPoints = std::stod(temp);
     string questionName = question.at("name");
-    html << "<div class='q' id='q" << questionNum << "'>" << questionNum << ". "
-         << questionName << "<span class='pts'> (" << totalPoints
-         << " points)</span></p>";
-    html << "\n" << preStart << "\n";
+    html << R"(
+  <div class='section'>
+    <div class='question' id='q)";
+    html << questionNum << "'>";
+    html << R"(
+      <div>
+        )";
+    html << questionName;
+    html << R"(
+        <span class='pts'>)";
+    html << totalPoints<< " points)</span>";
+    html << R"(
+      </div>
+      )";
+    html << preStart;
+    html << R"(
+        )";
     smatch m;
     double points = totalPoints / questionCount;
 
@@ -247,7 +260,7 @@ void LiQuizCompiler::grabQuestions() {
                  line != DELIM) {  // gets line within question section
         lineNumber++;
         questionText =
-            questionText + line + "<p hidden>" + to_string(lineNumber) + "</p>";
+            questionText + line + " <p hidden>" + to_string(lineNumber) + "</p>";
         questionText += '\n';
       }
       lineNumber++;

@@ -53,9 +53,20 @@ body {
     font-family: 'Libre Franklin', sans-serif;
 }
 
-div.q {
+.section {
     background-color: #9A989A;
     margin: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.answer {
+    display: none;
+    background-color: #444;
+}
+
+.protestButton {
+    align-self: center;
 }
 
 video {
@@ -64,9 +75,4 @@ video {
     padding: 10px;
     margin: 10px;
     background-color: red;
-}
-
-.answer {
-    display: none;
-    background-color: #444;
 }

@@ -33,16 +33,57 @@
     <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
   </div>
 
-<div class='q' id='q1'>1. Multiple Choice Horizontal<span class='pts'> (10 points)</span></p>
-<pre class='text'>
-Which of the following is a mammal?<p hidden>9</p>
-<input class='mc' name='q_1_1' type='radio' value=' fish'>  fish	<input class='mc' name='q_1_1' type='radio' value='bird'> bird	<input class='mc' name='q_1_1' type='radio' value='cat'> cat	<p hidden>10</p>
-</pre>
-<div class='answer'> <pre class='text'>Which of the following is a mammal?<p hidden>9</p>
-<input class='mc' name='aq_1_1' type='radio' value=' fish'>  fish	<input class='mc' name='aq_1_1' type='radio' value='bird'> bird	<input class='mc' name='aq_1_1' type='radio' value='cat'> cat	<p hidden>10</p>
-</pre><div id='1'></div></div>
-<input type='button' class='protestButton'onClick='protestRequest()' value='Click to report a problem'><br></div><div class='q' id='q2'>2. Multiple Choice Vertical<span class='pts'> (15 points)</span></p>
-<pre class='text'>
+  <div class='section'>
+    <div class='question' id='q1'>
+      <div>
+      1. Multiple Choice Horizontal 
+      <span class='pts'>(10 points)</span>
+      </div>
+      <p class='text'>
+        Which of the following is a mammal? <p hidden>9</p>
+        <div>
+        <input class='mc' id='q_1_1_Option1' name='q_1_1' type='radio' value='fish'>
+        <label for='q_1_1_Option1'>fish</label>
+        </div>
+        <div>
+        <input class='mc' id='q_1_1_Option2' name='q_1_1' type='radio' value='bird'>
+        <label for='q_1_1_Option2'>bird</label>
+        </div>
+        <div>
+        <input class='mc' name='q_1_1' type='radio' value='cat'>
+        <label for='q_1_1_Option3'>cat</label>  <p hidden>10</p>
+        </div>
+      </p>
+    </div>
+
+    <div class='answer'> 
+      <p class='text'>
+        Which of the following is a mammal? <p hidden>9</p>
+        <div>
+        <input class='mc' id='q_1_1_Option1' name='aq_1_1' type='radio' value='fish'>
+        <label for='q_1_1_Option1'>fish</label>
+        </div>
+        <div>
+        <input class='mc' id='q_1_1_Option2' name='aq_1_1' type='radio' value='bird'>
+        <label for='q_1_1_Option2'>bird</label>
+        </div>
+        <div>
+        <input class='mc' name='aq_1_1' type='radio' value='cat'>
+        <label for='q_1_1_Option3'>cat</label>  <p hidden>10</p>
+        </div>
+      </p>
+    </div>
+
+    <input type='button' class='protestButton'onClick='protestRequest()' value='Click to report a problem'><br>
+  </div>
+
+
+
+
+
+
+    <div class='q' id='q2'>2. Multiple Choice Vertical<span class='pts'> (15 points)</span></p>
+  <pre class='text'>
 Who is in the ECE Department?<p hidden>13</p>
 <input class='mc' name='q_2_2' type='radio' value='Kruger'> Kruger
 
