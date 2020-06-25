@@ -1,2 +1,6 @@
 *.html
-.idea
+.idea/
+./target
+.classpath
+.project
+.settings/

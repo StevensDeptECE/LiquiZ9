@@ -33,6 +33,7 @@ public class LTILaunchExampleController extends LtiLaunchController{
 
     protected Assignment assignment;
 
+    @Autowired
     protected CanvasService canvasService;
 
     protected RoleChecker roleChecker;
