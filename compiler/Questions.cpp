@@ -93,8 +93,7 @@ R"(        <div class='horizontal'>
   }
   count = 1;
   replace += R"(
-        </div>
-)";
+        </div>)";
 }
 
 string MultipleChoiceHorizontal::print(const LiQuizCompiler *compiler,
@@ -156,8 +155,7 @@ R"(        <div class='vertical'>
   }
   count = 1;
   replace += R"(
-        </div>
-)";
+        </div>)";
 }
 
 string MultipleChoiceVertical::print(const LiQuizCompiler *compiler,
@@ -208,8 +206,7 @@ R"(        <div class='horizontal'>
   }
   count = 1;
   replace += R"(
-        </div>
-)";
+        </div>)";
 }
 
 string MultipleAnswerHorizontal::print(const LiQuizCompiler *compiler,
@@ -259,8 +256,7 @@ R"(        <div class='vertical'>
   }
   count = 1;
   replace += R"(
-        </div>
-)";
+        </div>)";
 }
 
 string MultipleAnswerVertical::print(const LiQuizCompiler *compiler,

@@ -190,7 +190,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     html << questionNum << "." << "\t" << questionName;
     html << R"(
         <span class='pts'>  )";
-    html << "(" << totalPoints<< " points)</span>";
+    html << "(" << totalPoints<< " points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>";
     html << R"(
       </div>
       )";
@@ -220,12 +220,10 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
       }
       findQuestionType(type, points, delim, m.position(), m.length());
     }
-    
+    questionText.erase(questionText.length()-1,1);
     setAnswer();
+    html << questionText << preEnd;
 
-    html << questionText;
-    html << R"(      )";
-    html << preEnd;
     html << R"(
     </div>
 
@@ -233,13 +231,12 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
       )";
     html << preStart;
     html << R"(
-        )";
+)";
     html << answerText;
     html << R"(      )";
     html << preEnd;
     html << R"(
     </div>
-    <input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'><br>
   </div>
   
   )";
@@ -270,7 +267,7 @@ void LiQuizCompiler::grabQuestions() {
                  line != DELIM) {  // gets line within question section
         lineNumber++;
         questionText =
-            questionText + line + " <p hidden>" + to_string(lineNumber) + "</p>";
+            questionText + line + "<p hidden>" + to_string(lineNumber) + "</p>";
         questionText += '\n';
       }
       lineNumber++;

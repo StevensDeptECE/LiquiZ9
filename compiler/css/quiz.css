@@ -54,19 +54,27 @@ body {
 }
 
 .section {
-    background-color: #9A989A;
     margin: 20px;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 4px 8px 0  rgb(238, 162, 174), 0 6px 20px 0 rgb(238, 183, 191);
 }
 
 .answer {
     display: none;
+    margin: 20px;
     background-color: #444;
+}
+
+.question {
+    margin: 20px;
+    background-color: white;
+    color: black;
 }
 
 .protestButton {
     align-self: center;
+    margin-left: 30px;
 }
 
 video {
@@ -88,4 +96,5 @@ video {
 
 label {
     display: flex;
+    margin-bottom: 0px;
 }
