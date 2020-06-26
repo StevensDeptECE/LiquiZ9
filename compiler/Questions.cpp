@@ -72,15 +72,29 @@ void MultipleChoiceHorizontal::getAnswer() {
 
 void MultipleChoiceHorizontal::getOptions() {
   replace = "";
-  buildString(temp, "<input class='mc' name='", qID, "' type='radio' value='");
+  int count = 1;
+  buildString(temp, "<input type='radio' name='", qID, "' value='");
+  replace += 
+R"(        <div class='horizontal'>
+          )";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += temp + option + "'> " + option + "\t";
+      replace += R"(<label>
+          )";
+      replace += temp + option + "'>" + option;
+      replace += R"(  
+          </label>
+          )";
       option = "";
+      count++;
     } else {
       option += answer[i];
     }
   }
+  count = 1;
+  replace += R"(
+        </div>
+)";
 }
 
 string MultipleChoiceHorizontal::print(const LiQuizCompiler *compiler,
@@ -121,17 +135,29 @@ void MultipleChoiceVertical::getAnswer() {
 
 void MultipleChoiceVertical::getOptions() {
   replace = "";
-  buildString(temp, "<input class='mc' name='", qID, "' type='radio' value='");
+  int count = 1;
+  buildString(temp, "<input type='radio' name='", qID, "' value='");
+  replace += 
+R"(        <div class='vertical'>
+          )";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-        replace += temp + option + "'> " + option + "\n\n";
+      replace += R"(<label>
+          )";
+      replace += temp + option + "'>" + option;
+      replace += R"(  
+          </label>
+          )";
       option = "";
+      count++;
     } else {
       option += answer[i];
     }
   }
-  replace.erase(replace.length() - 1, 1);
-  replace.erase(replace.length() - 1, 1);
+  count = 1;
+  replace += R"(
+        </div>
+)";
 }
 
 string MultipleChoiceVertical::print(const LiQuizCompiler *compiler,
@@ -161,16 +187,29 @@ void MultipleAnswerHorizontal::getAnswer() {
 
 void MultipleAnswerHorizontal::getOptions() {
   replace = "";
-  buildString(temp, "<input class='ma' name='", qID,
-              "' type='checkbox' value='");
+  int count = 1;
+  buildString(temp, "<input type='checkbox' name='", qID, "' value='");
+  replace += 
+R"(        <div class='horizontal'>
+          )";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += temp + option + "'> " + option + "     ";
+      replace += R"(<label>
+          )";
+      replace += temp + option + "'>" + option;
+      replace += R"(  
+          </label>
+          )";
       option = "";
+      count++;
     } else {
       option += answer[i];
     }
   }
+  count = 1;
+  replace += R"(
+        </div>
+)";
 }
 
 string MultipleAnswerHorizontal::print(const LiQuizCompiler *compiler,
@@ -199,18 +238,29 @@ void MultipleAnswerVertical::getAnswer() {
 
 void MultipleAnswerVertical::getOptions() {
   replace = "";
-  buildString(temp, "<input class='ma' name='", qID,
-              "' type='checkbox' value='");
+  int count = 1;
+  buildString(temp, "<input type='checkbox' name='", qID, "' value='");
+  replace += 
+R"(        <div class='vertical'>
+          )";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += temp + option + "'> " + option + "\n\n";
+      replace += R"(<label>
+          )";
+      replace += temp + option + "'>" + option;
+      replace += R"(  
+          </label>
+          )";
       option = "";
+      count++;
     } else {
       option += answer[i];
     }
   }
-  replace.erase(replace.length() - 1, 1);
-  replace.erase(replace.length() - 1, 1);
+  count = 1;
+  replace += R"(
+        </div>
+)";
 }
 
 string MultipleAnswerVertical::print(const LiQuizCompiler *compiler,
@@ -232,8 +282,6 @@ string FillIn::print(const LiQuizCompiler *compiler, ostream &answersFile,
                      int &partNum, int &questionNum, double &points) {
   replace = "";
   getFillInType(text[1]);
-
-  // len = fillSize;
 
   if (typeID != "q") {
     answer = text.erase(0, 2);
@@ -290,17 +338,20 @@ void DropDown::getAnswer() {
 }
 
 void DropDown::getOptions() {
-  replace = "";
-  buildString(replace, "<select class='' name='", qID, "'", "id='", qID, "'>");
+  replace = R"(
+    <select class='' name=')";
+  replace += qID + "'" + "id='" + qID + "'>";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += "<option value='" + option + "'>" + option + "</option>\n";
+      replace += R"(
+        <option value=')" + option + "'>" + option + "</option>";
       option = "";
     } else {
       option += answer[i];
     }
   }
-  replace += "</select>";
+  replace += R"(
+    </select>)";
 }
 
 string DropDown::print(const LiQuizCompiler *compiler, ostream &answersFile,
@@ -332,16 +383,19 @@ string Video::print(const LiQuizCompiler *, ostream &answersFile, int &partNum,
 }
 
 void Definition::getOptions() {
-  buildString(replace, "<select class='' name='", qID, "'>");
+  replace = R"(<select class='dro' name=')";
+  replace += qID + "'" + "id='" + qID + "'>";
   for (int i = 0; i <= defs.length(); i++) {
     if (defs[i] == ',' || i == defs.length()) {
-      replace += "<option value='" + option + "'>" + option + "</option>\n";
+      replace += R"(
+            <option value=')" + option + "'>" + option + "</option>";
       option = "";
     } else {
       option += defs[i];
     }
   }
-  replace += "</select>";
+  replace += R"(
+        </select>)";
 }
 
 string Definition::print(const LiQuizCompiler *compiler, ostream &answersFile,

@@ -148,7 +148,6 @@ R"(
     </div>
     <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
   </div>
-
 )";
 }
 
@@ -173,8 +172,8 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     preStart = "<pre class='pcode'>\n";
     preEnd = "</pre>";
   } else {
-    preStart = "<p class='text'>";
-    preEnd = "</p>";
+    preStart = "<pre class='text'>";
+    preEnd = "</pre>";
   }
 
   if (style != "def") {
@@ -188,16 +187,14 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     html << R"(
       <div>
         )";
-    html << questionName;
+    html << questionNum << "." << "\t" << questionName;
     html << R"(
-        <span class='pts'>)";
-    html << totalPoints<< " points)</span>";
+        <span class='pts'>  )";
+    html << "(" << totalPoints<< " points)</span>";
     html << R"(
       </div>
       )";
-    html << preStart;
-    html << R"(
-        )";
+    html << preStart << endl;
     smatch m;
     double points = totalPoints / questionCount;
 
@@ -226,13 +223,26 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     
     setAnswer();
 
-    html << questionText << preEnd;
-    html << endl;
-    html << "<div class='answer'> " << preStart << answerText << preEnd
-         << "<div id='" << questionNum << "'></div></div>\n";
-    html << "<input type='button' class='protestButton'"
-            "onClick='protestRequest()' value='Click to report a "
-            "problem'><br></div>";
+    html << questionText;
+    html << R"(      )";
+    html << preEnd;
+    html << R"(
+    </div>
+
+    <div class='answer'>
+      )";
+    html << preStart;
+    html << R"(
+        )";
+    html << answerText;
+    html << R"(      )";
+    html << preEnd;
+    html << R"(
+    </div>
+    <input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'><br>
+  </div>
+  
+  )";
     questionNum++;
   } else {
     string defs = question.at("values");

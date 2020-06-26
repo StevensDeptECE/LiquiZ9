@@ -76,3 +76,16 @@ video {
     margin: 10px;
     background-color: red;
 }
+
+.horizontal {
+    display: flex;
+}
+
+.vertical {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    display: flex;
+}

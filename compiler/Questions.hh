@@ -28,7 +28,7 @@ class MultipleChoiceHorizontal : public QuestionType {
  private:
   std::string temp, input, answer;
   std::string typeID = "q";
-  std::string option = " ";
+  std::string option = "";
 
  public:
   void getAnswer();
