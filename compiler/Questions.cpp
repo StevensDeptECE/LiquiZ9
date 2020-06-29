@@ -1,4 +1,5 @@
 #include "Questions.hh"
+
 #include "LiQuizCompiler.hh"
 using namespace std;
 
@@ -10,9 +11,9 @@ inline std::string to_string(char c) {
 
 template <typename... Args>
 void buildString(std::string &dest, const Args &... args) {
-dest.clear();
-int unpack[]{0, (dest += to_string(args), 0)...};
-static_cast<void>(unpack);
+  dest.clear();
+  int unpack[]{0, (dest += to_string(args), 0)...};
+  static_cast<void>(unpack);
 }
 
 QuestionType::~QuestionType() {}
@@ -21,9 +22,38 @@ void QuestionType::addAnswer(string &typeID, string &qID, const string &ans,
                              double points, ostream &answersFile, int &partNum,
                              int &questionNum) {
   partNum++;
-  buildString(qID, typeID, "_", "q", questionNum, "_", partNum);
+  buildString(qID, typeID, "_", questionNum, "_", partNum);
   answersFile << qID << "\t" << points << "\t" << ans << '\n';
+}
+
+std::string QuestionType::setAnswer(const string &origText){
+  string searchText = origText;
+  size_t pos;
+  std::string id = "name='";
+  const char dash = '_';
+
+  pos = qID.find(dash);
+  pos = qID.find(dash, pos+1);
+
+  if (pos != string::npos) {
+    for (int i = pos+1; i <= qID.length(); i++) {
+      id += qID[i];
+    }
+  }
   
+  id += "'";
+  id.erase(id.length()-2,1);
+  std::string search = "name='" + qID + "'";
+  
+  pos = searchText.find(search);
+
+  while (pos != string::npos) {
+    searchText.replace(searchText.find(search), search.length(), id);
+    pos = searchText.find(search);
+  }
+
+
+  return searchText;
 }
 
 static regex dSet("(:.*:)");
@@ -42,15 +72,28 @@ void MultipleChoiceHorizontal::getAnswer() {
 
 void MultipleChoiceHorizontal::getOptions() {
   replace = "";
-  buildString(temp, "<input class='mc' name='", qID, "' type='radio' value='");
+  int count = 1;
+  buildString(temp, "<input type='radio' name='", qID, "' value='");
+  replace += 
+R"(        <div class='horizontal'>
+          )";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += temp + option + "'>" + option + "\t";
-      option = " ";
+      replace += R"(<label>
+          )";
+      replace += temp + option + "'>" + option;
+      replace += R"(  
+          </label>
+          )";
+      option = "";
+      count++;
     } else {
       option += answer[i];
     }
   }
+  count = 1;
+  replace += R"(
+        </div>)";
 }
 
 string MultipleChoiceHorizontal::print(const LiQuizCompiler *compiler,
@@ -91,17 +134,28 @@ void MultipleChoiceVertical::getAnswer() {
 
 void MultipleChoiceVertical::getOptions() {
   replace = "";
-  buildString(temp, "<input class='mc' name='", qID, "' type='radio' value='");
+  int count = 1;
+  buildString(temp, "<input type='radio' name='", qID, "' value='");
+  replace += 
+R"(        <div class='vertical'>
+          )";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += temp + option + "'>" + option + "\n\n";
-      option = " ";
+      replace += R"(<label>
+          )";
+      replace += temp + option + "'>" + option;
+      replace += R"(  
+          </label>
+          )";
+      option = "";
+      count++;
     } else {
       option += answer[i];
     }
   }
-  replace.erase(replace.length() - 1, 1);
-  replace.erase(replace.length() - 1, 1);
+  count = 1;
+  replace += R"(
+        </div>)";
 }
 
 string MultipleChoiceVertical::print(const LiQuizCompiler *compiler,
@@ -131,16 +185,28 @@ void MultipleAnswerHorizontal::getAnswer() {
 
 void MultipleAnswerHorizontal::getOptions() {
   replace = "";
-  buildString(temp, "<input class='ma' name='", qID,
-              "' type='checkbox' value='");
+  int count = 1;
+  buildString(temp, "<input type='checkbox' name='", qID, "' value='");
+  replace += 
+R"(        <div class='horizontal'>
+          )";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += temp + option + "'>" + option + "     ";
-      option = " ";
+      replace += R"(<label>
+          )";
+      replace += temp + option + "'>" + option;
+      replace += R"(  
+          </label>
+          )";
+      option = "";
+      count++;
     } else {
       option += answer[i];
     }
   }
+  count = 1;
+  replace += R"(
+        </div>)";
 }
 
 string MultipleAnswerHorizontal::print(const LiQuizCompiler *compiler,
@@ -169,18 +235,28 @@ void MultipleAnswerVertical::getAnswer() {
 
 void MultipleAnswerVertical::getOptions() {
   replace = "";
-  buildString(temp, "<input class='ma' name='", qID,
-              "' type='checkbox' value='");
+  int count = 1;
+  buildString(temp, "<input type='checkbox' name='", qID, "' value='");
+  replace += 
+R"(        <div class='vertical'>
+          )";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += temp + option + "'>" + option + "\n\n";
-      option = " ";
+      replace += R"(<label>
+          )";
+      replace += temp + option + "'>" + option;
+      replace += R"(  
+          </label>
+          )";
+      option = "";
+      count++;
     } else {
       option += answer[i];
     }
   }
-  replace.erase(replace.length() - 1, 1);
-  replace.erase(replace.length() - 1, 1);
+  count = 1;
+  replace += R"(
+        </div>)";
 }
 
 string MultipleAnswerVertical::print(const LiQuizCompiler *compiler,
@@ -200,9 +276,8 @@ void FillIn::getFillInType(const char &type) {
 
 string FillIn::print(const LiQuizCompiler *compiler, ostream &answersFile,
                      int &partNum, int &questionNum, double &points) {
+  replace = "";
   getFillInType(text[1]);
-
-  //len = fillSize;
 
   if (typeID != "q") {
     answer = text.erase(0, 2);
@@ -241,8 +316,8 @@ string TextQuestion::print(const LiQuizCompiler *compiler, ostream &answersFile,
                            int &partNum, int &questionNum, double &points) {
   addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
   text.erase(0, 4);
-  buildString(replace, "<textarea rows='10' cols='60' id='", qID, "' name='",
-              qID, "'>", text, "</textarea>");
+  buildString(replace, "<textarea rows='10' cols='60' name='",
+              qID, "' id='", qID, "'>", text, "</textarea>");
   return replace;
 }
 
@@ -259,16 +334,19 @@ void DropDown::getAnswer() {
 }
 
 void DropDown::getOptions() {
-  buildString(replace, "<select class='' name='", qID, "'>");
+  replace = R"(<select class='' name=')";
+  replace += qID + "'" + "id='" + qID + "'>";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += "<option value='" + option + "'>" + option + "</option>\n";
+      replace += R"(
+        <option value=')" + option + "'>" + option + "</option>";
       option = "";
     } else {
       option += answer[i];
     }
   }
-  replace += "</select>";
+  replace += R"(
+    </select>)";
 }
 
 string DropDown::print(const LiQuizCompiler *compiler, ostream &answersFile,
@@ -300,16 +378,19 @@ string Video::print(const LiQuizCompiler *, ostream &answersFile, int &partNum,
 }
 
 void Definition::getOptions() {
-  buildString(replace, "<select class='' name='", qID, "'>");
+  replace = R"(<select class='dro' name=')";
+  replace += qID + "'" + "id='" + qID + "'>";
   for (int i = 0; i <= defs.length(); i++) {
     if (defs[i] == ',' || i == defs.length()) {
-      replace += "<option value='" + option + "'>" + option + "</option>\n";
+      replace += R"(
+            <option value=')" + option + "'>" + option + "</option>";
       option = "";
     } else {
       option += defs[i];
     }
   }
-  replace += "</select>";
+  replace += R"(
+        </select>)";
 }
 
 string Definition::print(const LiQuizCompiler *compiler, ostream &answersFile,
@@ -329,4 +410,57 @@ string Definition::print(const LiQuizCompiler *compiler, ostream &answersFile,
   answer, name = "";
   count = 0;
   return replace;
+}
+
+void RandomQuestion::getVar() {
+  for (int i = 1; text[i] != '}'; i++) {
+    var += text[i];
+  }
+}
+
+void RandomQuestion::getRange() {
+  for (int i = 1; text[i] != ','; i++) {
+    minVal += text[i];
+  }
+  min = stod(minVal);
+  text.erase(0, minVal.length() + 2);
+
+  for (int i = 1; text[i] != ','; i++) {
+    increm += text[i];
+  }
+  inc = stod(increm);
+  text.erase(0, increm.length() + 1);
+
+  for (int i = 1; text[i] != ')'; i++) {
+    maxVal += text[i];
+  }
+  max = stod(maxVal);
+  text.erase(0, maxVal.length() + 1);
+}
+
+string RandomQuestion::print(const LiQuizCompiler *compiler,
+                             ostream &answersFile, int &partNum,
+                             int &questionNum, double &points) {
+  text.erase(0, 3);
+  getVar();
+  text.erase(0, var.length() + 3);
+  if (text[0] == '(') {
+    getRange();
+  }
+
+  cout << "minVal: "
+       << "\t" << minVal << endl;
+  cout << "min: "
+       << "\t" << min << endl;
+  cout << "maxVal: "
+       << "\t" << maxVal << endl;
+  cout << "max: "
+       << "\t" << max << endl;
+  cout << "increm: "
+       << "\t" << increm << endl;
+  cout << "inc: "
+       << "\t" << inc << endl;
+  cout << endl << endl;
+
+  return "";
 }

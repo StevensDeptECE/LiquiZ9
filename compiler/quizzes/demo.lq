@@ -1,9 +1,9 @@
 {"quizspec":"cpe390.qspec", "name":"Demo Quiz"}
 {"style":"def", "name":"comp", "values":" ,O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)"}
 ---
-{"style":"def", "name":"ooterm", "values":" ,parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of"}
+{"style":"def", "name":"ooterm", "values":"parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of"}
 ---
-{"style":"def", "name":"likert5", "values":" ,strongly disagree,disagree,no opinion,agree,strongly agree"}
+{"style":"def", "name":"likert5", "values":",strongly disagree,disagree,no opinion,agree,strongly agree"}
 ---
 {"style":"text", "name":"Multiple Choice Horizontal", "points":"10"}
 Which of the following is a mammal?
@@ -43,7 +43,7 @@ $tar:$
 ---
 {"style":"pcode", "name":"gcd", "points":"10"}
 gcd(a,b)       // Complexity: $def:comp:O(log(n))$
-  if $f:b$ = 0
+  if $f:b$ ← 0
     return a
   end
   return $f:gcd$(b, a mod b)

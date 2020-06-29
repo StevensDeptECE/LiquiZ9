@@ -8,13 +8,15 @@ using namespace std;
 using namespace nlohmann;
 
 void LiQuizCompiler::findQuestionType(const string &type, double &points,
-                                      string &delim) {
+                                      string &delim, int pos, int len) {
   QuestionType *question = (questionTypes.find(type) != questionTypes.end())
                                ? questionTypes[type]
                                : defaultQuestionType;
   if (question != nullptr) {
     question->setText(delim);
     inputText = question->print(this, answers, partNum, questionNum, points);
+    questionText.replace(pos, len, inputText);
+    // answerText = question->setAnswer(questionText);
   }
 }
 
@@ -76,7 +78,6 @@ static json merge( const json &a, const json &b ) {
 
 void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) {
   string specText;
-
   {
     ifstream specFile("spec/" + filename);
     string line;
@@ -111,7 +112,6 @@ void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) 
     for (auto i = specInfo.begin(); i != specInfo.end(); ++i)
       cerr << i.key() << "==>" << i.value() << '\n';
   }
-
 
 // TODO: check error on all these. If defaults does not exist, do nothing?
   imgFile = specInfo.at("defaults").at("img");
@@ -156,67 +156,72 @@ void LiQuizCompiler::getJSONHeader() {
 void LiQuizCompiler::generateHeader() {
   getJSONHeader();
   html <<
-      R"(
-                <!DOCTYPE html>
-                <html>
-                <head>
-                <meta charset="UTF-8"/>
-                <title>
-                )";
-  html << "LiQuiz [" << quizName << "]" << 
-      R"(
-                </title>
-                    <link rel="stylesheet" type="text/css" href='css/)";
-  html << styleSheet << "'>"
-       << "\n";
-  html <<
-      R"( 
-                    <script src='js/quiz.js'></script>
-                </head>
-                <body onload='startTime()";
-  html << timeLimit << ")'>" << '\n';
-  html <<
-      R"(
-                <form method="get" action="gradquiz.jsp">
-                <div id='header' class='header'>
-                <div style='background-color: #ccc;text-align: center;border-radius: 10px; width: 240px; float: left'>
-                    <img class='header' src='media/)";
-  html << imgFile << "'/>"
-       << "\n";
-  html <<
-      R"(
-                </div>
-                <div style='margin-left: 250px'>
-                    <table>
-                    <tr><td class='headtext'>)";
-  html << quizName << "</div></td><td></td></tr>"
-       << "\n";
-  html << "<tr><td class='headtext'>" << author << "</td></tr>"
-       << "\n";
-  html << "<tr><td class='headtext'>Email  " << email
-       << "  if you have any questions!</td></tr>"
-       << "\n";
-  html <<
-      R"(
-      <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledged' value='pledged'/><label for='pledge'> I pledge my honor that I have abided by the Stevens Honor System</label></td>
-      <tr><td class='headtext'>Time Remaining:</td><td id='topTime' class='time'></td><td><input id='audioControl' class='controls' type='button' value='turn audio ON' onClick='scheduleAudio()'/>
-        </td></tr>
-            </table>
-        <audio id="alert25"><source src="media/25min.ogg" type="audio/ogg"/></audio>
-        <audio id="alert20"><source src="media/20min.ogg" type="audio/ogg"></audio>
-        <audio id="alert15"><source src="media/15min.ogg" type="audio/ogg"></audio>
-        <audio id="alert10"><source src="media/10min.ogg" type="audio/ogg"></audio>
-        <audio id="alert5"><source src="media/5min.ogg" type="audio/ogg"></audio>
-        <audio id="alertover"><source src="media/over.ogg" type="audio/ogg"></audio>
-        <audio id="classical">
-        <source src="media/JohnLewisGrant_BachPrelude_01.mp3" type="audio/mp3"/>
-            <source src="media/JohnLewisGrant_BachPrelude_02.mp3" type="audio/mp3"/>
-            <source src="media/JohnLewisGrant_BachPrelude_03.mp3" type="audio/mp3"/>
-        </audio>
-        </div>
-        </div>
+R"(<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="stylesheet" type="text/css" href='css/)" <<
+    styleSheet <<
+R"('>
+  <title>
+    LiQuiz [)" <<
+    quizName <<
+R"(]
+  </title>
+  <script src='js/quiz.js'></script>
+</head>
+<body onload='startTime()" <<
+  timeLimit << ")'>" <<
+R"(
+  <form method="get" action="gradquiz.jsp"></form>
 
-                )";
+  <!-- Header -->
+  <div id='header' class='header'>
+    <img class='logo' src='media/)" <<
+  imgFile << "'/>" <<
+R"(
+    <div class='headerText'>
+      <div class='quizTitle'>
+        )" <<
+  quizName <<
+R"(
+      </div>
+
+      <div class='headerDetails'>
+        <div class='headerRow'>
+          )" <<
+  author <<
+R"(
+        </div>
+        <div class='headerRow'>
+          Email  )" <<
+           email << "  if you have any questions!" <<
+R"(
+        </div>
+        <div class='headerRow'>
+          <input id='pledge' type='checkbox' name='pledged' value='pledged'/>
+          <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
+        </div>
+        <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>
+        <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+      </div>
+    </div>
+    <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
+  </div>
+)";
+}
+
+void LiQuizCompiler::setAnswer() {
+  smatch m;
+  answerText = questionText;
+  int pos, end;
+  while (regex_search(answerText, m, qID)) {
+    pos = m.position();
+    for (int i = m.position(); answerText[i] != '='; i++) {
+      pos++;
+    }
+    answerText.insert(pos+2, "a");
+  }
 }
 
 void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
@@ -224,7 +229,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
   string preStart, preEnd;
 
   if (style == "pcode" || style == "code") {
-    preStart = "<pre class='pcode'>\n";
+    preStart = "<pre class='pcode'>";
     preEnd = "</pre>";
   } else {
     preStart = "<pre class='text'>";
@@ -235,10 +240,21 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     string temp = question.at("points");
     double totalPoints = std::stod(temp);
     string questionName = question.at("name");
-    html << "<div class='q' id='q" << questionNum << "'>" << questionNum << ". "
-         << questionName << "<span class='pts'> (" << points
-         << " points)</span></p>";
-    html << "\n" << preStart << "\n";
+    html << R"(
+  <div class='section'>
+    <div class='question' id='q)";
+    html << questionNum << "'>";
+    html << R"(
+      <div>
+        )";
+    html << questionNum << "." << "\t" << questionName;
+    html << R"(
+        <span class='pts'>  )";
+    html << "(" << totalPoints<< " points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>";
+    html << R"(
+      </div>
+      )";
+    html << preStart << endl;
     smatch m;
     double points = totalPoints / questionCount;
 
@@ -256,22 +272,32 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
 
       string type;
       if (delim[0] != 'f') {
-        for (int i = 0; delim[i] != ':'; i++) {
+        for (int i = 0; delim[i] != ':' && delim[i] != '{'; i++) {
           type += delim[i];
         }
       } else {
         type = delim[0];
       }
-      findQuestionType(type, points, delim);
-      questionText.replace(m.position(), m.length(), inputText);
-      // answerText = "<input type='text' id='a_2_2' hidden/>";
+      findQuestionType(type, points, delim, m.position(), m.length());
     }
-
+    questionText.erase(questionText.length()-1,1);
+    setAnswer();
     html << questionText << preEnd;
-    html << endl;
-    html << "<input type='button' class='protestButton'"
-            "onClick='protestRequest()' value='Click to report a problem'><br><br>";
-    html << "<div id='" << questionNum << "'></div></div>\n";
+
+    html << R"(
+    </div>
+
+    <div class='answer'>
+      )";
+    html << preStart;
+    html << R"(
+)";
+    html << answerText << preEnd;
+    html << R"(
+    </div>
+  </div>
+  
+  )";
     questionNum++;
   } else {
     string defs = question.at("values");
@@ -319,14 +345,13 @@ void LiQuizCompiler::grabQuestions() {
 void LiQuizCompiler::generateFooter() {
   html <<
       R"(
-          <div class='controls'>
-          <div style='position: flow'>Time Remaining</div>
-          <div id='bottomTime' class='time'></div>
-          <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
-          </div>
-          </form>
-      </body>
-      </html>
+    <div class='footer'>
+      <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>
+      <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+    </div>
+    </form>
+</body>
+</html>
       )";
 }
 
@@ -346,6 +371,7 @@ void LiQuizCompiler::generateQuiz() {
 const regex LiQuizCompiler::questionStart("^\\{");
 const regex LiQuizCompiler::specials(
     "\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
+const regex LiQuizCompiler::qID("name='[q||T||Q||m||s||n||S]_[0-9]*_[0-9]*'");
 
 unordered_map<string, QuestionType *> LiQuizCompiler::questionTypes{
     {"mch", new MultipleChoiceHorizontal()},
@@ -357,4 +383,5 @@ unordered_map<string, QuestionType *> LiQuizCompiler::questionTypes{
     {"def", new Definition()},
     {"dro", new DropDown()},
     {"img", new Image()},
-    {"vid", new Video()}};
+    {"vid", new Video()},
+    {"rnd", new RandomQuestion}};

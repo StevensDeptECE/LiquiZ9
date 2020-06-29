@@ -20,13 +20,15 @@ class QuestionType {
   void addAnswer(std::string &typeID, std::string &qID, const std::string &ans,
                  double points, std::ostream &answersFile, int &partNum,
                  int &questionNum);
+
+  std::string setAnswer(const std::string &ogText);
 };
 
 class MultipleChoiceHorizontal : public QuestionType {
  private:
   std::string temp, input, answer;
   std::string typeID = "q";
-  std::string option = " ";
+  std::string option = "";
 
  public:
   void getAnswer();
@@ -34,13 +36,15 @@ class MultipleChoiceHorizontal : public QuestionType {
 
   std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
                     int &partNum, int &questionNum, double &points) override;
+  
+  // std::string setAnswer() override;
 };
 
 class MultipleChoiceVertical : public QuestionType {
  private:
   std::string temp, input, answer;
   std::string typeID = "q";
-  std::string option = " ";
+  std::string option = "";
 
  public:
   void getAnswer();
@@ -54,7 +58,7 @@ class MultipleAnswerHorizontal : public QuestionType {
  private:
   std::string temp, input, answer;
   std::string typeID = "m";
-  std::string option = " ";
+  std::string option = "";
 
  public:
   void getAnswer();
@@ -68,7 +72,7 @@ class MultipleAnswerVertical : public QuestionType {
  private:
   std::string temp, input, answer;
   std::string typeID = "m";
-  std::string option = " ";
+  std::string option = "";
 
  public:
   void getAnswer();
@@ -138,5 +142,18 @@ class Definition : public QuestionType {
   void getOptions();
 
   std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
+                    int &partNum, int &questionNum, double &points) override;
+};
+
+class RandomQuestion : public QuestionType {
+  private:
+    std::string var, minVal, maxVal, increm;
+    double min, max, inc;
+    std::string typeID = "r";
+  public:
+    void getVar();
+    void getRange();
+
+    std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
                     int &partNum, int &questionNum, double &points) override;
 };

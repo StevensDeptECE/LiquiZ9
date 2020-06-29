@@ -89,7 +89,7 @@ function protestRequest() {
 function loadJSON(callback) {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
-  xobj.open("GET", "answers.json", true);
+  xobj.open("GET", "http://localhost:8080/LiquiZServer/getAnswers", true);
   xobj.onreadystatechange = function () {
     if (xobj.readyState == 4 && xobj.status == "200") {
       callback(xobj.responseText);
@@ -98,17 +98,92 @@ function loadJSON(callback) {
   xobj.send(null);
 }
 
-var answerObj = JSON.parse(
-  '{"1":{"points earned":"10", "answer":"cat"},"2":{"points earned":"10", "answer":"Kruger"},"3":{"points earned":"10", "answer":"Kruger, Favardin,Song, Lu"},"4":{"points earned":"10", "asnwer":"Hoboken, United States, New Jersey"},"5":{"points earned":"10", "answer":"N/A"},"6":{"points earned":"10", "ansswer":"pc, sp, lr, share the same bits"},"7":{"points earned":"10", "answer":"N/A"},"8":{"points earned":"10", "answer":"O(log(n)), b, gcd"},"9":{"points earned":"10", "answer":"00000000, 000102b8, ffffffff, 000102bc, 00000000, 1, 1, 0, 00000000, 0, 0, 0, ffffffff, 1, 0, 1"},"10":{"points earned":"10", "answer":"AND"},"11":{"points earned":"10", "answer":"N/A"},"12":{"points earned":"10", "answer":"kind of, instance of, instantiate, instantiation, encapsulation"}}'
-);
+function getJSON(url, callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", url, true);
+  xhr.responseType = "json";
+  xhr.onload = function () {
+    var status = xhr.status;
+    if (status === 200) {
+      callback(null, xhr.response);
+    } else {
+      callback(status, xhr.response);
+    }
+  };
+  xhr.send();
+}
 
 function showResult() {
-  // loadJSON(function(response) {
-  //     var answerObj = JSON.parse(response);
-  // });
-  var questionAmount = Object.keys(answerObj).length;
-  for (var questionCount = 1; questionCount <= questionAmount; questionCount++) {
-    var x = document.getElementById(questionCount);
-    x.innerHTML = "You earned " + answerObj[questionCount]["points earned"] + " points. The answer(s) are: " + answerObj[questionCount].answer;
+  var answerSections = document.getElementsByClassName("answer");
+  for (var i = 0; i < answerSections.length; i++) {
+    answerSections[i].style.display = "block";
+    // answerSections[i].style.color = "#ff0000";
   }
+
+  var inputs = document.getElementsByTagName("input");
+  for (var i = 0; i < inputs.length; i++) {
+    if (inputs[i].checked === true) {
+      inputs[i].disabled = false;
+    } else {
+      inputs[i].readOnly = true;
+      inputs[i].disabled = true;
+    }
+    if (inputs[i].type === "checkbox") {
+      inputs[i].style.borderColor = "#ff0000";
+    }
+  }
+
+  getJSON("http://localhost:8080/LiquiZServer/getAnswers", function (
+    err,
+    data
+  ) {
+    if (err !== null) {
+      alert("Something went wrong: " + err);
+    } else {
+      var answerObj = data;
+      var questionAmount = Object.keys(answerObj).length;
+      var sectionCurrent, sectionLast = answerObj[0]["id"].split("_")[1];
+      var pointsTotal = 0;
+      var pointsEarned = 0;
+
+      for (var i = 0; i < questionAmount; i++) {
+        var qID = "a" + answerObj[i]["id"];
+        var answer = answerObj[i]["answers"];
+        var options = document.getElementsByName(qID);
+        sectionCurrent = answerObj[i]["id"].split("_")[1];
+
+        if (sectionCurrent != sectionLast) {
+          var section = document.getElementById(sectionLast);
+          section.innerHTML =
+            "You earned: " +
+            Math.ceil(100 * pointsEarned) / 100 +
+            " points out of: " +
+            Math.ceil(100 * pointsTotal) / 100 +
+            " points.";
+
+          pointsTotal = 0;
+          pointsEarned = 0;
+          sectionLast = sectionCurrent;
+        }
+        pointsTotal += answerObj[i]["pointsT"];
+        pointsEarned += answerObj[i]["pointsE"];
+
+        for (var j = 0; j < options.length; j++) {
+          options[j].setAttribute("disabled", true);
+          if (answer.includes(options[j].value)) {
+            if (options[j].type === "radio") {
+              options[j].checked = true;
+              options[j].disabled = false;
+            } else if (options[j].type === "checkbox") {
+              options[j].checked = true;
+            } else {
+              options[j].diabled = false;
+              options[j].value = answer;
+            }
+          }
+          options[j].value = answer;
+        }
+      }
+    }
+  });
 }
