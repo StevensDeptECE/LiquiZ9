@@ -84,3 +84,21 @@ To create an object we $def:ooterm:instantiate$ a class.
 An object is an $def:ooterm:instantiation$ of a class.
 To hide the details of an object is called $def:ooterm:encapsulation$.
 ---
+{"style":"text", "name":"Math problems", "points":"50"}
+$rnd:m,1,1,10$
+$rnd:a,1,0.1,10$
+$for:m a * F =$
+
+Given $var:m$ and $var:a$ calculate $num:F$
+---
+{"style":"code", "name":"Math problems", "points":"50"}
+$rnd:min,1,1,10$
+$rnd:max,5,1,20$
+$rnd:compop,<,<=,>,>=,!=,==$
+$rnd:assignop,+=,*=,-=,/=$
+In order to print the numbers from $var:min$ to $var:max$ complete the following code:
+
+for (int i = $var:init$; i $f{3} 10; i $var:assignop$ 1) {
+  cout << i;
+}
+---
