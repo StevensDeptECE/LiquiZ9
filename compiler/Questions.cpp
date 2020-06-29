@@ -334,8 +334,7 @@ void DropDown::getAnswer() {
 }
 
 void DropDown::getOptions() {
-  replace = R"(
-    <select class='' name=')";
+  replace = R"(<select class='' name=')";
   replace += qID + "'" + "id='" + qID + "'>";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {

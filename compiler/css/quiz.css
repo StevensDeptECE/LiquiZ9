@@ -66,11 +66,17 @@ body {
     background-color: #444;
 }
 
+pre {
+    margin: 20px;
+}
+
 .question {
     margin: 20px;
     background-color: white;
     color: black;
 }
+
+
 
 .protestButton {
     align-self: center;
@@ -97,4 +103,20 @@ video {
 label {
     display: flex;
     margin-bottom: 0px;
+    align-items: baseline;
+
+}
+
+.text {
+    font-family: 'Libre Franklin', sans-serif;
+}
+
+.footer {
+    background-color: #A32638;
+    color: #ffffff;
+    margin: 20px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
 }

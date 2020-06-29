@@ -169,7 +169,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
   string preStart, preEnd;
 
   if (style == "pcode" || style == "code") {
-    preStart = "<pre class='pcode'>\n";
+    preStart = "<pre class='pcode'>";
     preEnd = "</pre>";
   } else {
     preStart = "<pre class='text'>";
@@ -232,9 +232,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     html << preStart;
     html << R"(
 )";
-    html << answerText;
-    html << R"(      )";
-    html << preEnd;
+    html << answerText << preEnd;
     html << R"(
     </div>
   </div>
@@ -287,14 +285,13 @@ void LiQuizCompiler::grabQuestions() {
 void LiQuizCompiler::generateFooter() {
   html <<
       R"(
-          <div class='controls'>
-          <div style='position: flow'>Time Remaining</div>
-          <div id='bottomTime' class='time'></div>
-          <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
-          </div>
-          </form>
-      </body>
-      </html>
+    <div class='footer'>
+      <span class='footer'>Time Remaining:</span>
+      <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+    </div>
+    </form>
+</body>
+</html>
       )";
 }
 
