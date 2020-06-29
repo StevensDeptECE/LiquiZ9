@@ -1,4 +1,4 @@
-{"quizspec":"DovKruger.QSPEC", "name":"Demo Quiz"}
+{"quizspec":"cpe390.qspec", "name":"Demo Quiz"}
 {"style":"def", "name":"comp", "values":" ,O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)"}
 ---
 {"style":"def", "name":"ooterm", "values":" ,parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of"}

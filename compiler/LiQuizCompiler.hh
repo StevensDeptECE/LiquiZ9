@@ -25,20 +25,23 @@ class LiQuizCompiler {
   std::ofstream html;
   std::ofstream answers;
   std::ifstream liquizFile;
-  std::ifstream specFile;
-
+  
   QuestionType *defaultQuestionType;
 
-  int questionNum = 1;
-  int partNum;  // the subnumber within each question
-  int lineNumber;
-  int questionLineNumber;
-  double questionCount = 0;
-  double points = 0;
-  int fillSize, timeLimit;
-  std::string specText, imgFile, styleSheet, quizName, license, copyright,
+  int logLevel;           // verbose level, how much debugging to display
+  int questionNum;        // the number of the current question
+  int partNum;            // the subnumber within each question
+  int lineNumber;         // line number within the .lq file
+  int questionLineNumber; //
+  double questionCount;   // number of question inputs in the current question
+  double points;          // total number of points in the quiz
+  int fillSize;           // default number of characters in a fill-in question
+  int timeLimit;          // number of minutes to take the quiz, 0 means untimed
+
+  std::string imgFile, styleSheet, quizName, license, copyright,
       author, email;
 
+  void setLogLevel(int level) { logLevel = level; }
   void findQuestionType(const std::string &type, double &points,
                         std::string &delim);
 
@@ -46,7 +49,8 @@ class LiQuizCompiler {
 
   void findDefinitions(const std::string &name, std::string &defs) const;
 
-  nlohmann::json getJSONHeader();
+  void includeQSpec(nlohmann::json* parentQuizSpec, const std::string& filename);
+  void getJSONHeader();
 
   void generateHeader();
   void makeQuestion(nlohmann::json &question);

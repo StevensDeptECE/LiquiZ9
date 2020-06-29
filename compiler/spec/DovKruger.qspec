@@ -20,6 +20,6 @@
   "def": {
     "tf": ["true", "false"],
     "yn": ["yes", "no"],
-    "likert": ["strongly disagree", "disagree", "neutral", "agree", "strongly agree"]
+    "likert5": ["strongly disagree", "disagree", "neutral", "agree", "strongly agree"]
   }
 }

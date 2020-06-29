@@ -3,7 +3,9 @@
 #include <sstream>
 
 #include "Questions.hh"
+
 using namespace std;
+using namespace nlohmann;
 
 void LiQuizCompiler::findQuestionType(const string &type, double &points,
                                       string &delim) {
@@ -34,23 +36,125 @@ void LiQuizCompiler::findDefinitions(const string &name, string &defs) const {
   }
 }
 
+#if 0
+/*
+TODO: replace existing lookup of specInfo, 
+  styleSheet = specInfo.at("defaults").at("stylesheet");
+  with code that checks if the symbol is actually there, prints an error message ie 
+  undefined symbol on line xxx
+  
+*/
+static void expect(string& var, LiquiZCompiler* compiler, const json& specInfo, const char name[]) {
+
+}
+
+template<typename T>
+static void lookup(T& var, LiquiZCompiler* compiler, const json& specInfo, const char name[], const char name2[]) {
+
+}
+#endif
+
 LiQuizCompiler::LiQuizCompiler(const char liquizFileName[]) {
   questionText.reserve(1024);
   string baseFileName = removeExtension(liquizFileName);
   liquizFile.open("quizzes/" + baseFileName + "lq");
   html.open(baseFileName + "html");
   answers.open("quizzes/" + baseFileName + "ans");
+  setLogLevel(3);    // set log level to show everything
+  questionNum = 1; // start quiz on first question
+  questionCount = 0; // number of question inputs in the current question
+  points = 0;
 }
 
-nlohmann::json LiQuizCompiler::getJSONHeader() {
+static json merge( const json &a, const json &b ) {
+  json result = a.flatten();
+  json tmp = b.flatten();
+  for ( auto it = tmp.begin(); it != tmp.end(); ++it )
+    result[it.key()] = it.value();
+  return result.unflatten();
+}
+
+void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) {
+  string specText;
+
+  {
+    ifstream specFile("spec/" + filename);
+    string line;
+    while (!specFile.eof()) {
+      getline(specFile, line);
+      specText += line;
+      specText += '\n';
+    }
+  }
+
+  json specInfo = json::parse(specText);
+
+  if (logLevel >= 3) {
+    cerr << "dumping qspec json before merge\n";
+    for (auto i = specInfo.begin(); i != specInfo.end(); ++i)
+      cerr << i.key() << "==>" << i.value() << '\n';
+  }
+
+  if (specInfo.find("parent") != specInfo.end()) {
+    nlohmann::json parentQuizSpec;
+    includeQSpec(&parentQuizSpec, specInfo.at("parent")); //TODO: merge specInfo on top of parentQuizSpec
+    merge(parentQuizSpec, specInfo);
+    specInfo = parentQuizSpec;
+  }
+  if (parentQuizSpec != nullptr) {// only the first level sets all the variables below
+    *parentQuizSpec = specInfo;
+    return;
+  }
+// specInfo should now contain the merged specification of all recursive files
+
+  if (logLevel >= 3) {
+    for (auto i = specInfo.begin(); i != specInfo.end(); ++i)
+      cerr << i.key() << "==>" << i.value() << '\n';
+  }
+
+
+// TODO: check error on all these. If defaults does not exist, do nothing?
+  imgFile = specInfo.at("defaults").at("img");
+  styleSheet = specInfo.at("defaults").at("stylesheet");
+  fillSize = specInfo.at("defaults").at("fillInTheBlankSize");
+  timeLimit = specInfo.at("defaults").at("timeLimit");
+  email = specInfo.at("email");
+  author = specInfo.at("author");
+
+  for (nlohmann::json::iterator it = specInfo.at("def").begin(); it != specInfo.at("def").end(); ++it) {
+    string name = it.key();
+    string defs;
+
+    for (int i = 0; i < it.value().size(); i++) {
+      string defVal = it.value()[i];
+      defs += defVal;
+      defs += ",";
+    }
+    defs.erase(defs.size()-1, 1);
+    definitions[name] = defs;
+    answers << "defs" << "\t" << name << "\t" << defs << "\n";
+  }
+}
+
+void LiQuizCompiler::getJSONHeader() {
   string line;
   getline(liquizFile, line);
   nlohmann::json header = nlohmann::json::parse(line);
-  return header;
+#if 0
+  string specName;
+  if (expect(specName, this, header, "quizspec")) {
+    includeQSpec(specName)
+  }
+#endif
+  if (header.find("quizspec") != header.end()) {
+    string specName = header.at("quizspec");//TODO: pull error checking into separate function above
+    includeQSpec(nullptr, specName);
+  }  
+  quizName = header.at("name"); //TODO: error checking
 }
 
 void LiQuizCompiler::generateHeader() {
-  nlohmann::json header = getJSONHeader();
+  getJSONHeader();
   html <<
       R"(
                 <!DOCTYPE html>
@@ -59,46 +163,7 @@ void LiQuizCompiler::generateHeader() {
                 <meta charset="UTF-8"/>
                 <title>
                 )";
-
-  if (header.find("quizspec") != header.end()) {
-    string specName = header.at("quizspec");
-    quizName = header.at("name");
-    string line;
-    nlohmann::json specInfo;
-
-    specFile.open("spec/" + specName);
-    while (!specFile.eof()) {
-      getline(specFile, line);
-      specText += line;
-      specText += '\n';
-    }
-
-    specInfo = nlohmann::json::parse(specText);
-    imgFile = specInfo.at("defaults").at("img");
-    styleSheet = specInfo.at("defaults").at("stylesheet");
-    fillSize = specInfo.at("defaults").at("fillInTheBlankSize");
-    timeLimit = specInfo.at("defaults").at("timeLimit");
-    email = specInfo.at("email");
-    author = specInfo.at("author");
-
-    for (nlohmann::json::iterator it = specInfo.at("def").begin(); it != specInfo.at("def").end(); ++it) {
-      string name = it.key();
-      string defs;
-
-      for (int i = 0; i < it.value().size(); i++) {
-        string defVal = it.value()[i];
-        defs += defVal;
-        defs += ",";
-      }
-
-      definitions[name] = defs;
-      answers << "defs" << "\t" << name << "\t" << defs << "\n";
-    }
-
-    specFile.close();
-  }
-
-  html <<
+  html << "LiQuiz [" << quizName << "]" << 
       R"(
                 </title>
                     <link rel="stylesheet" type="text/css" href='css/)";
@@ -133,23 +198,23 @@ void LiQuizCompiler::generateHeader() {
        << "\n";
   html <<
       R"(
-                    <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledged' value='pledged'/><label for='pledge'> I pledge my honor that I have abided by the Stevens Honor System</label></td>
-                    <tr><td class='headtext'>Time Remaining:</td><td id='topTime' class='time'></td><td><input id='audioControl' class='controls' type='button' value='turn audio ON' onClick='scheduleAudio()'/>
-                </td></tr>
-                    </table>
-                <audio id="alert25"><source src="media/25min.ogg" type="audio/ogg"/></audio>
-                <audio id="alert20"><source src="media/20min.ogg" type="audio/ogg"></audio>
-                <audio id="alert15"><source src="media/15min.ogg" type="audio/ogg"></audio>
-                <audio id="alert10"><source src="media/10min.ogg" type="audio/ogg"></audio>
-                <audio id="alert5"><source src="media/5min.ogg" type="audio/ogg"></audio>
-                <audio id="alertover"><source src="media/over.ogg" type="audio/ogg"></audio>
-                <audio id="classical">
-                <source src="media/JohnLewisGrant_BachPrelude_01.mp3" type="audio/mp3"/>
-                    <source src="media/JohnLewisGrant_BachPrelude_02.mp3" type="audio/mp3"/>
-                    <source src="media/JohnLewisGrant_BachPrelude_03.mp3" type="audio/mp3"/>
-                </audio>
-                </div>
-                </div>
+      <tr><td><input class='ctrl' id='pledge' type='checkbox' name='pledged' value='pledged'/><label for='pledge'> I pledge my honor that I have abided by the Stevens Honor System</label></td>
+      <tr><td class='headtext'>Time Remaining:</td><td id='topTime' class='time'></td><td><input id='audioControl' class='controls' type='button' value='turn audio ON' onClick='scheduleAudio()'/>
+        </td></tr>
+            </table>
+        <audio id="alert25"><source src="media/25min.ogg" type="audio/ogg"/></audio>
+        <audio id="alert20"><source src="media/20min.ogg" type="audio/ogg"></audio>
+        <audio id="alert15"><source src="media/15min.ogg" type="audio/ogg"></audio>
+        <audio id="alert10"><source src="media/10min.ogg" type="audio/ogg"></audio>
+        <audio id="alert5"><source src="media/5min.ogg" type="audio/ogg"></audio>
+        <audio id="alertover"><source src="media/over.ogg" type="audio/ogg"></audio>
+        <audio id="classical">
+        <source src="media/JohnLewisGrant_BachPrelude_01.mp3" type="audio/mp3"/>
+            <source src="media/JohnLewisGrant_BachPrelude_02.mp3" type="audio/mp3"/>
+            <source src="media/JohnLewisGrant_BachPrelude_03.mp3" type="audio/mp3"/>
+        </audio>
+        </div>
+        </div>
 
                 )";
 }
