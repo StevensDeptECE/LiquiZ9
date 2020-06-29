@@ -1,0 +1,97 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package servlets;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import java.util.Date;
+import java.util.TreeMap;
+import mongodb.CodecQuizService;
+import mongodb.CodecQuizSubmissionService;
+import org.bson.Document;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import quiz.Quiz;
+import quiz.QuizSubmission;
+
+public class TestQuizServlet extends HttpServlet {
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    // do post when get is called
+    doPost(request, response);
+  }
+
+    /**
+     *
+     * @param request   a html form that has multiple inputs for graded quiz
+     * @param response  returns an html page to the user that displays their grade
+     * @throws IOException  cannot find the answer file 
+     * @throws ServletException
+     */
+    @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+      response.setContentType("text/html");
+          response.setCharacterEncoding("UTF-8");
+          Map<String, String[]> paramsMap = request.getParameterMap();
+          TreeMap<String, String[]> inputsMap = new TreeMap<>();
+          inputsMap.putAll(paramsMap);
+         
+          HttpSession session=request.getSession(false);  
+          String quizName=(String)session.getAttribute("quizName");  
+          //TODO: get userID from lti session
+          MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
+          CodecQuizService cqs = new CodecQuizService(mongo);
+          CodecQuizSubmissionService cqss = new CodecQuizSubmissionService(mongo);
+          Quiz quiz = cqs.getOne(new Document("quizId", quizName));
+          if(quiz==null) {
+            quiz = new Quiz(quizName, "../../../LiquiZ9/LiquiZServer/data/answerFiles/" + quizName + ".ans", 1, new Date());////"opt/tomcat/webapps/LiquiZServer-1.0/answerFiles/"
+            cqs.add(quiz);
+          }
+          //QuizSubmission quizSub = cqss.get
+          
+          if(quiz.getNumTries() > cqss.getTries(new Document("quizId", quizName).append("userId", "ejones"))){
+            QuizSubmission quizSub = cqss.getOne(new Document("quizId", quizName).append("userId", "ejones"));
+            if(quizSub==null) {
+              quizSub = new QuizSubmission(quizName, "ejones", inputsMap, quiz);
+              cqss.add(quizSub);
+            }
+          }
+          else
+             System.out.println("no tries left");
+          /*
+          if(!cqs.exists(quiz))
+              cqs.add(quiz);
+          List<Quiz> quizArr = cqs.list();
+          for(Quiz q : quizArr){
+              System.out.println(q.getQuizId());
+          }
+          */
+          
+          
+          RequestDispatcher rd = request.getRequestDispatcher("index.jsp"); 
+          
+          rd.forward(request, response); 
+      }  
+      protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+          doPost(request, response);
+          
+        }
+
+}

@@ -15,7 +15,7 @@
 }
 .time {
     font-family: Courier;
-    font-size: 18pt;
+    font-size: 16pt;
 }
 
 body {
@@ -41,6 +41,11 @@ input {
     border-color: #ff0000;
     border-width: 1;
     border-style: solid;
+}
+
+.protestButton {
+    font-family: Tims;
+    font-size: 14pt;
 }
 
 div.q {
@@ -82,6 +87,10 @@ video {
     padding: 10px;
     margin: 10px;
     background-color: red;
+}
+
+img.header {
+    width: 70%;
 }
 
 textarea {

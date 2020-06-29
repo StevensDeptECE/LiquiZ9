@@ -10,7 +10,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>index</title>
+        <link rel="stylesheet" type="text/css" href="quiz.css">
     </head>
     <body>
         <form method="post" action="quizChoice">
@@ -18,14 +19,13 @@
             <div class='quizChoice' id='quizChoice'>
                 <table class=''><tr>
               <%
-                File folder = new File("../webapps/LiquiZServer-1.0-SNAPSHOT/quizPages/"); //"../../../LiquiZ9/LiquiZServer/data/quizPages/");
+                File folder = new File("../../../LiquiZ9/LiquiZServer/data/quizPages/");//");///opt/tomcat/webapps/LiquiZServer-1.0/quizPages/
                 File[] listOfFiles = folder.listFiles();
-
                 for (File file : listOfFiles) {
                     if (file.isFile()) {
-                        String name = file.getName().replaceFirst("[.][^.]+$", "");                         
+                        String name = file.getName().replaceFirst("[.][^.]+$", "");   
               %>
-                        <td><input type='radio' name='quiz' value="<%=file.getName() %>"><%=name %></td>
+                        <td><input type='radio' name='quiz' value="<%=file.getName()%>"><%=name%></td>
               <%
                     }
                 }   
@@ -33,6 +33,9 @@
                 </table>    
             </div>
             <input class='controls' type='submit' value='Submit Quiz'/>
+        </form>
+        <form method='get' action="quizzesLoad">
+            <input class='controls' type='submit' value='edit quizzes'/>
         </form>
     </body>
 </html>

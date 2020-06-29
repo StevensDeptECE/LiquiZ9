@@ -1,0 +1,114 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package mongodb;
+
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import static com.mongodb.client.model.Filters.eq;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import org.bson.Document;
+import quiz.Quiz;
+/**
+ *
+ * @author ejone
+ */
+
+@ApplicationScoped
+public class CodecQuizService {
+    private MongoClient mongoClient;
+    
+    /**
+     *
+     * @param mongoClient the mongoClient running on the server
+     */
+    public CodecQuizService(MongoClient mongoClient){
+        this.mongoClient = mongoClient;
+    }    
+        
+    /**
+     *
+     * @return List of Quizes in the collection
+     */
+    public List<Quiz> list(){
+        List<Quiz> list = new ArrayList<>();
+        try (MongoCursor<Quiz> cursor = getCollection().find().iterator()) {
+            while (cursor.hasNext()) {
+                list.add(cursor.next());
+            }
+        }
+        return list;
+    }
+        
+    /**
+     *
+     * @param quiz Quiz that is to be added to the collection
+     */
+    public void add(Quiz quiz){
+        getCollection().insertOne(quiz);
+    }
+    
+    /**
+     *
+     * @param quiz Quiz that is to be deleted from the collection
+     */
+    public void delete(Quiz quiz) {
+        try {
+            getCollection().deleteOne(new Document( "_id", quiz.getId() ));
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
+    }
+    
+    /**
+     * Used to get one Quiz from database with search parameters
+     * @param doc Document with elements to search for
+     * @return Quiz that matches elements
+     */
+    public Quiz getOne(Document doc){
+        FindIterable<Quiz> iterable = getCollection().find(doc).limit(1);
+        Iterator iterator = iterable.iterator();
+        Quiz quiz = null;
+        if(iterator.hasNext())
+            quiz =(Quiz) iterator.next();
+        return quiz;
+    }
+    
+    /**
+     * Returns a list of every Quiz that matches the search arguments.
+     * Can be used to find every quiz for a class.
+     * @param doc Document with elements to search for
+     * @return List of Quizzes matching search arguments
+     */
+    public List<Quiz> getList(Document doc) {
+        List<Quiz> submissionList = new ArrayList();
+        try (MongoCursor<Quiz> cursor = getCollection().find(doc).iterator()) {
+         while (cursor.hasNext()) {
+                submissionList.add(cursor.next());
+            }
+        }
+        return submissionList;
+    }
+    
+    /**
+     *
+     * @param quizId String id of the quiz to search for
+     * @return boolean on whether it exists in the collection
+     */
+    public boolean exists(String quizId){
+        return getCollection().find(eq("quizId", quizId)).limit(1)!=null;
+    }
+        
+    private MongoCollection<Quiz> getCollection(){
+        return mongoClient.getDatabase("quiz").getCollection("quiz", Quiz.class);
+    }
+}

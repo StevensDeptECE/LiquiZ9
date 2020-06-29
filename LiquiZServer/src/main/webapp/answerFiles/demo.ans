@@ -1,0 +1,39 @@
+q_1_1	10	cat
+q_2_2	15	Kruger
+m_3_3	45	Kruger,Favardin,Song,Lu
+m_4_4	50	Hoboken,United States,New Jersey
+q_5_5	12.5    example
+q_5_6	12.5    example
+q_5_7	12.5    example
+q_5_8	12.5    example
+Q_6_9	2.5	pc
+Q_6_10	2.5	sp
+Q_6_11	2.5	lr
+q_6_12	2.5	share the same bits
+q_7_13	10	N/A
+q_8_14	3.33333	O(log(n))
+q_8_15	3.33333	b
+q_8_16	3.33333	gcd
+Q_9_17	1.25	00000000
+Q_9_18	1.25	000102b8
+Q_9_19	1.25	ffffffff
+Q_9_20	1.25	000102bc
+Q_9_21	1.25	00000000
+q_9_22	1.25	1
+q_9_23	1.25	1
+q_9_24	1.25	0
+Q_9_25	1.25	00000000
+q_9_26	1.25	0
+q_9_27	1.25	0
+q_9_28	1.25	0
+Q_9_29	1.25	ffffffff
+q_9_30	1.25	1
+q_9_31	1.25	0
+q_9_32	1.25	1
+q_10_33	5	AND
+q_11_34	10	N/A
+q_12_35	10	kind of
+q_12_36	10	instance of
+q_12_37	10	instantiate
+q_12_38	10	instantiation
+q_12_39	10	encapsulation
