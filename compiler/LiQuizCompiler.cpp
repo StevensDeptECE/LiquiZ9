@@ -64,6 +64,7 @@ LiQuizCompiler::LiQuizCompiler(const char liquizFileName[]) {
   answers.open("quizzes/" + baseFileName + "ans");
   setLogLevel(3);    // set log level to show everything
   questionNum = 1; // start quiz on first question
+  partNum = 0; // start section on first part
   questionCount = 0; // number of question inputs in the current question
   points = 0;
 }
@@ -292,7 +293,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     html << preStart;
     html << R"(
 )";
-    html << answerText << preEnd;
+    html << answerText <<  "<div id='" << questionNum << "'> </div>" << preEnd;
     html << R"(
     </div>
   </div>

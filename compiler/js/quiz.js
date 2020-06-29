@@ -151,7 +151,7 @@ function showResult() {
         var answer = answerObj[i]["answers"];
         var options = document.getElementsByName(qID);
         sectionCurrent = answerObj[i]["id"].split("_")[1];
-
+        
         if (sectionCurrent != sectionLast) {
           var section = document.getElementById(sectionLast);
           section.innerHTML =
@@ -167,6 +167,8 @@ function showResult() {
         }
         pointsTotal += answerObj[i]["pointsT"];
         pointsEarned += answerObj[i]["pointsE"];
+
+        console.log(qID);
 
         for (var j = 0; j < options.length; j++) {
           options[j].setAttribute("disabled", true);
