@@ -28,16 +28,18 @@ import java.util.*;
 public class LTILaunchExampleController extends LtiLaunchController{
     private static final Logger LOG = Logger.getLogger(LTILaunchExampleController.class);
 
-    @Autowired
     public LtiSessionService ltiSessionService;
 
     protected Assignment assignment;
 
-    @Autowired
     protected CanvasService canvasService;
 
     protected RoleChecker roleChecker;
 
+    public LTILaunchExampleController(LtiSessionService ltiSessionService, CanvasService canvasService){
+        this.ltiSessionService = ltiSessionService;
+        this.canvasService = canvasService;
+    }
     /**
      * We have our applications return the LTI configuration XML when you hit
      * the root of the context in a browser. It's an easy place to keep
