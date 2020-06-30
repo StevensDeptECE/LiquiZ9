@@ -98,7 +98,7 @@ public class QuizSubmission{
      */
     public final String getUserId() {
       return userId;
-  }
+    }
   
     /**
      *
@@ -106,7 +106,7 @@ public class QuizSubmission{
      */
     public final void setUserId(String newUserId) {
       quizId = newUserId;
-  }
+    }
    
     /**
      *
@@ -114,7 +114,7 @@ public class QuizSubmission{
      */
     public final double[] getQuestionGrades() {
       return questionGradesArr;
-  }
+    }
   
     /**
      *
@@ -123,7 +123,7 @@ public class QuizSubmission{
      */
     public final double getQuestionGrade(int index) {
       return questionGradesArr[index];
-  }
+    }
   
     /**
      *
@@ -132,15 +132,19 @@ public class QuizSubmission{
      */
     public final void setQuestionGrade(int index, double newGrade) {
       questionGradesArr[index] = newGrade;
-  }
+    }
   
     /**
      *
      * @return the overall grade of the submission
      */
     public double getGrade() {
-    return grade;
-  }
+        return grade;
+    }
+    
+    public void setGrade(double newGrade) {
+        grade = newGrade;
+    }
 
     /**
      *
@@ -172,7 +176,6 @@ public class QuizSubmission{
      * @param questionsMap map of the questions that are used to grade 
      */
     public void updateGrade(TreeMap<Integer, Question> questionsMap){
-    int i = 0;
     for(Map.Entry<Integer, Question> entry : questionsMap.entrySet()){
       int key = entry.getKey();
       Question q = entry.getValue();
@@ -185,7 +188,7 @@ public class QuizSubmission{
       else if(inputsString != null){
         qGrade = q.checkAnswer(inputsString);
         grade+= qGrade;
-        questionGradesArr[i++] = qGrade;
+        questionGradesArr[key-1] = qGrade;
       }
     }
   }

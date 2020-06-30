@@ -17,6 +17,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import org.bson.Document;
 import quiz.Quiz;
+import quiz.QuizSubmission;
 /**
  *
  * @author ejone

@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import org.bson.Document;
+import questions.Question;
 import quiz.Quiz;
 import quiz.QuizSubmission;
 /**
@@ -104,15 +105,6 @@ public class CodecQuizSubmissionService {
         return submissionList;
     }
     
-    public void updateQuizQuestion(Quiz quiz) {
-        String quizId = quiz.getQuizId();
-        ArrayList<QuizSubmission> submissionList = (ArrayList<QuizSubmission>) getList(new Document("quizId", quizId));
-        for(QuizSubmission quizSub : submissionList){
-            quizSub.updateGrade(quiz.getQuestionsMap());
-            getCollection().findOneAndReplace(new Document("quizId", quizId).append("userId", quizSub.getUserId()), quizSub);
-        }
-    }
-    
     /**
      * Returns an array of doubles to see the averages scores for each question
      * @param quizId id value of the quiz to search for
@@ -171,6 +163,32 @@ public class CodecQuizSubmissionService {
             count++;
         }
         return count;
+    }
+    
+    /**
+     * Updates the grades of quiz submissions if the quiz is updated accordingly
+     * @param quiz the quiz that has new details
+     */
+    public void updateGrades(Quiz quiz) {
+        ArrayList<QuizSubmission> submissionList = (ArrayList<QuizSubmission>) getCollection().find(new Document("quizId", quiz.getQuizId()));
+        for(QuizSubmission quizSub : submissionList){
+            quizSub.updateGrade(quiz.getQuestionsMap());
+            getCollection().findOneAndReplace(new Document("mongoId", quizSub.getId()), quizSub);
+        }
+    }
+    
+    /**
+     * Updates one question grade on a given quiz
+     * @param q question to update
+     * @param doc holds parameters of search
+     */
+    public void updateOneSubmissionGrade(Question q, Document doc) {
+        int index = Integer.parseInt(q.getName().split("_")[2]);
+        QuizSubmission quizSub = getOne(doc);
+        quizSub.setQuestionGrade(index-1, q.getGradeValue());
+        double newGrade = quizSub.getGrade() + q.getGradeValue();
+        quizSub.setGrade(newGrade);
+        getCollection().findOneAndReplace(new Document("mongoId", quizSub.getId()), quizSub);
     }
     
     /**

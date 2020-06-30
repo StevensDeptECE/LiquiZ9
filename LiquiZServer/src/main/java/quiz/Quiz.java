@@ -28,24 +28,27 @@ import questions.SimpleQuestion;
  */
 public class Quiz {
     private ObjectId mongoId;
-    String answerFile;
-    String quizId;
-    int numTries;
-    double maxGrade;
-    Date showAnswersAfter;
-    TreeMap<Integer, Question> questionsMap;
+    private String answerFile;
+    private String quizId;
+    private String classId;
+    private int numTries;
+    private double maxGrade;
+    private Date showAnswersAfter;
+    private TreeMap<Integer, Question> questionsMap;
     
     //TODO: implement numtries
 
     /**
-     *
+     * Used to create a quiz
      * @param quizId value for id of the quiz
+     * @param classId id of the class this quiz belongs to
      * @param answerFile name of the answer file to be used
      * @param numTries the number of tries a student has for this quiz
      * @param showAnswersAfter date to show the answers after
      */
-    public Quiz(String quizId, String answerFile, int numTries, Date showAnswersAfter){
+    public Quiz(String quizId, String classId, String answerFile, int numTries, Date showAnswersAfter){
         this.quizId = quizId;
+        this.classId = classId;
         this.answerFile = answerFile;
         this.numTries = numTries;
         this.showAnswersAfter = showAnswersAfter;
@@ -54,17 +57,20 @@ public class Quiz {
     }
     
     /**
-     *
+     * Used to decode a quiz from the mongodb database
      * @param mongoId id of the quiz in the database
      * @param numTries the number of tries a student has for this quiz
      * @param quizId value for the id of the quiz
+     * @param classId id of the class this quiz belongs to
      * @param answerFile name of the answer file that was used
      * @param maxGrade the max possible grade that could be received
+     * @param showAnswersAfter date to show the answers after
      */
-    public Quiz(ObjectId mongoId, int numTries, String quizId, String answerFile, double maxGrade, Date showAnswersAfter){
+    public Quiz(ObjectId mongoId, int numTries, String quizId, String classId, String answerFile, double maxGrade, Date showAnswersAfter){
         this.mongoId = mongoId;
         this.numTries = numTries; 
         this.quizId = quizId;
+        this.classId = classId;
         this.answerFile = answerFile;
         this.maxGrade = maxGrade;
         this.showAnswersAfter = showAnswersAfter;
@@ -73,10 +79,18 @@ public class Quiz {
     
     /**
      *
-     * @return String for the id of the quiz
+     * @return id of the quiz
      */
     public final String getQuizId() {
         return quizId;
+    }
+    
+    /**
+     *
+     * @return id of the class this quiz belongs to
+     */
+    public final String getClassId() {
+        return classId;
     }
     
     /**
@@ -105,7 +119,7 @@ public class Quiz {
     
     /**
      * Get the answers from each of the questions in the quiz
-     * @return ArrayList<String> list of answers
+     * @return list of answers
      */
     public final ArrayList<String> getAnswers(){
         ArrayList<String> answersList= new ArrayList<>();
@@ -162,6 +176,14 @@ public class Quiz {
      */
     public final void setQuizId(String newName) {
         quizId = newName;
+    }
+    
+    /**
+     *
+     * @param newId id of the new class
+     */
+    public final void setClassId(String newId) {
+        classId = newId;
     }
     
     /**
@@ -239,6 +261,7 @@ public class Quiz {
                 maxGrade += Math.round(gVal*1000)/1000;
                 addQuestion(qType, qAns, gVal);
             } 
+            maxGrade = Math.round(maxGrade*1000)/1000;
         }  
         catch(InputMismatchException ex){
             System.out.println("An error occurred reading in the file.");

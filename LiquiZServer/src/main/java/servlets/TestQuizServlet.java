@@ -53,20 +53,22 @@ public class TestQuizServlet extends HttpServlet {
           inputsMap.putAll(paramsMap);
          
           HttpSession session=request.getSession(false);  
-          String quizName=(String)session.getAttribute("quizName");  
+          String quizName=(String)session.getAttribute("quizName");
+          String userId = "ejones";//(String) session.getAttribute("userId");
+          String classId = "c++";//String session.getAttribute("classId");
           //TODO: get userID from lti session
           MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
           CodecQuizService cqs = new CodecQuizService(mongo);
           CodecQuizSubmissionService cqss = new CodecQuizSubmissionService(mongo);
           Quiz quiz = cqs.getOne(new Document("quizId", quizName));
           if(quiz==null) {
-            quiz = new Quiz(quizName, "../../../LiquiZ9/LiquiZServer/data/answerFiles/" + quizName + ".ans", 1, new Date());////"opt/tomcat/webapps/LiquiZServer-1.0/answerFiles/"
+            quiz = new Quiz(quizName, "c++", "../../../LiquiZ9/LiquiZServer/data/answerFiles/" + quizName + ".ans", 1, new Date());////"opt/tomcat/webapps/LiquiZServer-1.0/answerFiles/"
             cqs.add(quiz);
           }
           //QuizSubmission quizSub = cqss.get
           
-          if(quiz.getNumTries() > cqss.getTries(new Document("quizId", quizName).append("userId", "ejones"))){
-            QuizSubmission quizSub = cqss.getOne(new Document("quizId", quizName).append("userId", "ejones"));
+          if(quiz.getNumTries() > cqss.getTries(new Document("quizId", quizName).append("userId", userId))){
+            QuizSubmission quizSub = cqss.getOne(new Document("quizId", quizName).append("userId", userId));
             if(quizSub==null) {
               quizSub = new QuizSubmission(quizName, "ejones", inputsMap, quiz);
               cqss.add(quizSub);
@@ -74,20 +76,14 @@ public class TestQuizServlet extends HttpServlet {
           }
           else
              System.out.println("no tries left");
-          /*
-          if(!cqs.exists(quiz))
-              cqs.add(quiz);
-          List<Quiz> quizArr = cqs.list();
-          for(Quiz q : quizArr){
-              System.out.println(q.getQuizId());
-          }
-          */
           
           
           RequestDispatcher rd = request.getRequestDispatcher("index.jsp"); 
           
           rd.forward(request, response); 
       }  
+  
+  
       protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
           doPost(request, response);
