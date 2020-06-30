@@ -16,7 +16,6 @@ void LiQuizCompiler::findQuestionType(const string &type, double &points,
     question->setText(delim);
     inputText = question->print(this, answers, partNum, questionNum, points);
     questionText.replace(pos, len, inputText);
-    // answerText = question->setAnswer(questionText);
   }
 }
 
@@ -203,11 +202,17 @@ R"(
           <input id='pledge' type='checkbox' name='pledged' value='pledged'/>
           <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
         </div>
-        <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>
-        <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+        <pre id='topTime'></pre>
       </div>
     </div>
-    <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
+    <div class='headerButtons'>
+      <div class='controls'>
+      <input type='button' value='Turn Audio On' onClick='scheduleAudio()'/>
+    </div>
+    <div class='controls'>
+      <input  type='button' value='Submit Quiz' onClick='showResult()'/>
+    </div>
+  </div>
   </div>
 )";
 }
@@ -347,7 +352,7 @@ void LiQuizCompiler::generateFooter() {
   html <<
       R"(
     <div class='footer'>
-      <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>
+      <pre id='bottomTime'></pre>
       <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
     </div>
     </form>

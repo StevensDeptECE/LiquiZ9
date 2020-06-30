@@ -41,8 +41,8 @@ function updateControls() {
   var seconds = Math.floor((remaining - min * 60000) / 1000);
   if (seconds < 10) seconds = "0" + seconds;
   var timeDisp = min + ":" + seconds;
-  document.getElementById("topTime").innerText = timeDisp;
-  document.getElementById("bottomTime").innerText = timeDisp;
+  document.getElementById("topTime").innerText = "Time Remaining:    " + timeDisp;
+  document.getElementById("bottomTime").innerText = "Time Remaining:    " + timeDisp;
 }
 
 function startTime(limit) {

@@ -30,11 +30,17 @@
           <input id='pledge' type='checkbox' name='pledged' value='pledged'/>
           <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
         </div>
-        <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>
-        <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+        <pre id='topTime'></pre>
       </div>
     </div>
-    <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
+    <div class='headerButtons'>
+      <div class='controls'>
+      <input type='button' value='Turn Audio On' onClick='scheduleAudio()'/>
+    </div>
+    <div class='controls'>
+      <input  type='button' value='Submit Quiz' onClick='showResult()'/>
+    </div>
+  </div>
   </div>
 
   <div class='section'>
@@ -534,21 +540,21 @@ What caused the collapse?<p hidden>69</p>
       </div>
       <pre class='text'>
 A class is a <select class='dro' name='q_12_35'id='q_12_35'>
-            <option value='parent'>parent</option>
-            <option value='child'>child</option>
-            <option value='object'>object</option>
-            <option value='class'>class</option>
-            <option value='message'>message</option>
-            <option value='method'>method</option>
-            <option value='encapsulation'>encapsulation</option>
-            <option value='instantiate'>instantiate</option>
-            <option value='instantiation'>instantiation</option>
-            <option value='instance of'>instance of</option>
-            <option value='abstract'>abstract</option>
-            <option value='interface'>interface</option>
-            <option value='concrete'>concrete</option>
-            <option value='generic'>generic</option>
-            <option value='kind of'>kind of</option>
+            <option value=' '> </option>
+            <option value='O(n)'>O(n)</option>
+            <option value='O(n^2)'>O(n^2)</option>
+            <option value='O(n^3)'>O(n^3)</option>
+            <option value='O(n^4)'>O(n^4)</option>
+            <option value='O(log(n))'>O(log(n))</option>
+            <option value='O(√(n))'>O(√(n))</option>
+            <option value='O(2^n)'>O(2^n)</option>
+            <option value='O(3^n)'>O(3^n)</option>
+            <option value='O(10^n)'>O(10^n)</option>
+            <option value='O(n!)'>O(n!)</option>
+            <option value='O(n^n)'>O(n^n)</option>
+            <option value='O(1)'>O(1)</option>
+            <option value='O(n*log(n)'>O(n*log(n)</option>
+            <option value='O(n*√n)'>O(n*√n)</option>
         </select> object.<p hidden>74</p>
 An object is a <select class='dro' name='q_12_36'id='q_12_36'>
             <option value='parent'>parent</option>
@@ -623,21 +629,21 @@ To hide the details of an object is called <select class='dro' name='q_12_39'id=
     <div class='answer'>
       <pre class='text'>
 A class is a <select class='dro' name='aq_12_35'id='q_12_35'>
-            <option value='parent'>parent</option>
-            <option value='child'>child</option>
-            <option value='object'>object</option>
-            <option value='class'>class</option>
-            <option value='message'>message</option>
-            <option value='method'>method</option>
-            <option value='encapsulation'>encapsulation</option>
-            <option value='instantiate'>instantiate</option>
-            <option value='instantiation'>instantiation</option>
-            <option value='instance of'>instance of</option>
-            <option value='abstract'>abstract</option>
-            <option value='interface'>interface</option>
-            <option value='concrete'>concrete</option>
-            <option value='generic'>generic</option>
-            <option value='kind of'>kind of</option>
+            <option value=' '> </option>
+            <option value='O(n)'>O(n)</option>
+            <option value='O(n^2)'>O(n^2)</option>
+            <option value='O(n^3)'>O(n^3)</option>
+            <option value='O(n^4)'>O(n^4)</option>
+            <option value='O(log(n))'>O(log(n))</option>
+            <option value='O(√(n))'>O(√(n))</option>
+            <option value='O(2^n)'>O(2^n)</option>
+            <option value='O(3^n)'>O(3^n)</option>
+            <option value='O(10^n)'>O(10^n)</option>
+            <option value='O(n!)'>O(n!)</option>
+            <option value='O(n^n)'>O(n^n)</option>
+            <option value='O(1)'>O(1)</option>
+            <option value='O(n*log(n)'>O(n*log(n)</option>
+            <option value='O(n*√n)'>O(n*√n)</option>
         </select> object.<p hidden>74</p>
 An object is a <select class='dro' name='aq_12_36'id='q_12_36'>
             <option value='parent'>parent</option>
@@ -712,7 +718,7 @@ To hide the details of an object is called <select class='dro' name='aq_12_39'id
   
   
     <div class='footer'>
-      <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>
+      <pre id='bottomTime'></pre>
       <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
     </div>
     </form>
