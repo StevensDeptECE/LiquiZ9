@@ -1,2 +1,6 @@
 *.html
-liquiz
+.idea/
+./target
+.classpath
+.project
+.settings/
