@@ -73,4 +73,9 @@ public class AppConfig {
         return registration;
     }
 
+    @Bean
+    public CanvasApiFactory canvasApiFactory(){
+        return new CanvasApiFactory(configService.getConfigValue("canvas-url"));
+    }
+
 }
