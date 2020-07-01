@@ -1,0 +1,17 @@
+{"quizspec":"DovKruger.QSPEC", "name":"CPE390 Floating Point"}
+{"style":"pcode", "name":"Rules of Inf and NaN", "points":"20"}
+1.0 / 0.0 = $f:inf$
+-1.0 / 0.0 = $f:-inf$
+0.0 / 0.0 = $f:nan$
+sqrt(1.0 / 0.0) = $f:inf$
+sqrt(-1.0) = $f:nan$
+2.0 / 0. = $f:inf$
+cos(1.0 / 0.0) = $f:inf$
+sin(3.0 / 0.0 * 0.0) = $f:nan$
+---
+{"style":"pcode", "name":"true or false?", "poitns":"15"}
+1.0 / 0.0 == -1.0 / 0.0 ? $f:false$
+2.0 / 0.0 == 1.0 / 0.0 + 1 ? $f:true$
+0.0 / 0.0 == sqrt(-1.0) ? $f:false$
+sqrt(-1.0) != sqrt(-1.0) ? $f:false$
+---

@@ -1,0 +1,12 @@
+{"quizspec":"DovKruger.QSPEC", "name":"Number Theoretic"}
+{"style":"def", "name":"ooterm", "values":"parent,child,object,class,message,method,encapsulation,instantiate,instantiation,abstract,interface,concrete,generic"}
+---
+{"style":"def", "name":"cppterm", "values":"base,derived,public,private,protected,virtual,pure virtual,function,pointer,const,template,variadic,static"}
+---
+{"style":"text", "name":"Object Oriented Terminology", "points":"50"}
+A class is a $def:ooterm:kind of$ object. TODO: select options never made
+An object is a $def:ooterm:instance of$ a class. TODO: select options never made
+To create an object we $def:ooterm:instantiate$ a class.
+An object is an $def:ooterm:instantiation$ of a class.
+To hide the details of an object is called $def:ooterm:encapsulation$.
+---

@@ -1,0 +1,281 @@
+{"quizspec":"cpe390.qspec", "name":"Final Study Questions"}
+{"style":"text", "name":"Basic Knowledge", "points":"10"}
+How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? $f:16$
+Some of the registers are special and cannot be used as general registers.
+For example register r15 is the $fQ:pc$, r14 is the $fQ:sp$, and r13 is $fQ:lr$.
+The range of registers available for use is generally considered to be r0 to $fQ:r11$.
+There are $fQ:16$ double precision registers starting from $fQ:d0$ to $fQ:d15$.
+There are $fQ:32$ single precision registers starting from $fQ:s0$ to $fQ:s31$.
+We can say that register d1 and s2 $dro:can be used independently,*cannot be used at the same time,should never be used because they are reserved,are not valid in the arm architecture$.<br/>
+---
+{"style":"code", "name":"Overflow", "points":30"}
+Given that the maximum value for a 16 bit unsigned number is 65535
+uint16_t x = 65533;
+x += 3;
+The result in x is $f:0$.
+A value is being computed:
+int seconds = age * 365 * 24 * 60 * 60;
+How might you detect that overflow is occurring? $mav:*answer is negative,answer grows smaller with increasing number,answer ends in a digit that is not zero,answer contains the digit 7$.
+---
+{"style":"code", "name":"Basic Instructions", "points":"20"}
+After each of the following assembler instruction show the values in the registers
+000102b4: mov  r0, #4    @r0=$f{8}:00000000$   pc=$fQ{8}:000102b8$
+000102b8: sub  r0, #5    @r0=$fQ{8}:ffffffff$   pc=$fQ{8}:000102bc$
+000102bc: adds r0, #1    @r0=$f{8}:00000000$   V=$f{1}:1$ Z=$f{1}:1$ N=$f{1}:0$
+000102bc: adds r0, #1    @r0=$f{8}:00000000$   V=$f{1}:0$ Z=$f{1}:0$ N=$f{1}:0$
+000102bc: subs r0, #1    @r0=$f{8}:ffffffff$   V=$f{1}:1$ Z=$f{1}:0$ N=$F{1}:1$
+---
+{"style":"code", "name":"Push and Pop", "points":"15"}
+Enter all values as 8-digit hex in lower case. If there is not enough information
+to determine a digit, write a question mark (?) for that digit
+assume sp = 7fff1c10
+
+000102b8: mov  r4, #7
+000102bc: push {r4}    @sp=$fQ{8}:7fff1c0c$
+000102c0: mov  r4, #5  @r4=$fQ{8}:00000005$
+000102c4: push {r5}    @sp=$fQ{8}:7fff1c08$
+000102c8: mov  r5, #2
+000102cc: pop  {r5}    @r5=$fQ{8}:????????$ sp=$fQ{8}:7fff1c0c$
+000102d0: pop  {r4}    @r4=$fQ{8}:00000007$ sp=$fQ{8}:7fff1c10$ mem[7fff1c10]=$fQ{8}:00000005$
+000102d4: push {r4,r5} @
+---
+{"style":"code", "name":"Branching Instructions", "points":"40"}
+000104c8: mov  r0, #0    @r0=$fQ{8}:00000000$   pc=$fQ{8}:000104cc$
+000104cc: add  r0, #4    @r0=$fQ{8}:00000004$   pc=$fQ{8}:000104d0$
+000104d0: subs r0, #3    @Z=$f{1}:0$ N=$1{0$ pc=$fQ{8}:000104d4$
+000104d4: beq  000104e8  @pc=$fQ{8}:000104d8$
+000104d8: bgt  000104e8  @pc=$fQ{8}:000104e8$
+000104dc: bl   000104f0  @lr=$fQ{8}:000104e0$   pc=$fQ{8}:000104f0$
+000104e0: cmp  r0, #3    @Z=$f{1}0$ N=$1{1$
+000104e4: blt  000104ec
+000104e8:
+000104ec:
+000104f0: add
+---
+{"style":"code", "name":"Fill in the missing code", "points":"25"}
+author: Samuel Ciocca
+With r0 pointing at an array of integers and r1 the value of the desired element
+return the position of the desired element in r0.
+For example, with r0 pointing to {1,2,3,5,7,9,12} and r1=7, the value returned
+should be 4 since 7 is in position 4.
+_Z15countTillNumberPii:
+        push    {$f:r4$}
+        mov     r4, #0
+1:
+        ldr     r3, $[r0]$
+        $add$   r0, #4
+        add     r4, #1
+        cmp     r3, $f:r1$
+        $bne$  1b
+        $sub$  r0, r4, #1
+        pop     {r4}
+        bx      $f:lr$
+---
+{"style":"code", "name":"Fill in the missing code", "points":"30"}
+author: Zachary Fazal
+Divide all even elements by 2
+(starting at the zeroth location, ie the first one)
+Example, given r0 pointing to {3, 4, 6, 9, 1} r1=5
+the resulting array should be {1, 4, 3, 9, 0}
+_Z8althalvePii:
+1:
+        $f:ldr$   r2, [r0]
+        lsr     r2, $f:#1$        @divide this element by 2
+        $f:str$   r2, $[r0]$      @write back into memory
+        add     r0, $f:#8$        @skip two elements
+        subs    r1, $f:#2$        @count down
+        $f:bgt$   1b              @jump back and do it all again
+        $f:bx$    lr              @return to the caller
+---
+{"style":"code", "name":"Fill in the missing code", "points":"45"}
+author: Joshua Hornilla
+@r0 points to array, r1 = number of elements
+@return the sum of the array in r0
+_Z8sumArrayPii:
+        $f:mov$   r3, #0          @set register to zero
+1:
+        $f:ldr$   r2, [r0]        @read the first element from the array
+        add     r3, $f:r2$        @add to running total
+        $f:add$   r0, $f:#4$        
+        $f:subs$  r1, $f:#1$
+        $f:bne$   1b              @branch back and do it until the array is done
+        $f:mov$   r0, r3
+        bx      lr
+---
+{"style":"code", "name":"Fill in the missing code", "points":"20"}
+author: Chloe Sharpe
+r0 points to an array of integers, r1 contains the length of the array
+_Z1fPii:
+1:
+        ldr     r2, $f:[r0]$
+        add     r0, $f:#4$
+        $f:subs$  r1, #1
+        $f:bne$   1b
+        bx      lr
+---
+{"style":"code", "name":"Fill in the missing code", "points":"35"}
+author: Dov Kruger
+Read in a string until the last character which has a value 0
+and add each letter onto a sum, then shift left by 1
+Example "ABC"  sum = 0 + 65 then shift left by 1 (130) then add 66 (196) then
+shift left by 1 (392) then add 67 (459) then shift left by 2 
+_Z1fPii:
+        mov     r3, #0
+1:
+        $f:ldrb$  r2, [r0]
+        $f:cmp$   r2, #0
+        beq     2f
+        add     $f:r3$, r2
+        lsl     r3, $f:#1$
+        add     r0, $f:#1$
+        $f:subs$  r1, #1
+        $f:bne$   1b
+2:
+        mov     $f:r0$, r3
+        bx      lr
+---
+{"style":"code", "name":"Fill in the missing code", "points":"20"}
+author: Anisha Shin
+r0 points to an array, r1 = length of the array
+Fill in the missing assembler instructions and parameters.
+The function is supposed to read in all elements of the array, compute
+2 to the power of each element, and writ the number back.
+Example:  If the array r0 = {1,3,5},
+the function should compute 2^1, 2^3, 2^5 and upon return the array should be
+{2,8,32}.
+_Z5powerPii:
+1:
+        $f:ldr$  r2, [r0]
+        mov    r3, $f:#1$
+        $f:lsl$  r3, $f:r2$
+        str    $f:r3$,[r0]
+        add    r0,  $f:#4$
+        subs   $f:r1$, #1
+        $f:bgt$  1b
+        $f:bx$   lr
+---
+{"style":"code", "name":"Fill in the missing code", "points":"30"}
+author: Andrew Desanti and Dov Kruger
+given r0 = a number, return true (1) if the number is a multiple of 4
+and false (0) if the number is NOT a multiple of 4
+_Z7isMult4i:
+        ands     r0, $f:#3$        @test only last two bits
+        $f:movne$  r0, #0          @if it's not zero, put a zero in r0
+        $f:moveq$  r0, #1          @if it is zero, put a 1 in r0
+        bx       lr
+---
+{"style":"code", "name":"Fill in the missing code", "points":"20"}
+author: Tyler Wright and Andrew Desanti
+Complete this function where r0 points to an array and r1 is the length
+Return the sum of all elements that are multiples of 4.
+_Z13summultiples4:
+        mov     r3, #0
+1:
+        $f:ldr$   r2, [r0]
+        tst     r2, $f:#3$        @check whether multiple of 4
+        $f:addeq$ r3, r2          @sum if exact multiple
+        add     r0, $f:#4$        @advance to next element
+        $f:subs$  r1, $f:#1$        @count down
+        $f:bne$   1b              @branch back until we process the whole array
+        mov     $f:r0$, r3        @mov the answer into the desired register
+        $f:bx$    lr              @return
+---
+{"style":"code", "name":"Fill in the missing code", "points":"20"}
+author: Serafin Fernandez and Dov Kruger
+This function computes the difference between the squares of two numbers.
+It uses this formula, X^2 - Y^2 =(X-Y)*(X+Y).
+Fill in the missing assembler instructions and parameters.
+r0 = X, r1 = Y
+_Z5DifSqii:
+        $f:add$   r2, r0, $f:r1$
+        sub     r3, $f:r0$, r1
+        mul     $f:r0$, r3, r2    @compute the answer and store in the right reg
+        $f:bx$    lr              @return
+---
+{"style":"code", "name":"Fill in the missing code", "points":"30"}
+author: Serafin Fernandez and Dov Kruger
+Given r0=x and r1=y, two numbers compute (x+y)^3 * (x-y)^3
+Fill in the missing assembler instructions and parameters, all in lowercase.
+_Z6cubish:
+          push  {$f:r4$,$f:r5$}
+          add   r2, r0, r1
+          sub   r3, r0, r1
+          $f:mul$ r4, r2, r2
+          mul   r5, r3, r3
+          mul   r0, $f:r4$, r2
+          mla   $f:r0$, $f:r5$, r3
+          pop   {$f:r4$, $f:r5$}
+          bx    lr
+---
+{"style":"code", "name":"Fill in the missing code", "points":"30"}
+author: Nathan Renner
+_Z9squareSumPii:
+        mov     r2, #0
+1:
+        $f:ldr$   r3, [r0]
+        $f:mul$   r3, r3
+        $f:add$   r0, #4
+        add     $f:r2$, r3
+        $f:subs$  r1, #1
+        bne     1b
+        mov     $f:r0$, r2
+        bx      $f:lr$
+---
+{"style":"code", "name":"Fill in the missing code", "points":"20"}
+author: Princeton Nwosu:
+Fill in the missing assembler instructions and parameters.
+This function has four parameters.
+r0 = pointer to destination array (C)
+r1 = pointer to array A
+r2 = pointer to array B
+r3 is the number of elements in each array
+Compute each element c[i] = A[i] * B[i]
+Example:  r1 = {5,7}, r2 = {3,2}, r3 = 2
+The function should return r0 = {15,14}.
+_Z3mulPiPKiS1_i:
+1:
+        $f:ldr$    r5, [r1]
+        ldr      r6, [r2]
+        mul      $f:r5$,r5,r6
+        str      r5, [r0]
+        add      r0, $f:#4$
+        add      r1, $f:#4$
+        add      r2, $f:#4$
+        subs     $f:r3$, #1
+        bne      1b
+        bx       lr
+---
+{"style":"code", "name":"Fill in the missing code", "points":"50"}
+author: Dov Kruger
+Given
+r0 = pointer to an array of double
+r1 = number of elements
+The array contains coordinates x1,y1,z1,x2,y2,z2, ... etc
+Go through the array setting every third (Z) coordinate to zero
+_Z3mulPiPKiS1_i:
+        $f:vldr.f64$    d0, .ZERO
+        mov           r2, #24
+1:
+        $f:vstr.f64$    d0, [r0]
+        add           r0, $f:r2$
+        subs          $f:r1$, #1
+        bne           1b
+        bx            lr
+.ZERO:
+        .word 0x00000000
+        .word 0x00000000
+---
+{"style":"text", "name":"Write a Function", "points":"20"}
+author: Andrew Desanti
+In C++, write the function:
+bool isLeap(int year);
+that returns true if the year is a leap year and false if it is not.
+A year is a leap year if it is divisible by 4 but not divisible by 100, OR
+if it is divisible by 400. Recall that && is logical AND and || is logical OR.
+Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)
+$tar:$
+---
+{"style":"text", "name":"Write a Function", "points":"30"}
+author: Andrew Desanti
+Using the above isLeap function, write the following function that counts how many leap years between 2020 and the year:
+$tar:(int countLeap(int year) {$

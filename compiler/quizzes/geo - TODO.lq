@@ -1,0 +1,14 @@
+{"quizspec":"DovKruger.qspec", "name":"Geography"}
+{"qt":"code", "name":"Find the country"}
+$img(usoutlinemap.jpg$
+Drag in
+$drag(England$
+$drag(France$
+$drag(Spain$
+
+{"qt":"code", "name":"Comment on the movie"}
+$vid(TacomaNarrowsBridge.mp4$
+$ta(describe what happened to the bridge and why$
+
+{"qt":"code", "name":"Comment on the movie"}
+$sur(

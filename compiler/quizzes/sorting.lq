@@ -1,0 +1,45 @@
+{"quizspec":"datastruct.qspec", "name":"Sorting"}
+{"style":"def", "name":"comp", "values":"O(n),O(n^2),O(n^3),O(n^4),O(log2(n)),O(log3(n),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log2(n),O(n*√n)"}
+---
+{"style":"pcode", "name":"Quicksort", "points":"20"}
+Given the pivot = (x[start] + x[end])/2
+What is the pivot for the data below? $f:4$
+Show the array after the first pass
+<table>
+<tr><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td></tr>
+<tr><td>$f:1$</td><td>$f:2$</td><td>$f:3$</td><td>$f:4$</td><td>$f:5$</td><td>$f:6$</td><td>$f:7$</td><td>$f:8$</td></tr>
+</table>
+---
+{"style":"pcode", "name":"Insertion Sort", "points":"20"}
+Complete the pseudocode for insertion sort of array x of length n
+insertionsort(x[], n)     // Complexity: $def:comp:O(n^3)$
+for i = 1 to n-1
+  if $f:x[i-1]$ > x[i] then // insert
+    temp = $f:x[i]$
+    do
+      $f:x[i]$ = x[i-1]
+      i--
+    while i > 0 and $f:x[i]$ > temp
+    x[i] = $f:temp$
+  end
+end
+---
+{"style":"pcode", "name":"Insertion Sort", "points":"20"}
+<table>
+Show the table after the first pass
+<tr><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td><td>3</td><td>2</td><td>1</td></tr>
+<tr><td>$f:7$</td><td>$f:8$</td><td>$f:6$</td><td>$f:5$</td><td>$f:4$</td><td>$f:3$</td><td>$f:2$</td><td>$f:1$</td></tr>
+</table>
+---
+{"style":"pcode", "name":"Complexity", "points":"20"}
+What is the complexity of quiksort $def:comp:O(n^3)$
+What is the complexity of insertion sort $def:comp:O(n^3)$
+What is the complexity of insertion sort of a sorted array? $def:comp:O(n^3)$
+
+What is the complexity of heapsort $def:comp:O(n^3)$
+What is the complexity of heapsort of a sorted array? $def:comp:O(n^3)$
+When is mergesort advantageous?
+$mcv:The data is already sorted,*The data is larger than memory,The data is integer,The data is in random order$
+When is insertion sort advantageous?
+$mav:*The data is already sorted,*The data is mostly sorted,The data is larger than memory,The data is integer,The data is in random order,*The size is small$
+---
