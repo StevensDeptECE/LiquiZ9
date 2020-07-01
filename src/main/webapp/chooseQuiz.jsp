@@ -19,7 +19,7 @@
             <div class='quizChoice' id='quizChoice'>
                 <table class=''><tr>
               <%
-                File folder = new File("../../../LiquiZ9/LiquiZServer/data/quizPages/");//");///opt/tomcat/webapps/LiquiZServer-1.0/quizPages/
+                File folder = new File("../../../LiquiZ9/data/quizPages/");//");///opt/tomcat/webapps/LiquiZServer-1.0/quizPages/
                 File[] listOfFiles = folder.listFiles();
                 for (File file : listOfFiles) {
                     if (file.isFile()) {

@@ -31,17 +31,14 @@ public class CanvasService {
 
     private static Logger LOG = Logger.getLogger(CanvasService.class);
 
+    @Autowired
     protected LtiLaunch ltiLaunch;
 
+    @Autowired
     private LtiSessionService ltiSessionService;
 
+    @Autowired
     private CanvasApiFactory canvasApiFactory;
-
-    public CanvasService(LtiLaunch ltiLaunch, LtiSessionService ltiSessionService, CanvasApiFactory canvasApiFactory){
-        this.ltiLaunch = ltiLaunch;
-        this.ltiSessionService = ltiSessionService;
-        this.canvasApiFactory = canvasApiFactory;
-    }
 
 
     public void ensureApiTokenPresent() throws NoLtiSessionException {

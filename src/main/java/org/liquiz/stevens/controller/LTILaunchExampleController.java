@@ -40,18 +40,16 @@ import org.liquiz.stevens.quiz.QuizSubmission;
 public class LTILaunchExampleController extends LtiLaunchController{
     private static final Logger LOG = Logger.getLogger(LTILaunchExampleController.class);
 
+    @Autowired
     public LtiSessionService ltiSessionService;
 
     protected Assignment assignment;
 
+    @Autowired
     protected CanvasService canvasService;
 
     protected RoleChecker roleChecker;
 
-    public LTILaunchExampleController(LtiSessionService ltiSessionService, CanvasService canvasService){
-        this.ltiSessionService = ltiSessionService;
-        this.canvasService = canvasService;
-    }
     /**
      * We have our applications return the LTI configuration XML when you hit
      * the root of the context in a browser. It's an easy place to keep
@@ -73,7 +71,7 @@ public class LTILaunchExampleController extends LtiLaunchController{
             throw new AccessDeniedException("You cannot access this content without a valid session");
         }
         System.out.println(ltiSession.getEid());
-        return new ModelAndView("grade", "username", ltiSession.getEid());
+        return new ModelAndView("chooseQuiz", "", ltiSession.getEid());
     }
 
     @RequestMapping(value = "/grade", method = RequestMethod.POST)
@@ -213,7 +211,7 @@ public class LTILaunchExampleController extends LtiLaunchController{
      */
     @Override
     protected String getInitialViewPath() {
-        return "/helloWorld";
+        return "/chooseQuiz";
     }
 
     @Override
