@@ -70,8 +70,20 @@ public class LTILaunchExampleController extends LtiLaunchController{
         if (ltiSession.getEid() == null || ltiSession.getEid().isEmpty()) {
             throw new AccessDeniedException("You cannot access this content without a valid session");
         }
+        String dir = System.getProperty("user.dir");
         System.out.println(ltiSession.getEid());
-        return new ModelAndView("chooseQuiz", "", ltiSession.getEid());
+        System.out.println(dir);
+        return new ModelAndView("helloWorld", "username", ltiSession.getEid());
+    }
+
+    @RequestMapping("/chooseQuiz")
+    public ModelAndView chooseQuiz() throws NoLtiSessionException {
+        LtiSession ltiSession = ltiSessionService.getLtiSession();
+        if (ltiSession.getEid() == null || ltiSession.getEid().isEmpty()) {
+            throw new AccessDeniedException("You cannot access this content without a valid session");
+        }
+        System.out.println(ltiSession.getEid());
+        return new ModelAndView("chooseQuiz");
     }
 
     @RequestMapping(value = "/grade", method = RequestMethod.POST)
@@ -146,6 +158,15 @@ public class LTILaunchExampleController extends LtiLaunchController{
         out.print(jArr);
         out.flush();
           
+    }
+
+    @RequestMapping(value = "/quizChoice", method = RequestMethod.POST)
+    public ModelAndView quizChoice(HttpServletRequest request) throws NoLtiSessionException, IOException {
+        String filename = request.getParameter("quiz");
+        String name = filename.replaceFirst("[.][^.]+$", "");
+        HttpSession session=request.getSession();
+        session.setAttribute("quizName", name);
+        return new ModelAndView(name);
     }
     
     @RequestMapping(value = "/testQuiz", method = RequestMethod.POST)

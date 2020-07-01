@@ -11,7 +11,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>index</title>
-        <link rel="stylesheet" type="text/css" href="WEB-INF/jsp/quiz.css">
+        <link rel="stylesheet" type="text/css" href="quiz.css">
     </head>
     <body>
         <form method="post" action="quizChoice">
@@ -19,16 +19,19 @@
             <div class='quizChoice' id='quizChoice'>
                 <table class=''><tr>
               <%
-                File folder = new File("../../../LiquiZ9/data/quizPages/");//");///opt/tomcat/webapps/LiquiZServer-1.0/quizPages/
-                File[] listOfFiles = folder.listFiles();
-                for (File file : listOfFiles) {
-                    if (file.isFile()) {
-                        String name = file.getName().replaceFirst("[.][^.]+$", "");   
+                File folder = new File("/Research/LiquiZ9/data/quizPages/");//");///opt/tomcat/webapps/LiquiZServer-1.0/quizPages/
+                    File[] listOfFiles = folder.listFiles();
+                    if(listOfFiles!=null){
+                    for (File file : listOfFiles) {
+                        if (file.isFile()) {
+                            String name = file.getName().replaceFirst("[.][^.]+$", "");
               %>
                         <td><input type='radio' name='quiz' value="<%=file.getName()%>"><%=name%></td>
               <%
+                        }
                     }
-                }   
+               }
+
               %>
                 </table>    
             </div>
