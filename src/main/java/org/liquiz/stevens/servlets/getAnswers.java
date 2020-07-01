@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package servlets;
+package org.liquiz.stevens.servlets;
 
 import com.mongodb.MongoClient;
 import java.io.IOException;
@@ -17,14 +17,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import mongodb.CodecQuizService;
-import mongodb.CodecQuizSubmissionService;
+import org.liquiz.stevens.mongodb.CodecQuizService;
+import org.liquiz.stevens.mongodb.CodecQuizSubmissionService;
 import org.bson.Document;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import questions.Question;
-import quiz.Quiz;
-import quiz.QuizSubmission;
+import org.liquiz.stevens.questions.Question;
+import org.liquiz.stevens.quiz.Quiz;
+import org.liquiz.stevens.quiz.QuizSubmission;
 
 /**
  *

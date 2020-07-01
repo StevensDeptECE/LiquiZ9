@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package quiz;
+package org.liquiz.stevens.quiz;
 
 
 import javax.servlet.ServletContext;
@@ -13,7 +13,7 @@ import javax.servlet.annotation.WebListener;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
-import mongodb.converter.LiquiZCodecProvider;
+import org.liquiz.stevens.mongodb.converter.LiquiZCodecProvider;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 

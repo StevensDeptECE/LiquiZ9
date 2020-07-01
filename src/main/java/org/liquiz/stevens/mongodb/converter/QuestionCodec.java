@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mongodb.converter;
+package org.liquiz.stevens.mongodb.converter;
 
 import com.mongodb.MongoClient;
 import org.bson.BsonReader;
@@ -17,7 +17,7 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.types.ObjectId;
-import questions.Question;
+import org.liquiz.stevens.questions.Question;
 
 /**
  * Mongo Decoder for Items.

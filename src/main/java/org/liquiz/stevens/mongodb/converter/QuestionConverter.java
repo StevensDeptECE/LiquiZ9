@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mongodb.converter;
+package org.liquiz.stevens.mongodb.converter;
 
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import org.bson.Document;
-import questions.Question;
-import questions.NumQuestion;
-import questions.SimpleQuestion;
-import questions.MultiAnsQuestion;
+import org.liquiz.stevens.questions.Question;
+import org.liquiz.stevens.questions.NumQuestion;
+import org.liquiz.stevens.questions.SimpleQuestion;
+import org.liquiz.stevens.questions.MultiAnsQuestion;
 
 /**
  *

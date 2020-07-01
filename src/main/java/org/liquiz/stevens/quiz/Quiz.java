@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package quiz;
+package org.liquiz.stevens.quiz;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,10 +17,10 @@ import java.util.TreeMap;
 import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import questions.MultiAnsQuestion;
-import questions.NumQuestion;
-import questions.Question;
-import questions.SimpleQuestion;
+import org.liquiz.stevens.questions.MultiAnsQuestion;
+import org.liquiz.stevens.questions.NumQuestion;
+import org.liquiz.stevens.questions.Question;
+import org.liquiz.stevens.questions.SimpleQuestion;
 
 /**
  *

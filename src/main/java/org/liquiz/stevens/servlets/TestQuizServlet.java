@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package servlets;
+package org.liquiz.stevens.servlets;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -20,13 +20,13 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import java.util.Date;
 import java.util.TreeMap;
-import mongodb.CodecQuizService;
-import mongodb.CodecQuizSubmissionService;
+import org.liquiz.stevens.mongodb.CodecQuizService;
+import org.liquiz.stevens.mongodb.CodecQuizSubmissionService;
 import org.bson.Document;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import quiz.Quiz;
-import quiz.QuizSubmission;
+import org.liquiz.stevens.quiz.Quiz;
+import org.liquiz.stevens.quiz.QuizSubmission;
 
 public class TestQuizServlet extends HttpServlet {
 

@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mongodb.converter;
+package org.liquiz.stevens.mongodb.converter;
 
 import org.bson.codecs.Codec;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
-import questions.Question;
-import quiz.Quiz;
-import quiz.QuizSubmission;
+import org.liquiz.stevens.questions.Question;
+import org.liquiz.stevens.quiz.Quiz;
+import org.liquiz.stevens.quiz.QuizSubmission;
 
 public class LiquiZCodecProvider implements CodecProvider {
 

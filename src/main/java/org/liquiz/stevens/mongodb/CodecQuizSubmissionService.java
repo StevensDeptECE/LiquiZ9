@@ -8,7 +8,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mongodb;
+package org.liquiz.stevens.mongodb;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -21,9 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import org.bson.Document;
-import questions.Question;
-import quiz.Quiz;
-import quiz.QuizSubmission;
+import org.liquiz.stevens.questions.Question;
+import org.liquiz.stevens.quiz.Quiz;
+import org.liquiz.stevens.quiz.QuizSubmission;
 /**
  *
  * @author ejone

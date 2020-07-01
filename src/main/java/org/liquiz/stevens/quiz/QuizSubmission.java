@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package quiz;
+package org.liquiz.stevens.quiz;
 /**
  *
  * @author ejone
@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 import org.bson.types.ObjectId;
-import questions.Question;
+import org.liquiz.stevens.questions.Question;
 
 public class QuizSubmission{
   TreeMap<String, String[]> userAnswers;

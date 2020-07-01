@@ -722,3 +722,5 @@ tomcat/tomcat/webapps/LiquiZServer/index.html
 tomcat/tomcat/webapps/LiquiZServer/cpe390_introhtml
 >>>>>>> Stashed changes
 /LiquiZServer/target/
+/target/
+nb-configuration.xml
