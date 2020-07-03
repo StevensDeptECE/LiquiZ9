@@ -4,7 +4,7 @@
     Author     : ejone
 --%>
 
-<%@page import="quiz.Quiz"%>
+<%@page import="org.liquiz.stevens.quiz.Quiz"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
