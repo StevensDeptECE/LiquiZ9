@@ -156,7 +156,7 @@ void LiQuizCompiler::getJSONHeader() {
 void LiQuizCompiler::generateHeader() {
   getJSONHeader();
   html <<
-R"(<%org.liquiz.stevens.Login.checkLogin();%>
+R"(<%org.liquiz.stevens.login.Login.checkLogin();%>
 <!DOCTYPE html>
 <html>
 <head>
