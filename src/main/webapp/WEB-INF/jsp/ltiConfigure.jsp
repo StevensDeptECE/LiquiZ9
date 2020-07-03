@@ -12,7 +12,7 @@
 </head>
 <body>
     <h1>Launch Page</h1>
-    <p>This is the /launch</p>
+    <p>This is the configuration xml for canvas</p>
 
     <pre>
 ----------- Start copying the next line -----------

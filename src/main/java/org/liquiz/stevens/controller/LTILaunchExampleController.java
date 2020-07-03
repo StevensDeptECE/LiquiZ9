@@ -86,6 +86,24 @@ public class LTILaunchExampleController extends LtiLaunchController{
         return new ModelAndView("chooseQuiz");
     }
 
+    @RequestMapping("/teacherView")
+    public ModelAndView teacherView() throws NoLtiSessionException {
+        LtiSession ltiSession = ltiSessionService.getLtiSession();
+        if(ltiSession.getEid() == null || ltiSession.getEid().isEmpty()){
+            throw new AccessDeniedException("You cannot access this content without a valid session");
+        }
+        assertPrivledgedUser();
+        List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
+        boolean isInstructor = roleList !=null && (roleList.contains(LtiLaunchData.InstitutionRole.Instructor));
+        LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
+        if(isInstructor){
+            return new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
+        }
+        else{
+            throw new AccessDeniedException("You are not an insturctor and you cannot view this page");
+        }
+    }
+
     @RequestMapping(value = "/grade", method = RequestMethod.POST)
     public void grade(HttpServletRequest request) throws NoLtiSessionException, IOException {
 
