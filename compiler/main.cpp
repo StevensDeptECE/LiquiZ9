@@ -4,7 +4,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
   try {
     if (argc < 2) {
-      LiQuizCompiler L("demo.lq");
+      LiQuizCompiler L("cpe553-pointers.lq");
       L.generateQuiz();
     } else {
       for (int i = 1; i < argc; i++) {

@@ -7,11 +7,50 @@
 using namespace std;
 using namespace nlohmann;
 
+string nameof(string) {
+  return "string";
+}
+
+string nameof(int) {
+  return "int";
+}
+
+template<typename T>
+static T lookup(nlohmann::json& json, const std::string& key, const T& defaultVal,
+                int lineNum) {
+  try {
+    auto it = json.find(key);
+    if (it != json.end())
+      return T(it.value());
+  } catch (std::exception& e) {
+    cerr << "Error parsing json value " << key << " of type " << nameof(defaultVal) << e.what() << '\n';
+  }
+  return defaultVal;
+}
+
+template<typename T>
+static void require(nlohmann::json& json, const std::string& key, T* target,
+                int lineNum) {
+  try {
+    auto it = json.find(key);
+    if (it != json.end())
+      *target = it.value();
+  } catch (std::exception& e) {
+    cerr << "Expected " << key << " at line " << lineNum << '\n';
+  }
+}
+
+const string empty = "";
+const string defaultQuiz = "quiz.css";
+const uint32_t defaultFillInBlankSize = 6;
+
 void LiQuizCompiler::findQuestionType(const string &type, double &points,
                                       string &delim, int pos, int len) {
-  QuestionType *question = (questionTypes.find(type) != questionTypes.end())
-                               ? questionTypes[type]
-                               : defaultQuestionType;
+  if (questionTypes.find(type) == questionTypes.end()) {
+    cerr << "Undefined question type " << type << " at line: " << questionLineNumber << '\n';
+    return;
+  }
+  QuestionType *question = questionTypes[type];
   if (question != nullptr) {
     question->setText(delim);
     inputText = question->print(this, answers, partNum, questionNum, points);
@@ -81,8 +120,7 @@ void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) 
   {
     ifstream specFile("spec/" + filename);
     string line;
-    while (!specFile.eof()) {
-      getline(specFile, line);
+    while (getline(specFile, line)) {
       specText += line;
       specText += '\n';
     }
@@ -113,26 +151,33 @@ void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) 
       cerr << i.key() << "==>" << i.value() << '\n';
   }
 
+  uint32_t lineNum = 1;
 // TODO: check error on all these. If defaults does not exist, do nothing?
-  imgFile = specInfo.at("defaults").at("img");
-  styleSheet = specInfo.at("defaults").at("stylesheet");
-  fillSize = specInfo.at("defaults").at("fillInTheBlankSize");
-  timeLimit = specInfo.at("defaults").at("timeLimit");
-  email = specInfo.at("email");
-  author = specInfo.at("author");
+  if (specInfo.find("defaults") != specInfo.end()) {
 
-  for (nlohmann::json::iterator it = specInfo.at("def").begin(); it != specInfo.at("def").end(); ++it) {
-    string name = it.key();
-    string defs;
+    //TODO: How to find line number within the JSON?
+    nlohmann::json defaults = specInfo.at("defaults");
+    imgFile = lookup(defaults, "img", empty, 1);
+    styleSheet = lookup(defaults, "stylesheet", defaultQuiz, lineNum);
+    fillSize = lookup(defaults, "fillInTheBlankSize", defaultFillInBlankSize, lineNum);
+    timeLimit = lookup(defaults, "timeLimit", 0, lineNumber); // default is untimed
+  }
+  email = lookup(specInfo, "email", empty, lineNum);
+  author = lookup(specInfo, "author", empty, lineNum);
 
-    for (int i = 0; i < it.value().size(); i++) {
-      string defVal = it.value()[i];
-      defs += defVal;
-      defs += ",";
+  if (specInfo.find("def") != specInfo.end()) {
+    for (nlohmann::json::iterator it = specInfo.at("def").begin(); it != specInfo.at("def").end(); ++it) {
+      string name = it.key();
+      string defs;
+      for (int i = 0; i < it.value().size(); i++) {
+        string defVal = it.value()[i];
+        defs += defVal;
+        defs += ",";
+      }
+      defs.erase(defs.size()-1, 1);
+      definitions[name] = defs;
+      answers << "defs" << "\t" << name << "\t" << defs << "\n";
     }
-    defs.erase(defs.size()-1, 1);
-    definitions[name] = defs;
-    answers << "defs" << "\t" << name << "\t" << defs << "\n";
   }
 }
 
@@ -223,9 +268,18 @@ void LiQuizCompiler::setAnswer() {
     answerText.insert(pos+2, "a");
   }
 }
+static const char* name(double) {
+  return "double";
+}
+
+static string name(int) {
+  return "int";
+}
+
 
 void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
-  string style = question.at("style");
+  string style;
+  require(question, "style", &style, questionLineNumber);
   string preStart, preEnd;
 
   if (style == "pcode" || style == "code") {
@@ -237,9 +291,9 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
   }
 
   if (style != "def") {
-    string temp = question.at("points");
-    double totalPoints = std::stod(temp);
-    string questionName = question.at("name");
+    //    string temp = question.at("points");
+    double totalPoints = lookup(question, "points", 1, questionLineNumber);
+    string questionName = lookup(question, "name", empty, questionLineNumber);
     html << R"(
   <div class='section'>
     <div class='question' id='q)";
@@ -257,18 +311,20 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
     html << preStart << endl;
     smatch m;
     double points = totalPoints / questionCount;
+    const string end = "</p>";
 
     while (regex_search(questionText, m, specials)) {
       string delim = m[2];
 
       int pos = questionText.find("<p hidden>", m.position());
-      string end = "</p>";
       int endPos = questionText.find(end, m.position());
+#if 0      
       string qLine;
       for (int i = pos + 10; i < endPos; i++) {
         qLine += questionText[i];
       }
-      questionLineNumber = stoi(qLine);
+#endif
+      questionLineNumber = stoi(questionText.substr(pos+10, endPos-pos-10+1));
 
       string type;
       if (delim[0] != 'f') {
@@ -300,8 +356,8 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
   )";
     questionNum++;
   } else {
-    string defs = question.at("values");
-    string name = question.at("name");
+    string defs = lookup(question,"values", empty, questionLineNumber);
+    string name = lookup(question,"name", empty, questionLineNumber);
     definitions[name] = defs;
     answers << "defs"
             << "\t" << name << "\t" << defs << '\n';
@@ -384,4 +440,13 @@ unordered_map<string, QuestionType *> LiQuizCompiler::questionTypes{
     {"dro", new DropDown()},
     {"img", new Image()},
     {"vid", new Video()},
-    {"rnd", new RandomQuestion}};
+    {"rnd", new RandomVar()},
+    {"var", new Variable()},
+    {"for", new Formula()}
+  };
+
+void LiQuizCompiler::dumpVariables() {
+  for (const auto& def : variables) {
+    cout << def.first << "\t==>\t" << def.second << '\n';
+  }
+}

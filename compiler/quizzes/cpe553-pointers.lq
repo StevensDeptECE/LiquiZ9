@@ -1,0 +1,70 @@
+{"quizspec":"cpe553.qspec", "name":"Pointers and References"}
+{"style":"def", "name":"ref", "values":",reference,pointer,readonly reference,readonly pointer"}
+---
+{"style":"def", "name":"leg", "values":",legal,illegal"}
+---
+{"style":"def", "name":"expl", "values":",reference to nothing,illegal spaces,bad data type,out of scope,const ref to non-const object,attempting to change const"}
+---
+{"style":"code", "name":"pointers and references"}
+int a = 2;
+const int b = 3;
+int& r = a;  // r is a $def:ref:reference$ to int
+int* p = &a; // p is a $def:ref:pointer$ to int
+const int* q = &a; // q is a $def:ref:readonly pointer$ to $f:int$
+---
+{"style":"code", "name":"Legal or illegal, if illegal, state why?"}
+For each of the following statements, if legal, mark legal
+If illegal, mark illegal and then select an answer explaining why
+int a = 3;            //$def:leg:legal$      $def:expl:0$
+const int& r1;        //$def:leg:illegal$    $def:expl:1$
+const int& r2 = a;    //$def:leg:legal$      $def:expl:0$
+const int b = 2;      //$def:leg:legal$      $def:expl:0$
+int& r3 = b;          //$def:leg:illeg$      $def:expl:6$
+const int& r4 = b;    //$def:leg:legal$      $def:expl:0$
+---
+{"style":"code", "name":"Address arithmetic"}
+Assuming the variable x is located at memory location 1000, state the value of each pointer in base 10 (don't use hex)
+
+int x[] = {9, 1, 5, 8, 6};
+int* p = x;
+cout << p; // address printed = $f:1000$
+p++;
+cout << p; // address printed = $f:1004$
+cout << &x[3]; // address printed = $f:1012$
+---
+{"style":"code", "name":"Address arithmetic, double"}
+Assuming the variable y is located at memory location 1000, state the value of each pointer in base 10 (don't use hex)
+
+double y[] = {1.5, 2.5, 3.0};
+double* p = y;
+cout << p; // address printed = $f:1000$
+p++;
+cout << p; // address printed = $f:1008$
+cout << &y[3]; // address printed = $f:1024$
+---
+{"style":"code", "name":"Address arithmetic, char"}
+Assuming the variable z is located at memory location 1000, state the value of each pointer in base 10 (don't use hex)
+
+char z[] = "testing";
+char* p = z;
+cout << p; // address printed = $f:1000$
+p++;
+cout << p; // address printed = $f:1001$
+cout << &z[3]; // address printed = $f:1003$
+---
+{"style":"code", "name":"Show the value?"}
+int a = 3;
+int x[10] = {5, 4, 3, 9};
+int* p = x;
+int b = *p + 1; // b = $f:6$
+int c = *p++;   // c = $f:5$
+int d = *p++;   // d = $f:4$
+int e = --*p;   // e = $f:2$
+int f = *++p;   // f = $f:9$
+int g = (*p)--; // g = $f:9$
+//What is output by the following line?
+for (int i = 0; i < 10; i++)
+  cout << x[i];  //$f{10}:5428000000$
+---
+
+

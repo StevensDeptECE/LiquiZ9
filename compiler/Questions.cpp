@@ -412,13 +412,14 @@ string Definition::print(const LiQuizCompiler *compiler, ostream &answersFile,
   return replace;
 }
 
-void RandomQuestion::getVar() {
+void RandomVar::getVar() {
   for (int i = 1; text[i] != '}'; i++) {
     var += text[i];
   }
 }
 
-void RandomQuestion::getRange() {
+void RandomVar::getRange() {
+#if 0
   for (int i = 1; text[i] != ','; i++) {
     minVal += text[i];
   }
@@ -436,9 +437,14 @@ void RandomQuestion::getRange() {
   }
   max = stod(maxVal);
   text.erase(0, maxVal.length() + 1);
+#endif
 }
 
-string RandomQuestion::print(const LiQuizCompiler *compiler,
+void RandomVar::setText(std::string& delim) {
+  cerr << "Random var " << delim << "]]]\n";
+}
+
+string RandomVar::print(const LiQuizCompiler *compiler,
                              ostream &answersFile, int &partNum,
                              int &questionNum, double &points) {
   text.erase(0, 3);
@@ -448,19 +454,32 @@ string RandomQuestion::print(const LiQuizCompiler *compiler,
     getRange();
   }
 
-  cout << "minVal: "
-       << "\t" << minVal << endl;
-  cout << "min: "
-       << "\t" << min << endl;
-  cout << "maxVal: "
-       << "\t" << maxVal << endl;
-  cout << "max: "
-       << "\t" << max << endl;
-  cout << "increm: "
-       << "\t" << increm << endl;
-  cout << "inc: "
-       << "\t" << inc << endl;
-  cout << endl << endl;
+  cout << *this << '\n';
 
   return "";
 }
+
+void Variable::setText(std::string& delim) {
+  cerr << "var " << delim << "]]]\n";
+}
+
+string Variable::print(const LiQuizCompiler *compiler,
+                             ostream &answersFile, int &partNum,
+                             int &questionNum, double &points) {
+  cerr << "variable " << name << "==>" <<
+    //compiler->variables.at(name) <<
+    '\n';// compiler->variables.at()
+  return "value";
+}
+
+string Formula::print(const LiQuizCompiler *compiler,
+                             ostream &answersFile, int &partNum,
+                             int &questionNum, double &points) {
+  cerr << "formula\n "; 
+  return "formula";
+}
+
+Formula::~Formula() {
+}
+
+

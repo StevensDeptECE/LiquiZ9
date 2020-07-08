@@ -43,7 +43,7 @@ $tar:$
 ---
 {"style":"pcode", "name":"gcd", "points":"10"}
 gcd(a,b)       // Complexity: $def:comp:O(log(n))$
-  if $f:b$ ← 0
+  if $f:b$ = 0
     return a
   end
   return $f:gcd$(b, a mod b)

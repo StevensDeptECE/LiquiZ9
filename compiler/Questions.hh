@@ -145,15 +145,39 @@ class Definition : public QuestionType {
                     int &partNum, int &questionNum, double &points) override;
 };
 
-class RandomQuestion : public QuestionType {
+class RandomVar : public QuestionType {
   private:
-    std::string var, minVal, maxVal, increm;
+    std::string var;
     double min, max, inc;
     std::string typeID = "r";
   public:
+    void setText(std::string& delim);
     void getVar();
     void getRange();
 
     std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
                     int &partNum, int &questionNum, double &points) override;
+  friend std::ostream& operator <<(std::ostream& s, const RandomVar& r) {
+    return s << r.min << "," << r.inc << "," << r.max;
+  }
+};
+
+class Variable : public QuestionType {
+private:
+  std::string name;
+public:
+  void setText(std::string& delim);
+  std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
+                  int &partNum, int &questionNum, double &points) override;
+};
+
+/*
+  A formula question evaluates a set of variables and can then ask the student to compute any variable
+  
+ */
+class Formula : public QuestionType {
+
+  std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
+                  int &partNum, int &questionNum, double &points) override;
+  virtual ~Formula();
 };

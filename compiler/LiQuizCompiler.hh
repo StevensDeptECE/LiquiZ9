@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
+#include <map>
 #include <unordered_map>
 #include "json.hpp"
 
@@ -14,6 +15,8 @@ class LiQuizCompiler {
   const static std::regex qID;
 
   static std::unordered_map<std::string, QuestionType *> questionTypes;
+  std::map<std::string, std::string> variables;
+
   std::unordered_map<std::string, std::string> definitions;
 
   friend class Definition;
@@ -69,4 +72,5 @@ class LiQuizCompiler {
   int getLineNumber() const { return lineNumber; }
 
   void generateQuiz();
+  void dumpVariables();
 };
