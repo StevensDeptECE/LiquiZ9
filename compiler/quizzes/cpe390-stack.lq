@@ -1,0 +1,42 @@
+{"quizspec":"cpe390.qspec", "name":"Stack"}
+{"style":"text", "name":"Basic Registers","Points":4}
+Register r15 is the $fQ:pc$
+Register r14 is the $fQ:sp$
+Register r13 is the $fQ:lr$
+---
+{"style":"code", "name":"push and pop"}
+Given that sp=0007e248
+Identify the value of the stack pointer after each operation
+push {r4}    $fQ{8}:0007e244$
+push {r5,r6} $fQ{8}:0007e23c$
+pop  {r5,r6} $fQ{8}:0007e244$
+pop  {r4}    $fQ{8}:0007e248$
+---
+{"style":"code", "name":"calling functions"}
+Assuming sp = 0007ffa8
+Identify the value of the pc and lr after each instruction
+000102b4: bl  000102c4   pc=$fQ{8}:000102c4$    lr=$fQ{8}:000102b8$
+000102b8: sub  r0, #5
+000102bc: adds r0, #1
+000102c0: bx lr
+000102c4: push {lr}      pc=$fQ{8}:000102c8$    sp=$fQ{8}:0007ffa8$ 
+000102c8: bl  000102d4
+000102cc:
+000102do:
+000102d4:
+000102d8:
+---
+{"style":"code", "name":"Push and Pop"}
+Enter all values as 8-digit hex in lower case. If there is not enough information
+to determine a digit, write a question mark (?) for that digit
+assume sp = 7fff1c10
+
+000102b8: mov  r4, #7
+000102bc: push {r4}    @sp=$fQ{8}:7fff1c0c$
+000102c0: mov  r4, #5  @r4=$fQ{8}:00000005$
+000102c4: push {r5}    @sp=$fQ{8}:7fff1c08$
+000102c8: mov  r5, #2
+000102cc: pop  {r5}    @r5=$fQ{8}:????????$ sp=$fQ{8}:7fff1c0c$
+000102d0: pop  {r4}    @r4=$fQ{8}:00000007$ sp=$fQ{8}:7fff1c10$ mem[7fff1c10]=$fQ{8}:00000005$
+000102d4: push {r4,r5} @
+---
