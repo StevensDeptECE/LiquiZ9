@@ -1,0 +1,57 @@
+{"quizspec":"cpe390.qspec", "name":"Loops"}
+{"style":"code", "name":"count down"}
+Complete the code so it counts down from 10 down to 1
+        mov r0, $fQ:#10$
+1:
+        sub r0, $fQ:#1$
+        $fQ:cmp$ r0, #0
+        $fQ:bne,bgt$ 1b
+---
+{"style":"code", "name":"count up"}
+        mov r0, $fQ:#0$
+1:
+        $fQ:add$ r0, $fQ:#1$
+        cmp $fQ:r0$, $fQ:#10$
+        
+---
+{"style":"code", "name":"Sum 1 to n"}
+Complete the following code so adds the numbers up to r0
+
+sum1ton:
+        mov     r2, #$f:0$
+        mov     r1, #1
+1:
+        $fQ:add$ $fQ:r2$, r1
+        add     $fQ:r1$, #1
+        $fQ:cmp$ r1, r0
+        $fQ:bne,blt$ 1b
+        mov     $fQ:r0$, r2
+        bx      lr
+---
+{"style":"code", "name":"Product 1 to n"}
+Complete the following code so multiplies the numbers from 1 to r0
+
+prod1ton:
+        mov     r2, #$f:0$
+        mov     r1, #1
+1:
+        $fQ:add$ $fQ:r2$, r1
+        add     $fQ:r1$, #1
+        $fQ:cmp$ r1, r0
+        $fQ:bne,blt$ 1b
+        mov     $fQ:r0$, r2
+        bx      lr
+---
+{"style":"code", "name":"Sum 1 to n counting down"}
+Complete the following code to adds the numbers r0 down to 1
+
+sum1ton:
+        mov     r2, #$f:0$
+1:
+        $fQ:add$ fQ:r2, r0
+        $fQ:sub$ sub $fQ:r0$, #1
+        $fQ:cmp$ r1, #$f:0$
+        bne      1b
+        mov     $fQ:r0$, r2
+        bx      lr
+---

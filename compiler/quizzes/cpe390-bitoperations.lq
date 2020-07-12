@@ -18,6 +18,13 @@ lsl r0, #4
 orr r0, r1
 mov r1, #14
 ---
+{"style":"code", "name":"Odd or even"}
+Complete the following code so it jumps to odd if the rightmost bit in the number is set
+
+oddoreven:
+            $fQ:tst$ r0, #1
+            $fQ:bne$ odd
+---
 {"style":"code", "name":"Set the middle bits"}
 The first instruction loads a hex number with a zero in it.
 Using or and shifting, replace the 0 with 9
@@ -80,4 +87,14 @@ mov r1, #0x$fQ:84$    @ load a single mask to clear the desired bits
 bic r0, r1            @ clear out the desired bits
 mov r1, #0x$fQ:40$    @ set up second mask to write in 1 bits
 $fQ:orr$ r0, r1       @ write in the new bits
+---
+{"style":"code", "name":"Test bits = val"}
+Complete the following code so it jumps to yes if the bits in r0 from 4 to 7 = 1001.
+In other words, if r0 = 0xfa120891 it should jump to "yes" because 9 = 1001
+
+oddoreven:
+    lsr r0, #$fQ:4$
+    and r0, #$fQ:15$
+    cmp r0, #9
+    $fQ:beq$ yes
 ---
