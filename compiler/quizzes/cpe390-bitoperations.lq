@@ -1,12 +1,13 @@
 {"quizspec":"cpe390.qspec", "name":"Bit operations"}
 {"style":"code", "name":"bitwise operations"}
 Write the answers in hexidecimal
+mov r0, #27      @ r0=$fQ{8}:0000001b$
 mov r1, #105     @ r1=$fQ{8}:00000069$
 mov r2, #92      @ r2=$fQ{8}:0000005c$
 and r3, r1, r2   @ r3=$fQ{8}:00000048$
-orr r4, r1, r0   @ r4=$fQ{8}:0000007d$
-eor r5, r4, r1   @ r5=$fQ{8}:00000014$
-mvn r0, r5       @ r5=$fQ{8}:ffffffeb$
+orr r4, r1, r0   @ r4=$fQ{8}:0000007f$
+eor r5, r4, r1   @ r5=$fQ{8}:00000016$
+mvn r0, r5       @ r5=$fQ{8}:ffffffe9$
 ---
 {"style":"code", "name":""}
 mov r1, #13
@@ -19,7 +20,7 @@ orr r0, r1
 mov r1, #14
 ---
 {"style":"code", "name":"Odd or even"}
-Complete the following code so it jumps to odd if the rightmost bit in the number is set
+Complete the following code so it jumps to odd if the rightmost bit of r0 is set
 
 oddoreven:
             $fQ:tst$ r0, #1
@@ -28,16 +29,16 @@ oddoreven:
 {"style":"code", "name":"Set the middle bits"}
 The first instruction loads a hex number with a zero in it.
 Using or and shifting, replace the 0 with 9
-ldr r0, =0xfab903dc
-mov r1, #9
+ldr   r0, =0xfab903dc
+mov   r1, #9
 $fQ:lsl$ r1, #12
 $fQ:orr$ r0, $fQ:r1$
 ---
 {"style":"code", "name":"clear the middle bits"}
 The first instruction loads a hex number with a zero in it.
 Using and and shifting, replace the f with a
-ldr r0, =0x34bf23dc
-mov r1, #0x0a
+ldr   r0, =0x34bf23dc
+mov   r1, #0x0a
 $fQ:lsl$ r1, #$fQ:16$
 $fQ:and$ r0, $fQ:r1$
 ---
@@ -46,11 +47,11 @@ The first instruction loads a hex number with a 5 in it.
 Replace it with 9. To do this, clear the bits 
 and write new ones with OR 
 
-ldr r0, =0x34bf235c
-mov r1, #f
+ldr   r0, =0x34bf235c
+mov   r1, #f
 $fQ:lsl$ r1, #4
 $fQ:bic$ r0, r1
-mov r1, #9
+mov   r1, #9
 $fQ:orr$ r0, r1
 ---
 {"style":"code", "name":"Now do it with 6 bits"}
@@ -58,11 +59,11 @@ This problem is similar, but now the number of bits is different so you will not
 be changing only a single hex digit. The first instruction loads a number.
 Given that bit 0 is the rightmost bit, replace bits 12-17 with the value 49.
 
-ldr r0, =0x12345678
-mov r1, #0x$fQ:3f$    @ figure out how to write 6 bits in hex
+ldr   r0, =0x12345678
+mov   r1, #0x$fQ:3f$    @ figure out how to write 6 bits in hex
 $fQ:lsl$ r1, #$fQ:12$ @ shift it into position
 $fQ:bic$ r0, r1       @ clear out the desired bits
-mov r1, #49           @ load in the new, desired number
+mov   r1, #49           @ load in the new, desired number
 $fQ:orr$ r0, r1       @ write in the new bits
 ---
 {"style":"code", "name":"Unix file permissions"}
@@ -82,10 +83,10 @@ write for the owner, remove the right to read for everyone (leaving the group), 
 to execute for the owner. The resulting bits should be:
 101100000
 
-ldr r0, =0x01A4       @ load initial permissions
-mov r1, #0x$fQ:84$    @ load a single mask to clear the desired bits
-bic r0, r1            @ clear out the desired bits
-mov r1, #0x$fQ:40$    @ set up second mask to write in 1 bits
+ldr   r0, =0x01A4       @ load initial permissions
+mov   r1, #0x$fQ:84$    @ load a single mask to clear the desired bits
+bic   r0, r1            @ clear out the desired bits
+mov   r1, #0x$fQ:40$    @ set up second mask to write in 1 bits
 $fQ:orr$ r0, r1       @ write in the new bits
 ---
 {"style":"code", "name":"Test bits = val"}
@@ -93,8 +94,8 @@ Complete the following code so it jumps to yes if the bits in r0 from 4 to 7 = 1
 In other words, if r0 = 0xfa120891 it should jump to "yes" because 9 = 1001
 
 oddoreven:
-    lsr r0, #$fQ:4$
-    and r0, #$fQ:15$
-    cmp r0, #9
+    lsr    r0, #$fQ:4$
+    and    r0, #$fQ:15$
+    cmp    r0, #9
     $fQ:beq$ yes
 ---
