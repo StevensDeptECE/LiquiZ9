@@ -50,8 +50,8 @@ public class getAnswers extends HttpServlet {
           response.addHeader("Access-Control-Allow-Origin", "*");
           //TODO: check if valid request
           MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
-          CodecQuizService cqs = new CodecQuizService(mongo);
-          CodecQuizSubmissionService cqss = new CodecQuizSubmissionService(mongo);
+          CodecQuizService cqs = new CodecQuizService();
+          CodecQuizSubmissionService cqss = new CodecQuizSubmissionService();
           
           String userId = "ejones";
           String quizId = "demo";

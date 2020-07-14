@@ -16,10 +16,11 @@
     <body>
         <form method="post" action="quizChoice">
             <h1>Pick which quiz you are taking.</h1>
+            <h2>course: ${courseId}</h2>
             <div class='quizChoice' id='quizChoice'>
                 <table class=''><tr>
               <%
-                File folder = new File("/Research/LiquiZ9/data/quizPages/");//");///opt/tomcat/webapps/LiquiZServer-1.0/quizPages/
+                File folder = new File("/Research/LiquiZ9/src/main/webapp/WEB-INF/jsp/quizzes/");//");///opt/tomcat/webapps/LiquiZServer-1.0/quizPages/ D:\Research\LiquiZ9\src\main\webapp\WEB-INF\jsp\quizzes
                     File[] listOfFiles = folder.listFiles();
                     if(listOfFiles!=null){
                     for (File file : listOfFiles) {

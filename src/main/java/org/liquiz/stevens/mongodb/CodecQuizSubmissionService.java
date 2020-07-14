@@ -10,7 +10,7 @@
  */
 package org.liquiz.stevens.mongodb;
 
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -20,26 +20,25 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.bson.Document;
 import org.liquiz.stevens.questions.Question;
 import org.liquiz.stevens.quiz.Quiz;
 import org.liquiz.stevens.quiz.QuizSubmission;
+import org.springframework.stereotype.Repository;
+
 /**
  *
  * @author ejone
  */
-
+@Repository
 @ApplicationScoped
 public class CodecQuizSubmissionService {
+
+    @Inject
     private MongoClient mongoClient;
-    
-    /**
-     *
-     * @param mongoClient the mongoClient running on the server
-     */
-    public CodecQuizSubmissionService(MongoClient mongoClient){
-        this.mongoClient = mongoClient;
-    }    
+
         
     /**
      *

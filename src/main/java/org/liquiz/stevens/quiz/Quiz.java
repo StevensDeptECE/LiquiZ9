@@ -8,12 +8,8 @@ package org.liquiz.stevens.quiz;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.InputMismatchException;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
+
 import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -29,8 +25,10 @@ import org.liquiz.stevens.questions.SimpleQuestion;
 public class Quiz {
     private ObjectId mongoId;
     private String answerFile;
-    private String quizId;
+    private long quizId;
+    private String quizName;
     private String classId;
+    private String className;
     private int numTries;
     private double maxGrade;
     private Date showAnswersAfter;
@@ -46,12 +44,14 @@ public class Quiz {
      * @param numTries the number of tries a student has for this quiz
      * @param showAnswersAfter date to show the answers after
      */
-    public Quiz(String quizId, String classId, String answerFile, int numTries, Date showAnswersAfter){
-        this.quizId = quizId;
+    public Quiz(String quizName, String classId, String className, String answerFile, int numTries, Date showAnswersAfter){
+        this.quizName = quizName;
         this.classId = classId;
+        this.className = className;
         this.answerFile = answerFile;
         this.numTries = numTries;
         this.showAnswersAfter = showAnswersAfter;
+        this.quizId = new Random().nextLong();
         questionsMap = new TreeMap<>();
         updateAnswers();
     }
@@ -66,14 +66,16 @@ public class Quiz {
      * @param maxGrade the max possible grade that could be received
      * @param showAnswersAfter date to show the answers after
      */
-    public Quiz(ObjectId mongoId, int numTries, String quizId, String classId, String answerFile, double maxGrade, Date showAnswersAfter){
+    public Quiz(ObjectId mongoId, int numTries, String quizName, String classId, String className, String answerFile, double maxGrade, Date showAnswersAfter, long quizId){
         this.mongoId = mongoId;
         this.numTries = numTries; 
-        this.quizId = quizId;
+        this.quizName = quizName;
         this.classId = classId;
+        this.className = className;
         this.answerFile = answerFile;
         this.maxGrade = maxGrade;
         this.showAnswersAfter = showAnswersAfter;
+        this.quizId = quizId;
         questionsMap = new TreeMap<>();
     }
     
@@ -81,8 +83,8 @@ public class Quiz {
      *
      * @return id of the quiz
      */
-    public final String getQuizId() {
-        return quizId;
+    public final String getQuizName() {
+        return quizName;
     }
     
     /**
@@ -153,7 +155,39 @@ public class Quiz {
     public final Date getAnswersRelease() {
         return showAnswersAfter;
     }
-    
+
+    /**
+     *
+     * @return id of quiz
+     */
+    public long getQuizId() {
+        return quizId;
+    }
+
+    /**
+     *
+     * @return name of the class
+     */
+    public String getClassName() {
+        return className;
+    }
+
+    /**
+     *
+     * @param className new name of the class
+     */
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    /**
+     *
+     * @param quizId new id for quiz
+     */
+    public void setQuizId(long quizId) {
+        this.quizId = quizId;
+    }
+
     /**
      *
      * @param date new Date when answers should be released after
@@ -174,8 +208,8 @@ public class Quiz {
      *
      * @param newName set the quizId of the quiz
      */
-    public final void setQuizId(String newName) {
-        quizId = newName;
+    public final void setQuizName(String newName) {
+        quizName = newName;
     }
     
     /**
@@ -311,7 +345,6 @@ public class Quiz {
       String split[] = q.getName().split("_");
       questionsMap.put(Integer.parseInt(split[2]), q);
   }
-  
-  
-    
+
+
 }

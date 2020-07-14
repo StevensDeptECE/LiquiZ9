@@ -5,7 +5,7 @@
  */
 package org.liquiz.stevens.mongodb;
 
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -15,25 +15,24 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.bson.Document;
 import org.liquiz.stevens.quiz.Quiz;
 import org.liquiz.stevens.quiz.QuizSubmission;
+import org.springframework.stereotype.Repository;
+
 /**
  *
  * @author ejone
  */
-
+@Repository
 @ApplicationScoped
 public class CodecQuizService {
+
+    @Inject
     private MongoClient mongoClient;
-    
-    /**
-     *
-     * @param mongoClient the mongoClient running on the server
-     */
-    public CodecQuizService(MongoClient mongoClient){
-        this.mongoClient = mongoClient;
-    }    
+
         
     /**
      *
@@ -67,6 +66,16 @@ public class CodecQuizService {
         }
         catch(Exception e){
             System.out.println(e);
+        }
+    }
+
+    public boolean replaceQuiz(Quiz quiz) {
+        try {
+            getCollection().findOneAndReplace(new Document("quizName", quiz.getQuizName()), quiz);
+            return true;
+        }
+        catch(Exception e){
+            return false;
         }
     }
     
@@ -105,8 +114,12 @@ public class CodecQuizService {
      * @param quizId String id of the quiz to search for
      * @return boolean on whether it exists in the collection
      */
-    public boolean exists(String quizId){
+    public boolean exists(long quizId){
         return getCollection().find(eq("quizId", quizId)).limit(1)!=null;
+    }
+
+    public boolean exists(Document doc){
+        return getCollection().find(doc).limit(1)!=null;
     }
         
     private MongoCollection<Quiz> getCollection(){

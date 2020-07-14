@@ -16,6 +16,7 @@
     <body>
         <form method="post" action="quizChoice">
             <h1>Pick which quiz you are taking.</h1>
+            <h2>course: ${courseId}</h2>
             <div class='quizChoice' id='quizChoice'>
                 <table class=''><tr>
               <%

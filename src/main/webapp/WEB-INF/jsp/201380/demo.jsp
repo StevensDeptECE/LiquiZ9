@@ -6,8 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%
-    org.liquiz.stevens.login.Login login = new org.liquiz.stevens.login.Login();
-    login.checkLogin();
+    //org.liquiz.stevens.login.Login login = new org.liquiz.stevens.login.Login();
+    //login.checkLogin();
 %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
@@ -24,7 +24,7 @@
 </head>
 <body onload='startTime(30)'>
 
-<form method="post" action="loginTest">
+<form method="post" action="testQuiz">
     <div id='header' class='header'>
         <div style='background-color: #ccc;text-align: center;border-radius: 10px; width: 240px; float: left'>
             <img class='header' src='media/StevensLogo380x326.png'/>

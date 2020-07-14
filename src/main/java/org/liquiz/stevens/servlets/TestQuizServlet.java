@@ -58,11 +58,11 @@ public class TestQuizServlet extends HttpServlet {
           String classId = "c++";//String session.getAttribute("classId");
           //TODO: get userID from lti session
           MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
-          CodecQuizService cqs = new CodecQuizService(mongo);
-          CodecQuizSubmissionService cqss = new CodecQuizSubmissionService(mongo);
+          CodecQuizService cqs = new CodecQuizService();
+          CodecQuizSubmissionService cqss = new CodecQuizSubmissionService();
           Quiz quiz = cqs.getOne(new Document("quizId", quizName));
           if(quiz==null) {
-            quiz = new Quiz(quizName, "c++", "../../../LiquiZ9/LiquiZServer/data/answerFiles/" + quizName + ".ans", 1, new Date());////"opt/tomcat/webapps/LiquiZServer-1.0/answerFiles/"
+            quiz = new Quiz(quizName, "c++","wow",  "../../../LiquiZ9/LiquiZServer/data/answerFiles/" + quizName + ".ans", 1, new Date());////"opt/tomcat/webapps/LiquiZServer-1.0/answerFiles/"
             cqs.add(quiz);
           }
           //QuizSubmission quizSub = cqss.get

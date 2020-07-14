@@ -45,7 +45,7 @@ public class quizzesLoad extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session=request.getSession(false);  
         MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
-        CodecQuizService cqs = new CodecQuizService(mongo);
+        CodecQuizService cqs = new CodecQuizService();
         List<Quiz> quizList = cqs.list();
           for(Quiz q : quizList){
               System.out.println(q.getQuizId());

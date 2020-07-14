@@ -39,7 +39,7 @@ public class QuizRequest extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session=request.getSession(false);  
         MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
-        CodecQuizService cqs = new CodecQuizService(mongo);
+        CodecQuizService cqs = new CodecQuizService();
         String quizName = request.getParameter("quiz");
         Quiz quiz = cqs.getOne(new Document("quizId", quizName));
         session.setAttribute("quiz", quiz);
