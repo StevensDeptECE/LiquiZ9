@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "Questions.hh"
+#include <string_view>
 
 using namespace std;
 using namespace nlohmann;
@@ -40,14 +41,15 @@ static void require(nlohmann::json& json, const std::string& key, T* target,
   }
 }
 
-const string empty = "";
+const string emptystr = "";
+const string escapedDollar = "\\$";
 const string defaultQuiz = "quiz.css";
 const uint32_t defaultFillInBlankSize = 6;
 
 void LiQuizCompiler::findQuestionType(const string &type, double &points,
                                       string &delim, int pos, int len) {
   if (questionTypes.find(type) == questionTypes.end()) {
-    cerr << "Undefined question type " << type << " at line: " << questionLineNumber << '\n';
+    cerr << "Undefined question type " << type << " at line: " << lineNum << '\n';
     return;
   }
   QuestionType *question = questionTypes[type];
@@ -70,8 +72,7 @@ string LiQuizCompiler::removeExtension(const char fileName[]) {
 
 void LiQuizCompiler::findDefinitions(const string &name, string &defs) const {
   if (definitions.find(name) == definitions.end()) {
-    cerr << "missing definition " << name << " on line " << questionLineNumber
-         << endl;
+    cerr << "missing definition " << name << " on line " << lineNum << endl;
   } else {
     defs = definitions.at(name);
   }
@@ -95,12 +96,8 @@ static void lookup(T& var, LiquiZCompiler* compiler, const json& specInfo, const
 }
 #endif
 
-LiQuizCompiler::LiQuizCompiler(const char liquizFileName[]) {
+LiQuizCompiler::LiQuizCompiler() {
   questionText.reserve(1024);
-  string baseFileName = removeExtension(liquizFileName);
-  liquizFile.open("quizzes/" + baseFileName + "lq");
-  html.open(baseFileName + "html");
-  answers.open("quizzes/" + baseFileName + "ans");
   setLogLevel(3);    // set log level to show everything
   questionNum = 1; // start quiz on first question
   questionCount = 0; // number of question inputs in the current question
@@ -116,17 +113,8 @@ static json merge( const json &a, const json &b ) {
 }
 
 void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) {
-  string specText;
-  {
-    ifstream specFile("spec/" + filename);
-    string line;
-    while (getline(specFile, line)) {
-      specText += line;
-      specText += '\n';
-    }
-  }
-
-  json specInfo = json::parse(specText);
+  ifstream specFile(("spec/" + filename).c_str());
+  json specInfo = json::parse(specFile);
 
   if (logLevel >= 3) {
     cerr << "dumping qspec json before merge\n";
@@ -151,19 +139,19 @@ void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) 
       cerr << i.key() << "==>" << i.value() << '\n';
   }
 
-  uint32_t lineNum = 1;
+  lineNum = 1;
 // TODO: check error on all these. If defaults does not exist, do nothing?
   if (specInfo.find("defaults") != specInfo.end()) {
 
     //TODO: How to find line number within the JSON?
     nlohmann::json defaults = specInfo.at("defaults");
-    imgFile = lookup(defaults, "img", empty, 1);
+    imgFile = lookup(defaults, "img", emptystr, 1);
     styleSheet = lookup(defaults, "stylesheet", defaultQuiz, lineNum);
     fillSize = lookup(defaults, "fillInTheBlankSize", defaultFillInBlankSize, lineNum);
-    timeLimit = lookup(defaults, "timeLimit", 0, lineNumber); // default is untimed
+    timeLimit = lookup(defaults, "timeLimit", 0, lineNum); // default is untimed
   }
-  email = lookup(specInfo, "email", empty, lineNum);
-  author = lookup(specInfo, "author", empty, lineNum);
+  email = lookup(specInfo, "email", emptystr, lineNum);
+  author = lookup(specInfo, "author", emptystr, lineNum);
 
   if (specInfo.find("def") != specInfo.end()) {
     for (nlohmann::json::iterator it = specInfo.at("def").begin(); it != specInfo.at("def").end(); ++it) {
@@ -183,7 +171,10 @@ void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) 
 
 void LiQuizCompiler::getJSONHeader() {
   string line;
-  getline(liquizFile, line);
+  if (!getline(line)) {
+    cerr << "Unexpected end of file line while getting JSON header\n";
+    return;
+  }
   nlohmann::json header = nlohmann::json::parse(line);
 #if 0
   string specName;
@@ -279,7 +270,7 @@ static string name(int) {
 
 void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
   string style;
-  require(question, "style", &style, questionLineNumber);
+  require(question, "style", &style, lineNum);
   string preStart, preEnd;
 
   if (style == "pcode" || style == "code") {
@@ -292,8 +283,8 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
 
   if (style != "def") {
     //    string temp = question.at("points");
-    double totalPoints = lookup(question, "points", 1, questionLineNumber);
-    string questionName = lookup(question, "name", empty, questionLineNumber);
+    double totalPoints = lookup(question, "points", 1, lineNum);
+    string questionName = lookup(question, "name", emptystr, lineNum);
     html << R"(
   <div class='section'>
     <div class='question' id='q)";
@@ -318,13 +309,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
 
       int pos = questionText.find("<p hidden>", m.position());
       int endPos = questionText.find(end, m.position());
-#if 0      
-      string qLine;
-      for (int i = pos + 10; i < endPos; i++) {
-        qLine += questionText[i];
-      }
-#endif
-      questionLineNumber = stoi(questionText.substr(pos+10, endPos-pos-10+1));
+      uint32_t questionLineNum = stoi(questionText.substr(pos+10, endPos-pos-10+1)); //TODO: get rid of this!
 
       string type;
       if (delim[0] != 'f') {
@@ -336,8 +321,9 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
       }
       findQuestionType(type, points, delim, m.position(), m.length());
     }
-    questionText.erase(questionText.length()-1,1);
+    questionText.pop_back();
     setAnswer();
+//TODO: What is this?    regex_replace("$", questionText.begin(), questionText.end(), escapedDollar);
     html << questionText << preEnd;
 
     html << R"(
@@ -356,8 +342,8 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
   )";
     questionNum++;
   } else {
-    string defs = lookup(question,"values", empty, questionLineNumber);
-    string name = lookup(question,"name", empty, questionLineNumber);
+    string defs = lookup(question,"values", emptystr, lineNum);
+    string name = lookup(question,"name", emptystr, lineNum);
     definitions[name] = defs;
     answers << "defs"
             << "\t" << name << "\t" << defs << '\n';
@@ -365,26 +351,20 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
 }
 
 void LiQuizCompiler::grabQuestions() {
-  string line, qID, temp;
+  string line;
+  string qID, temp;
   smatch m;
-  lineNumber = 1;
-  while (getline(liquizFile, line), !liquizFile.eof()) {
-    if (regex_search(
-            line, m,
-            questionStart)) {  // looking for the beginning of a question
+
+  while (getline(line)) {
+    if (regex_search(line, m, questionStart)) {  // looking for the beginning of a question
       istringstream s(line);
       nlohmann::json question;  // gets the question header
       s >> question;
-      lineNumber++;
-      while (getline(liquizFile, line),
-             !liquizFile.eof() &&
-                 line != DELIM) {  // gets line within question section
-        lineNumber++;
-        questionText =
-            questionText + line + "<p hidden>" + to_string(lineNumber) + "</p>";
-        questionText += '\n';
+      questionText = "";
+      while (getline(line) && line != DELIM) {  // gets line within question section
+        line.pop_back(); // get rid of \n
+        questionText += line + "<p hidden>" + to_string(lineNum) + "</p>" + '\n'; // TODO: get rid of this
       }
-      lineNumber++;
       for (int i = 0; i < questionText.length(); i++) {
         if (questionText[i] == '$') {
           questionCount++;
@@ -412,12 +392,50 @@ void LiQuizCompiler::generateFooter() {
 }
 
 void LiQuizCompiler::closeFile() {
-  liquizFile.close();
+  delete [] bytes;
   html.close();
   answers.close();
 }
 
-void LiQuizCompiler::generateQuiz() {
+void LiQuizCompiler::readFile(const char fileName[], char*& bytes, uint32_t& fileSize) {
+  ifstream f(fileName, ios::in | ios::ate);
+  fileSize = f.tellg();
+  f.seekg(0, ios::beg);
+  bytes = new char[fileSize];
+  f.read(bytes, fileSize);
+  f.close();
+}
+
+/*
+  get a single line from the quiz input.
+  This master routine returns a string_view for efficiency,
+  pointing to the underlying byte buffer bytes
+  It also skips comments which begin with # and tracks line numbers
+*/
+bool LiQuizCompiler::getline(string& line) {
+  while (cursor < fileSize && bytes[cursor] == '#') { // skip comment
+    cursor++;
+    while (cursor < fileSize && bytes[cursor] != '\n')
+      cursor++;
+    lineNum++;
+  }
+  if (cursor >= fileSize)
+    return false;
+  uint32_t startLine = cursor;
+  while (cursor < fileSize && bytes[cursor] != '\n')
+    cursor++;
+  line = string(&bytes[startLine], cursor - startLine + 1);
+  lineNum++;
+  cursor++;
+  return true;
+}
+void LiQuizCompiler::generateQuiz(const char liquizFileName[]) {
+
+  string baseFileName = removeExtension(liquizFileName);
+  readFile(("quizzes/" + baseFileName + "lq").c_str(), bytes, fileSize);
+  cursor = 0;
+  html.open(baseFileName + "html");
+  answers.open("quizzes/" + baseFileName + "ans");
   generateHeader();
   grabQuestions();
   generateFooter();
@@ -425,8 +443,7 @@ void LiQuizCompiler::generateQuiz() {
 }
 
 const regex LiQuizCompiler::questionStart("^\\{");
-const regex LiQuizCompiler::specials(
-    "\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
+const regex LiQuizCompiler::specials("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
 const regex LiQuizCompiler::qID("name='[q||T||Q||m||s||n||S]_[0-9]*_[0-9]*'");
 
 unordered_map<string, QuestionType *> LiQuizCompiler::questionTypes{

@@ -22,7 +22,7 @@ class LiQuizCompiler {
   friend class Definition;
 
  private:
-  const std::string DELIM = "---";
+  const std::string DELIM = "---\n";
   std::string questionText;
   std::string inputText;
   std::string answerText;
@@ -30,15 +30,18 @@ class LiQuizCompiler {
 
   std::ofstream html;
   std::ofstream answers;
-  std::ifstream liquizFile;
-  
+
+  uint32_t cursor; // byte offset into quiz file
+  char* bytes; // underlying bytes in quiz
+  uint32_t fileSize; // size of quiz text in bytes
+
   QuestionType *defaultQuestionType;
 
   int logLevel;           // verbose level, how much debugging to display
   int questionNum;        // the number of the current question
   int partNum;            // the subnumber within each question
-  int lineNumber;         // line number within the .lq file
-  int questionLineNumber; //
+  int lineNum;            // line number within the .lq file
+  //int questionLineNumber; // TODO: old, get rid of this!
   double questionCount;   // number of question inputs in the current question
   double points;          // total number of points in the quiz
   int fillSize;           // default number of characters in a fill-in question
@@ -65,12 +68,14 @@ class LiQuizCompiler {
   void grabQuestions();
   void generateFooter();
   void closeFile();
+  void readFile(const char filename[], char*& bytes, uint32_t& fileSize);
+
+  bool getline(std::string& line);
 
  public:
-  LiQuizCompiler(const char liquizFileName[]);
+  LiQuizCompiler();
+  int getLineNum() const { return lineNum; }
 
-  int getLineNumber() const { return lineNumber; }
-
-  void generateQuiz();
+  void generateQuiz(const char liquizFileName[]);
   void dumpVariables();
 };

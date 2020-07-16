@@ -12,7 +12,7 @@ class QuestionType {
   int fillSize;
 
  public:
-  void setText(const std::string &t) { text = t; }
+  virtual void setText(const std::string &t);
   virtual std::string print(const LiQuizCompiler *compiler, std::ostream &a,
                             int &pN, int &qN, double &p) = 0;
   virtual ~QuestionType();
@@ -151,7 +151,7 @@ class RandomVar : public QuestionType {
     double min, max, inc;
     std::string typeID = "r";
   public:
-    void setText(std::string& delim);
+    void setText(const std::string& delim) override;
     void getVar();
     void getRange();
 
@@ -166,7 +166,7 @@ class Variable : public QuestionType {
 private:
   std::string name;
 public:
-  void setText(std::string& delim);
+  void setText(const std::string& delim) override;
   std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
                   int &partNum, int &questionNum, double &points) override;
 };

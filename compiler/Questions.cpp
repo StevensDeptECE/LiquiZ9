@@ -1,6 +1,7 @@
 #include "Questions.hh"
 
 #include "LiQuizCompiler.hh"
+#include <random>
 using namespace std;
 
 inline const std::string &to_string(const std::string &s) { return s; }
@@ -440,8 +441,40 @@ void RandomVar::getRange() {
 #endif
 }
 
-void RandomVar::setText(std::string& delim) {
-  cerr << "Random var " << delim << "]]]\n";
+void QuestionType::setText(const string &t) {
+  text = t;
+}
+
+static regex parseRandomVar("rnd:([a-zA-Z][a-zA-Z0-9_]*)\\{(-?\\d+(?:\\.?\\d*)),(-?\\d+(?:\\.?\\d*)),(-?\\d+(?:\\.?\\d*))\\}");
+unordered_map<string, string> vars;
+default_random_engine generator;
+
+static double parseDouble(const string v, double defaultVal) {
+  try {
+    return stod(v);
+  } catch (const exception& e) {
+    cerr << "Error parsing string " << v << " as double.\n";
+    return defaultVal;
+  }
+}
+
+void RandomVar::setText(const string& delim) {
+  cerr << "Random var " << delim << "\n";
+  smatch m;
+  regex_search(delim, m, parseRandomVar);
+
+  cout << "matches:" << m[1] << "," << m[2] << "," << m[3] << "," << m[4] << '\n';
+  string varName = m[1];
+  cout << "varname" << varName << '\n';
+  min = parseDouble(m[2], 0);
+  inc = parseDouble(m[3], 1);
+  max = parseDouble(m[4], 10);
+  cerr << "var =" << varName << " min=" << min << " inc=" << inc << " max=" << max << '\n';
+  uint32_t numRandom = ceil((max-min)/inc);
+  uniform_int_distribution<int32_t> dist(0,numRandom);
+  uint32_t r = dist(generator);  // generates random integer
+  double rval = min + r * inc;
+  vars[varName] = to_string(rval);
 }
 
 string RandomVar::print(const LiQuizCompiler *compiler,
@@ -458,18 +491,25 @@ string RandomVar::print(const LiQuizCompiler *compiler,
 
   return "";
 }
+static const regex parseVar("var:([a-zA-Z][a-zA-Z0-9_]*)");
 
-void Variable::setText(std::string& delim) {
-  cerr << "var " << delim << "]]]\n";
+void Variable::setText(const std::string& delim) {
+  smatch m;
+  regex_search(delim, m, parseVar);
+  name = m[1];
+  cerr << "var " << name << "\n";
 }
 
 string Variable::print(const LiQuizCompiler *compiler,
                              ostream &answersFile, int &partNum,
                              int &questionNum, double &points) {
-  cerr << "variable " << name << "==>" <<
-    //compiler->variables.at(name) <<
-    '\n';// compiler->variables.at()
-  return "value";
+  if (vars.find(name) != vars.end()) {
+    cerr << "variable " << name << "==>" <<  vars.at(name) << '\n'; //TODO: compiler->vars?
+
+    return vars.at(name);
+  }
+  cerr << "Undefined variable " << name << '\n';
+  return "";
 }
 
 string Formula::print(const LiQuizCompiler *compiler,
