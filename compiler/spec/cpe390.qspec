@@ -9,7 +9,15 @@
      "closeDate":"+0 00:30:00"
   },
   "def": {
+    "legal" : ["legal", "illegal"],
+    "likert5" : ["strongly disagree", "disagree", "no opinion", "agree", "strongly agree"],
     "armloadinstr": ["ldr", "str"],
-    "armarithinstr": ["add", "sub", "and", "orr", "eor", "mul"]
+    "armarithinstr": ["add", "sub", "and", "orr", "eor", "mul"],
+    "archtype" : ["RISC", "CISC"],
+    "branch" : ["bne", "blt", "beq", "bgt"],
+    "fp": ["vldr.f64", "vmov.f64", "vadd.f64", "vsub.f64", "vmul.f64", "vdiv.f64", "vsqrt.f64", "vmla.f64"],
+    "yn" : ["yes", "no"],
+    "tf" : ["true", "false"],
+    "exact" : ["exact", "inexact"]
   }
 }

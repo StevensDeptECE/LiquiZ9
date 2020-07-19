@@ -1,0 +1,8 @@
+{"quizspec":"cpe390.qspec", "name":"Demo Quiz"}
+{"style":"def", "name":"likert5", "values":",strongly disagree,disagree,no opinion,agree,strongly agree"}
+---
+{"style":"text", "name":"Survey"}
+I am willing to teach in person this semester $def:likert5: $
+I have CDC conditions preventing my attendance. $def:likert5: $
+Teaching in a class with no windows is safe. $def:likert5: $
+---

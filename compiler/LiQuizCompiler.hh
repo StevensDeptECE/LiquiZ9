@@ -28,6 +28,9 @@ class LiQuizCompiler {
   std::string answerText;
   std::string answerInput;
 
+  std::string outputDir; // directory where the public output goes (html)
+  //TODO: need to generate randomized numbers for the images so that file names do not 
+  //give away answers and place in the output directory
   std::ofstream html;
   std::ofstream answers;
 
@@ -73,7 +76,7 @@ class LiQuizCompiler {
   bool getline(std::string& line);
 
  public:
-  LiQuizCompiler();
+  LiQuizCompiler(const char outputDir[]);
   int getLineNum() const { return lineNum; }
 
   void generateQuiz(const char liquizFileName[]);

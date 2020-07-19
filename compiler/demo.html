@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="stylesheet" type="text/css" href='css/quiz.css'>
+  <title>
+    LiQuiz [Demo Quiz]
+  </title>
+  <script src='js/quiz.js'></script>
+</head>
+<body onload='startTime(30)'>
+  <form method="get" action="gradquiz.jsp"></form>
+
+  <!-- Header -->
+  <div id='header' class='header'>
+    <img class='logo' src='media/stevenslogotrans.png'/>
+    <div class='headerText'>
+      <div class='quizTitle'>
+        Demo Quiz
+      </div>
+
+      <div class='headerDetails'>
+        <div class='headerRow'>
+          Dov Kruger
+        </div>
+        <div class='headerRow'>
+          Email  Dov.Kruger@stevens.edu  if you have any questions!
+        </div>
+        <div class='headerRow'>
+          <input id='pledge' type='checkbox' name='pledged' value='pledged'/>
+          <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
+        </div>
+        <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>
+        <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+      </div>
+    </div>
+    <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
+  </div>
+
+  <div class='section'>
+    <div class='question' id='q1'>
+      <div>
+        1.	Multiple Choice Horizontal
+        <span class='pts'>  (10 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='text'>
+Which of the following is a mammal?<p hidden>11</p>
+        <div class='horizontal'>
+          <label>
+          <input type='radio' name='q_1_326148625' value='fish'>fish  
+          </label>
+          <label>
+          <input type='radio' name='q_1_326148625' value='bird'>bird  
+          </label>
+          <label>
+          <input type='radio' name='q_1_326148625' value='cat'>cat  
+          </label>
+          
+        </div><p hidden>12</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='text'>
+Which of the following is a mammal?<p hidden>11</p>
+        <div class='horizontal'>
+          <label>
+          <input type='radio' name='aq_1_326148625' value='fish'>fish  
+          </label>
+          <label>
+          <input type='radio' name='aq_1_326148625' value='bird'>bird  
+          </label>
+          <label>
+          <input type='radio' name='aq_1_326148625' value='cat'>cat  
+          </label>
+          
+        </div><p hidden>12</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q2'>
+      <div>
+        2.	Multiple Choice Vertical
+        <span class='pts'>  (15 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='text'>
+Who is in the ECE Department?<p hidden>15</p>
+        <div class='vertical'>
+          <label>
+          <input type='radio' name='q_2_326148626' value='Kruger'>Kruger  
+          </label>
+          <label>
+          <input type='radio' name='q_2_326148626' value='Thompson'>Thompson  
+          </label>
+          <label>
+          <input type='radio' name='q_2_326148626' value='Sinnreich-Levi'>Sinnreich-Levi  
+          </label>
+          
+        </div><p hidden>16</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='text'>
+Who is in the ECE Department?<p hidden>15</p>
+        <div class='vertical'>
+          <label>
+          <input type='radio' name='aq_2_326148626' value='Kruger'>Kruger  
+          </label>
+          <label>
+          <input type='radio' name='aq_2_326148626' value='Thompson'>Thompson  
+          </label>
+          <label>
+          <input type='radio' name='aq_2_326148626' value='Sinnreich-Levi'>Sinnreich-Levi  
+          </label>
+          
+        </div><p hidden>16</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q3'>
+      <div>
+        3.	Multiple Answer Horizontal
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='text'>
+Who is in the ECE Department?<p hidden>19</p>
+        <div class='horizontal'>
+          <label>
+          <input type='checkbox' name='m_3_326148627' value='Kruger'>Kruger  
+          </label>
+          <label>
+          <input type='checkbox' name='m_3_326148627' value='Thompson'>Thompson  
+          </label>
+          <label>
+          <input type='checkbox' name='m_3_326148627' value='Sinnreich-Levi'>Sinnreich-Levi  
+          </label>
+          <label>
+          <input type='checkbox' name='m_3_326148627' value='Favardin'>Favardin  
+          </label>
+          <label>
+          <input type='checkbox' name='m_3_326148627' value='Song'>Song  
+          </label>
+          <label>
+          <input type='checkbox' name='m_3_326148627' value='Lu'>Lu  
+          </label>
+          
+        </div><p hidden>20</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='text'>
+Who is in the ECE Department?<p hidden>19</p>
+        <div class='horizontal'>
+          <label>
+          <input type='checkbox' name='am_3_326148627' value='Kruger'>Kruger  
+          </label>
+          <label>
+          <input type='checkbox' name='am_3_326148627' value='Thompson'>Thompson  
+          </label>
+          <label>
+          <input type='checkbox' name='am_3_326148627' value='Sinnreich-Levi'>Sinnreich-Levi  
+          </label>
+          <label>
+          <input type='checkbox' name='am_3_326148627' value='Favardin'>Favardin  
+          </label>
+          <label>
+          <input type='checkbox' name='am_3_326148627' value='Song'>Song  
+          </label>
+          <label>
+          <input type='checkbox' name='am_3_326148627' value='Lu'>Lu  
+          </label>
+          
+        </div><p hidden>20</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q4'>
+      <div>
+        4.	Multiple Answer Vertical
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='text'>
+Where is Stevens located?<p hidden>23</p>
+        <div class='vertical'>
+          <label>
+          <input type='checkbox' name='m_4_326148628' value='Hoboken'>Hoboken  
+          </label>
+          <label>
+          <input type='checkbox' name='m_4_326148628' value='United States'>United States  
+          </label>
+          <label>
+          <input type='checkbox' name='m_4_326148628' value='New York'>New York  
+          </label>
+          <label>
+          <input type='checkbox' name='m_4_326148628' value='New Jersey'>New Jersey  
+          </label>
+          
+        </div><p hidden>24</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='text'>
+Where is Stevens located?<p hidden>23</p>
+        <div class='vertical'>
+          <label>
+          <input type='checkbox' name='am_4_326148628' value='Hoboken'>Hoboken  
+          </label>
+          <label>
+          <input type='checkbox' name='am_4_326148628' value='United States'>United States  
+          </label>
+          <label>
+          <input type='checkbox' name='am_4_326148628' value='New York'>New York  
+          </label>
+          <label>
+          <input type='checkbox' name='am_4_326148628' value='New Jersey'>New Jersey  
+          </label>
+          
+        </div><p hidden>24</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q5'>
+      <div>
+        5.	Survey
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='text'>
+I like ice cream. <select class='dro' name='q_5_326148629'id='q_5_326148629'>
+            <option value=''></option>
+            <option value='strongly disagree'>strongly disagree</option>
+            <option value='disagree'>disagree</option>
+            <option value='no opinion'>no opinion</option>
+            <option value='agree'>agree</option>
+            <option value='strongly agree'>strongly agree</option>
+        </select><p hidden>27</p>
+I like programming. <select class='dro' name='q_5_326148630'id='q_5_326148630'>
+            <option value=''></option>
+            <option value='strongly disagree'>strongly disagree</option>
+            <option value='disagree'>disagree</option>
+            <option value='no opinion'>no opinion</option>
+            <option value='agree'>agree</option>
+            <option value='strongly agree'>strongly agree</option>
+        </select><p hidden>28</p>
+Stevens is a good school. <select class='dro' name='q_5_326148631'id='q_5_326148631'>
+            <option value=''></option>
+            <option value='strongly disagree'>strongly disagree</option>
+            <option value='disagree'>disagree</option>
+            <option value='no opinion'>no opinion</option>
+            <option value='agree'>agree</option>
+            <option value='strongly agree'>strongly agree</option>
+        </select><p hidden>29</p>
+Teaching online is easy. <select class='dro' name='q_5_326148632'id='q_5_326148632'>
+            <option value=''></option>
+            <option value='strongly disagree'>strongly disagree</option>
+            <option value='disagree'>disagree</option>
+            <option value='no opinion'>no opinion</option>
+            <option value='agree'>agree</option>
+            <option value='strongly agree'>strongly agree</option>
+        </select><p hidden>30</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='text'>
+I like ice cream. <select class='dro' name='aq_5_326148629'id='q_5_326148629'>
+            <option value=''></option>
+            <option value='strongly disagree'>strongly disagree</option>
+            <option value='disagree'>disagree</option>
+            <option value='no opinion'>no opinion</option>
+            <option value='agree'>agree</option>
+            <option value='strongly agree'>strongly agree</option>
+        </select><p hidden>27</p>
+I like programming. <select class='dro' name='aq_5_326148630'id='q_5_326148630'>
+            <option value=''></option>
+            <option value='strongly disagree'>strongly disagree</option>
+            <option value='disagree'>disagree</option>
+            <option value='no opinion'>no opinion</option>
+            <option value='agree'>agree</option>
+            <option value='strongly agree'>strongly agree</option>
+        </select><p hidden>28</p>
+Stevens is a good school. <select class='dro' name='aq_5_326148631'id='q_5_326148631'>
+            <option value=''></option>
+            <option value='strongly disagree'>strongly disagree</option>
+            <option value='disagree'>disagree</option>
+            <option value='no opinion'>no opinion</option>
+            <option value='agree'>agree</option>
+            <option value='strongly agree'>strongly agree</option>
+        </select><p hidden>29</p>
+Teaching online is easy. <select class='dro' name='aq_5_326148632'id='q_5_326148632'>
+            <option value=''></option>
+            <option value='strongly disagree'>strongly disagree</option>
+            <option value='disagree'>disagree</option>
+            <option value='no opinion'>no opinion</option>
+            <option value='agree'>agree</option>
+            <option value='strongly agree'>strongly agree</option>
+        </select><p hidden>30</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q6'>
+      <div>
+        6.	Basic Knowledge
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='text'>
+For example register r15 is the <input class='' name='Q_6_326148633' type='text' id='Q_6_326148633' size='3'/>, r14 is the <input class='' name='Q_6_326148634' type='text' id='Q_6_326148634' size='3'/>, and r13 is <input class='' name='Q_6_326148635' type='text' id='Q_6_326148635' size='3'/>.<p hidden>33</p>
+We can say that register d1 and s2 <select class='' name='q_6_326148636'id='q_6_326148636'>
+        <option value='can be used independently'>can be used independently</option>
+        <option value='share the same bits'>share the same bits</option>
+        <option value='should never be used because they are reserved'>should never be used because they are reserved</option>
+        <option value='are not valid in the arm architecture'>are not valid in the arm architecture</option>
+    </select>.<p hidden>34</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='text'>
+For example register r15 is the <input class='' name='aQ_6_326148633' type='text' id='Q_6_326148633' size='3'/>, r14 is the <input class='' name='aQ_6_326148634' type='text' id='Q_6_326148634' size='3'/>, and r13 is <input class='' name='aQ_6_326148635' type='text' id='Q_6_326148635' size='3'/>.<p hidden>33</p>
+We can say that register d1 and s2 <select class='' name='aq_6_326148636'id='q_6_326148636'>
+        <option value='can be used independently'>can be used independently</option>
+        <option value='share the same bits'>share the same bits</option>
+        <option value='should never be used because they are reserved'>should never be used because they are reserved</option>
+        <option value='are not valid in the arm architecture'>are not valid in the arm architecture</option>
+    </select>.<p hidden>34</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q7'>
+      <div>
+        7.	Write a Function
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='text'>
+author: Andrew Desanti<p hidden>37</p>
+In C++, write the function:<p hidden>38</p>
+bool isLeap(int year);<p hidden>39</p>
+that returns true if the year is a leap year and false if it is not.<p hidden>40</p>
+A year is a leap year if it is divisible by 4 but not divisible by 100, OR<p hidden>41</p>
+if it is divisible by 400. Recall that && is logical AND and || is logical OR.<p hidden>42</p>
+Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)<p hidden>43</p>
+<textarea rows='10' cols='60' name='T_7_326148637' id='T_7_326148637'></textarea><p hidden>44</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='text'>
+author: Andrew Desanti<p hidden>37</p>
+In C++, write the function:<p hidden>38</p>
+bool isLeap(int year);<p hidden>39</p>
+that returns true if the year is a leap year and false if it is not.<p hidden>40</p>
+A year is a leap year if it is divisible by 4 but not divisible by 100, OR<p hidden>41</p>
+if it is divisible by 400. Recall that && is logical AND and || is logical OR.<p hidden>42</p>
+Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)<p hidden>43</p>
+<textarea rows='10' cols='60' name='aT_7_326148637' id='T_7_326148637'></textarea><p hidden>44</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q8'>
+      <div>
+        8.	gcd
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+gcd(a,b)       // Complexity: <select class='dro' name='q_8_326148638'id='q_8_326148638'>
+            <option value=' '> </option>
+            <option value='O(n)'>O(n)</option>
+            <option value='O(n^2)'>O(n^2)</option>
+            <option value='O(n^3)'>O(n^3)</option>
+            <option value='O(n^4)'>O(n^4)</option>
+            <option value='O(log(n))'>O(log(n))</option>
+            <option value='O(√(n))'>O(√(n))</option>
+            <option value='O(2^n)'>O(2^n)</option>
+            <option value='O(3^n)'>O(3^n)</option>
+            <option value='O(10^n)'>O(10^n)</option>
+            <option value='O(n!)'>O(n!)</option>
+            <option value='O(n^n)'>O(n^n)</option>
+            <option value='O(1)'>O(1)</option>
+            <option value='O(n*log(n)'>O(n*log(n)</option>
+            <option value='O(n*√n)'>O(n*√n)</option>
+        </select><p hidden>47</p>
+  if <input class='' name='q_8_326148639' type='text' id='q_8_326148639' size='6'/> = 0<p hidden>48</p>
+    return a<p hidden>49</p>
+  end<p hidden>50</p>
+  return <input class='' name='q_8_326148640' type='text' id='q_8_326148640' size='6'/>(b, a mod b)<p hidden>51</p>
+end <p hidden>52</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+gcd(a,b)       // Complexity: <select class='dro' name='aq_8_326148638'id='q_8_326148638'>
+            <option value=' '> </option>
+            <option value='O(n)'>O(n)</option>
+            <option value='O(n^2)'>O(n^2)</option>
+            <option value='O(n^3)'>O(n^3)</option>
+            <option value='O(n^4)'>O(n^4)</option>
+            <option value='O(log(n))'>O(log(n))</option>
+            <option value='O(√(n))'>O(√(n))</option>
+            <option value='O(2^n)'>O(2^n)</option>
+            <option value='O(3^n)'>O(3^n)</option>
+            <option value='O(10^n)'>O(10^n)</option>
+            <option value='O(n!)'>O(n!)</option>
+            <option value='O(n^n)'>O(n^n)</option>
+            <option value='O(1)'>O(1)</option>
+            <option value='O(n*log(n)'>O(n*log(n)</option>
+            <option value='O(n*√n)'>O(n*√n)</option>
+        </select><p hidden>47</p>
+  if <input class='' name='aq_8_326148639' type='text' id='q_8_326148639' size='6'/> = 0<p hidden>48</p>
+    return a<p hidden>49</p>
+  end<p hidden>50</p>
+  return <input class='' name='aq_8_326148640' type='text' id='q_8_326148640' size='6'/>(b, a mod b)<p hidden>51</p>
+end <p hidden>52</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q9'>
+      <div>
+        9.	Basic Instructions
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+After each of the following assembler instruction show the values in the registers<p hidden>55</p>
+000102b4: mov  r0, #4    @r0=<input class='' name='Q_9_326148641' type='text' id='Q_9_326148641' size='8'/>   pc=<input class='' name='Q_9_326148642' type='text' id='Q_9_326148642' size='8'/><p hidden>56</p>
+000102b8: sub  r0, #5    @r0=<input class='' name='Q_9_326148643' type='text' id='Q_9_326148643' size='8'/>   pc=<input class='' name='Q_9_326148644' type='text' id='Q_9_326148644' size='8'/><p hidden>57</p>
+000102bc: adds r0, #1    @r0=<input class='' name='Q_9_326148645' type='text' id='Q_9_326148645' size='8'/>   V=<input class='' name='q_9_326148646' type='text' id='q_9_326148646' size='1'/> Z=<input class='' name='q_9_326148647' type='text' id='q_9_326148647' size='1'/> N=<input class='' name='q_9_326148648' type='text' id='q_9_326148648' size='1'/><p hidden>58</p>
+000102bc: adds r0, #1    @r0=<input class='' name='Q_9_326148649' type='text' id='Q_9_326148649' size='8'/>   V=<input class='' name='q_9_326148650' type='text' id='q_9_326148650' size='1'/> Z=<input class='' name='q_9_326148651' type='text' id='q_9_326148651' size='1'/> N=<input class='' name='q_9_326148652' type='text' id='q_9_326148652' size='1'/><p hidden>59</p>
+000102bc: subs r0, #1    @r0=<input class='' name='Q_9_326148653' type='text' id='Q_9_326148653' size='8'/>   V=<input class='' name='q_9_326148654' type='text' id='q_9_326148654' size='1'/> Z=<input class='' name='q_9_326148655' type='text' id='q_9_326148655' size='1'/> N=<input class='' name='q_9_326148656' type='text' id='q_9_326148656' size='1'/><p hidden>60</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+After each of the following assembler instruction show the values in the registers<p hidden>55</p>
+000102b4: mov  r0, #4    @r0=<input class='' name='aQ_9_326148641' type='text' id='Q_9_326148641' size='8'/>   pc=<input class='' name='aQ_9_326148642' type='text' id='Q_9_326148642' size='8'/><p hidden>56</p>
+000102b8: sub  r0, #5    @r0=<input class='' name='aQ_9_326148643' type='text' id='Q_9_326148643' size='8'/>   pc=<input class='' name='aQ_9_326148644' type='text' id='Q_9_326148644' size='8'/><p hidden>57</p>
+000102bc: adds r0, #1    @r0=<input class='' name='aQ_9_326148645' type='text' id='Q_9_326148645' size='8'/>   V=<input class='' name='aq_9_326148646' type='text' id='q_9_326148646' size='1'/> Z=<input class='' name='aq_9_326148647' type='text' id='q_9_326148647' size='1'/> N=<input class='' name='aq_9_326148648' type='text' id='q_9_326148648' size='1'/><p hidden>58</p>
+000102bc: adds r0, #1    @r0=<input class='' name='aQ_9_326148649' type='text' id='Q_9_326148649' size='8'/>   V=<input class='' name='aq_9_326148650' type='text' id='q_9_326148650' size='1'/> Z=<input class='' name='aq_9_326148651' type='text' id='q_9_326148651' size='1'/> N=<input class='' name='aq_9_326148652' type='text' id='q_9_326148652' size='1'/><p hidden>59</p>
+000102bc: subs r0, #1    @r0=<input class='' name='aQ_9_326148653' type='text' id='Q_9_326148653' size='8'/>   V=<input class='' name='aq_9_326148654' type='text' id='q_9_326148654' size='1'/> Z=<input class='' name='aq_9_326148655' type='text' id='q_9_326148655' size='1'/> N=<input class='' name='aq_9_326148656' type='text' id='q_9_326148656' size='1'/><p hidden>60</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q10'>
+      <div>
+        10.	Logic Gates
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+<img src='media/imageQuestion.png'></img><p hidden>63</p>
+<p hidden>64</p>
+What kind of logic gate is this?<p hidden>65</p>
+        <div class='horizontal'>
+          <label>
+          <input type='radio' name='q_10_326148657' value='OR'>OR  
+          </label>
+          <label>
+          <input type='radio' name='q_10_326148657' value='NOR'>NOR  
+          </label>
+          <label>
+          <input type='radio' name='q_10_326148657' value='AND'>AND  
+          </label>
+          <label>
+          <input type='radio' name='q_10_326148657' value='XOR'>XOR  
+          </label>
+          
+        </div><p hidden>66</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+<img src='media/imageQuestion.png'></img><p hidden>63</p>
+<p hidden>64</p>
+What kind of logic gate is this?<p hidden>65</p>
+        <div class='horizontal'>
+          <label>
+          <input type='radio' name='aq_10_326148657' value='OR'>OR  
+          </label>
+          <label>
+          <input type='radio' name='aq_10_326148657' value='NOR'>NOR  
+          </label>
+          <label>
+          <input type='radio' name='aq_10_326148657' value='AND'>AND  
+          </label>
+          <label>
+          <input type='radio' name='aq_10_326148657' value='XOR'>XOR  
+          </label>
+          
+        </div><p hidden>66</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q11'>
+      <div>
+        11.	Watch and React
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+Watch the movie on the Tacoma Narrows Bridge.<p hidden>69</p>
+Should engineers have known the bridge would collapse?<p hidden>70</p>
+What caused the collapse?<p hidden>71</p>
+<video controls width='320' height='240'><source src='media/TacomaNarrowsBridge.mp4' type='video/mp4'></video><p hidden>72</p>
+<textarea rows='10' cols='60' name='T_11_326148658' id='T_11_326148658'>Type your essay here</textarea><p hidden>73</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+Watch the movie on the Tacoma Narrows Bridge.<p hidden>69</p>
+Should engineers have known the bridge would collapse?<p hidden>70</p>
+What caused the collapse?<p hidden>71</p>
+<video controls width='320' height='240'><source src='media/TacomaNarrowsBridge.mp4' type='video/mp4'></video><p hidden>72</p>
+<textarea rows='10' cols='60' name='aT_11_326148658' id='T_11_326148658'>Type your essay here</textarea><p hidden>73</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q12'>
+      <div>
+        12.	Object Oriented Terminology
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='text'>
+A class is a <select class='dro' name='q_12_326148659'id='q_12_326148659'>
+            <option value='parent'>parent</option>
+            <option value='child'>child</option>
+            <option value='object'>object</option>
+            <option value='class'>class</option>
+            <option value='message'>message</option>
+            <option value='method'>method</option>
+            <option value='encapsulation'>encapsulation</option>
+            <option value='instantiate'>instantiate</option>
+            <option value='instantiation'>instantiation</option>
+            <option value='instance of'>instance of</option>
+            <option value='abstract'>abstract</option>
+            <option value='interface'>interface</option>
+            <option value='concrete'>concrete</option>
+            <option value='generic'>generic</option>
+            <option value='kind of'>kind of</option>
+        </select> object.<p hidden>76</p>
+An object is a <select class='dro' name='q_12_326148660'id='q_12_326148660'>
+            <option value='parent'>parent</option>
+            <option value='child'>child</option>
+            <option value='object'>object</option>
+            <option value='class'>class</option>
+            <option value='message'>message</option>
+            <option value='method'>method</option>
+            <option value='encapsulation'>encapsulation</option>
+            <option value='instantiate'>instantiate</option>
+            <option value='instantiation'>instantiation</option>
+            <option value='instance of'>instance of</option>
+            <option value='abstract'>abstract</option>
+            <option value='interface'>interface</option>
+            <option value='concrete'>concrete</option>
+            <option value='generic'>generic</option>
+            <option value='kind of'>kind of</option>
+        </select> a class.<p hidden>77</p>
+To create an object we <select class='dro' name='q_12_326148661'id='q_12_326148661'>
+            <option value='parent'>parent</option>
+            <option value='child'>child</option>
+            <option value='object'>object</option>
+            <option value='class'>class</option>
+            <option value='message'>message</option>
+            <option value='method'>method</option>
+            <option value='encapsulation'>encapsulation</option>
+            <option value='instantiate'>instantiate</option>
+            <option value='instantiation'>instantiation</option>
+            <option value='instance of'>instance of</option>
+            <option value='abstract'>abstract</option>
+            <option value='interface'>interface</option>
+            <option value='concrete'>concrete</option>
+            <option value='generic'>generic</option>
+            <option value='kind of'>kind of</option>
+        </select> a class.<p hidden>78</p>
+An object is an <select class='dro' name='q_12_326148662'id='q_12_326148662'>
+            <option value='parent'>parent</option>
+            <option value='child'>child</option>
+            <option value='object'>object</option>
+            <option value='class'>class</option>
+            <option value='message'>message</option>
+            <option value='method'>method</option>
+            <option value='encapsulation'>encapsulation</option>
+            <option value='instantiate'>instantiate</option>
+            <option value='instantiation'>instantiation</option>
+            <option value='instance of'>instance of</option>
+            <option value='abstract'>abstract</option>
+            <option value='interface'>interface</option>
+            <option value='concrete'>concrete</option>
+            <option value='generic'>generic</option>
+            <option value='kind of'>kind of</option>
+        </select> of a class.<p hidden>79</p>
+To hide the details of an object is called <select class='dro' name='q_12_326148663'id='q_12_326148663'>
+            <option value='parent'>parent</option>
+            <option value='child'>child</option>
+            <option value='object'>object</option>
+            <option value='class'>class</option>
+            <option value='message'>message</option>
+            <option value='method'>method</option>
+            <option value='encapsulation'>encapsulation</option>
+            <option value='instantiate'>instantiate</option>
+            <option value='instantiation'>instantiation</option>
+            <option value='instance of'>instance of</option>
+            <option value='abstract'>abstract</option>
+            <option value='interface'>interface</option>
+            <option value='concrete'>concrete</option>
+            <option value='generic'>generic</option>
+            <option value='kind of'>kind of</option>
+        </select>.<p hidden>80</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='text'>
+A class is a <select class='dro' name='aq_12_326148659'id='q_12_326148659'>
+            <option value='parent'>parent</option>
+            <option value='child'>child</option>
+            <option value='object'>object</option>
+            <option value='class'>class</option>
+            <option value='message'>message</option>
+            <option value='method'>method</option>
+            <option value='encapsulation'>encapsulation</option>
+            <option value='instantiate'>instantiate</option>
+            <option value='instantiation'>instantiation</option>
+            <option value='instance of'>instance of</option>
+            <option value='abstract'>abstract</option>
+            <option value='interface'>interface</option>
+            <option value='concrete'>concrete</option>
+            <option value='generic'>generic</option>
+            <option value='kind of'>kind of</option>
+        </select> object.<p hidden>76</p>
+An object is a <select class='dro' name='aq_12_326148660'id='q_12_326148660'>
+            <option value='parent'>parent</option>
+            <option value='child'>child</option>
+            <option value='object'>object</option>
+            <option value='class'>class</option>
+            <option value='message'>message</option>
+            <option value='method'>method</option>
+            <option value='encapsulation'>encapsulation</option>
+            <option value='instantiate'>instantiate</option>
+            <option value='instantiation'>instantiation</option>
+            <option value='instance of'>instance of</option>
+            <option value='abstract'>abstract</option>
+            <option value='interface'>interface</option>
+            <option value='concrete'>concrete</option>
+            <option value='generic'>generic</option>
+            <option value='kind of'>kind of</option>
+        </select> a class.<p hidden>77</p>
+To create an object we <select class='dro' name='aq_12_326148661'id='q_12_326148661'>
+            <option value='parent'>parent</option>
+            <option value='child'>child</option>
+            <option value='object'>object</option>
+            <option value='class'>class</option>
+            <option value='message'>message</option>
+            <option value='method'>method</option>
+            <option value='encapsulation'>encapsulation</option>
+            <option value='instantiate'>instantiate</option>
+            <option value='instantiation'>instantiation</option>
+            <option value='instance of'>instance of</option>
+            <option value='abstract'>abstract</option>
+            <option value='interface'>interface</option>
+            <option value='concrete'>concrete</option>
+            <option value='generic'>generic</option>
+            <option value='kind of'>kind of</option>
+        </select> a class.<p hidden>78</p>
+An object is an <select class='dro' name='aq_12_326148662'id='q_12_326148662'>
+            <option value='parent'>parent</option>
+            <option value='child'>child</option>
+            <option value='object'>object</option>
+            <option value='class'>class</option>
+            <option value='message'>message</option>
+            <option value='method'>method</option>
+            <option value='encapsulation'>encapsulation</option>
+            <option value='instantiate'>instantiate</option>
+            <option value='instantiation'>instantiation</option>
+            <option value='instance of'>instance of</option>
+            <option value='abstract'>abstract</option>
+            <option value='interface'>interface</option>
+            <option value='concrete'>concrete</option>
+            <option value='generic'>generic</option>
+            <option value='kind of'>kind of</option>
+        </select> of a class.<p hidden>79</p>
+To hide the details of an object is called <select class='dro' name='aq_12_326148663'id='q_12_326148663'>
+            <option value='parent'>parent</option>
+            <option value='child'>child</option>
+            <option value='object'>object</option>
+            <option value='class'>class</option>
+            <option value='message'>message</option>
+            <option value='method'>method</option>
+            <option value='encapsulation'>encapsulation</option>
+            <option value='instantiate'>instantiate</option>
+            <option value='instantiation'>instantiation</option>
+            <option value='instance of'>instance of</option>
+            <option value='abstract'>abstract</option>
+            <option value='interface'>interface</option>
+            <option value='concrete'>concrete</option>
+            <option value='generic'>generic</option>
+            <option value='kind of'>kind of</option>
+        </select>.<p hidden>80</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q13'>
+      <div>
+        13.	Object Oriented Terminology
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='text'>
+<p hidden>83</p>
+<p hidden>84</p>
+<p hidden>85</p>
+<p hidden>86</p>
+<p hidden>87</p>
+<p hidden>88</p>
+1.000000<p hidden>89</p>
+1.000000<p hidden>90</p>
+9.000000<p hidden>91</p>
+5.000000<p hidden>92</p>
+4.950000<p hidden>93</p>
+<p hidden>94</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='text'>
+<p hidden>83</p>
+<p hidden>84</p>
+<p hidden>85</p>
+<p hidden>86</p>
+<p hidden>87</p>
+<p hidden>88</p>
+1.000000<p hidden>89</p>
+1.000000<p hidden>90</p>
+9.000000<p hidden>91</p>
+5.000000<p hidden>92</p>
+4.950000<p hidden>93</p>
+<p hidden>94</p></pre>
+    </div>
+  </div>
+  
+  
+    <div class='footer'>
+      <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>
+      <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+    </div>
+    </form>
+</body>
+</html>
+      

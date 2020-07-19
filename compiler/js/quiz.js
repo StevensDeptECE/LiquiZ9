@@ -1,6 +1,6 @@
 var end;
 var audioOn = false;
-var timeLimit = 30; // minutes
+var timeLimit = 0; // minutes
 var firstAlert = 29.5;
 var alertInterval = 0.166666;
 var nextAlert = firstAlert;

@@ -4,6 +4,7 @@
 
 #include "Questions.hh"
 #include <string_view>
+#include <unistd.h>
 
 using namespace std;
 using namespace nlohmann;
@@ -96,7 +97,7 @@ static void lookup(T& var, LiquiZCompiler* compiler, const json& specInfo, const
 }
 #endif
 
-LiQuizCompiler::LiQuizCompiler() {
+LiQuizCompiler::LiQuizCompiler(const char outputDir[]) : outputDir(outputDir) {
   questionText.reserve(1024);
   setLogLevel(3);    // set log level to show everything
   questionNum = 1; // start quiz on first question
@@ -114,6 +115,12 @@ static json merge( const json &a, const json &b ) {
 
 void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) {
   ifstream specFile(("spec/" + filename).c_str());
+  char dirName[256];
+  cerr << "Current directory: " << getcwd(dirName, sizeof(dirName)) << '\n';
+  cerr << "filename: " << "spec/" + filename << '\n';
+  if (!specFile.good()) {
+    cerr << "Cannot open file " << filename << '\n';
+  }
   json specInfo = json::parse(specFile);
 
   if (logLevel >= 3) {
@@ -125,6 +132,7 @@ void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) 
   if (specInfo.find("parent") != specInfo.end()) {
     nlohmann::json parentQuizSpec;
     includeQSpec(&parentQuizSpec, specInfo.at("parent")); //TODO: merge specInfo on top of parentQuizSpec
+    //TODO: merge isn't working, so comment out?
     merge(parentQuizSpec, specInfo);
     specInfo = parentQuizSpec;
   }
@@ -164,6 +172,9 @@ void LiQuizCompiler::includeQSpec(json* parentQuizSpec, const string& filename) 
       }
       defs.erase(defs.size()-1, 1);
       definitions[name] = defs;
+      if (logLevel >= 3) {
+        cerr << "DEF " << name << "==>" << defs << '\n';
+      }
       answers << "defs" << "\t" << name << "\t" << defs << "\n";
     }
   }
@@ -192,7 +203,8 @@ void LiQuizCompiler::getJSONHeader() {
 void LiQuizCompiler::generateHeader() {
   getJSONHeader();
   html <<
-R"(<!DOCTYPE html>
+R"(
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8"/>
@@ -399,6 +411,9 @@ void LiQuizCompiler::closeFile() {
 
 void LiQuizCompiler::readFile(const char fileName[], char*& bytes, uint32_t& fileSize) {
   ifstream f(fileName, ios::in | ios::ate);
+  if (!f.good()) {
+    throw fileName; //TODO: add Ex object
+  }
   fileSize = f.tellg();
   f.seekg(0, ios::beg);
   bytes = new char[fileSize];
@@ -432,10 +447,10 @@ bool LiQuizCompiler::getline(string& line) {
 void LiQuizCompiler::generateQuiz(const char liquizFileName[]) {
 
   string baseFileName = removeExtension(liquizFileName);
-  readFile(("quizzes/" + baseFileName + "lq").c_str(), bytes, fileSize);
+  readFile((baseFileName + "lq").c_str(), bytes, fileSize);
   cursor = 0;
-  html.open(baseFileName + "html");
-  answers.open("quizzes/" + baseFileName + "ans");
+  html.open(outputDir + baseFileName + "html");
+  answers.open(baseFileName + "ans");
   generateHeader();
   grabQuestions();
   generateFooter();

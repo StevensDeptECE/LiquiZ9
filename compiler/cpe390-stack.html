@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="stylesheet" type="text/css" href='css/quiz.css'>
+  <title>
+    LiQuiz [Stack]
+  </title>
+  <script src='js/quiz.js'></script>
+</head>
+<body onload='startTime(30)'>
+  <form method="get" action="gradquiz.jsp"></form>
+
+  <!-- Header -->
+  <div id='header' class='header'>
+    <img class='logo' src='media/stevenslogotrans.png'/>
+    <div class='headerText'>
+      <div class='quizTitle'>
+        Stack
+      </div>
+
+      <div class='headerDetails'>
+        <div class='headerRow'>
+          Dov Kruger
+        </div>
+        <div class='headerRow'>
+          Email  Dov.Kruger@stevens.edu  if you have any questions!
+        </div>
+        <div class='headerRow'>
+          <input id='pledge' type='checkbox' name='pledged' value='pledged'/>
+          <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
+        </div>
+        <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>
+        <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+      </div>
+    </div>
+    <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
+  </div>
+
+  <div class='section'>
+    <div class='question' id='q1'>
+      <div>
+        1.	Basic Registers
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='text'>
+Register r15 is the <input class='' name='Q_1_1765509793' type='text' id='Q_1_1765509793' size='6'/>
+<p hidden>3</p>
+Register r14 is the <input class='' name='Q_1_1765509794' type='text' id='Q_1_1765509794' size='6'/>
+<p hidden>4</p>
+Register r13 is the <input class='' name='Q_1_1765509795' type='text' id='Q_1_1765509795' size='6'/>
+<p hidden>5</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='text'>
+Register r15 is the <input class='' name='aQ_1_1765509793' type='text' id='Q_1_1765509793' size='6'/>
+<p hidden>3</p>
+Register r14 is the <input class='' name='aQ_1_1765509794' type='text' id='Q_1_1765509794' size='6'/>
+<p hidden>4</p>
+Register r13 is the <input class='' name='aQ_1_1765509795' type='text' id='Q_1_1765509795' size='6'/>
+<p hidden>5</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q2'>
+      <div>
+        2.	push and pop
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+Given that sp=0007e248
+<p hidden>8</p>
+Identify the value of the stack pointer after each operation
+<p hidden>9</p>
+push {r4}    <input class='' name='Q_2_1765509796' type='text' id='Q_2_1765509796' size='8'/>
+<p hidden>10</p>
+push {r5,r6} <input class='' name='Q_2_1765509797' type='text' id='Q_2_1765509797' size='8'/>
+<p hidden>11</p>
+pop  {r5,r6} <input class='' name='Q_2_1765509798' type='text' id='Q_2_1765509798' size='8'/>
+<p hidden>12</p>
+pop  {r4}    <input class='' name='Q_2_1765509799' type='text' id='Q_2_1765509799' size='8'/>
+<p hidden>13</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+Given that sp=0007e248
+<p hidden>8</p>
+Identify the value of the stack pointer after each operation
+<p hidden>9</p>
+push {r4}    <input class='' name='aQ_2_1765509796' type='text' id='Q_2_1765509796' size='8'/>
+<p hidden>10</p>
+push {r5,r6} <input class='' name='aQ_2_1765509797' type='text' id='Q_2_1765509797' size='8'/>
+<p hidden>11</p>
+pop  {r5,r6} <input class='' name='aQ_2_1765509798' type='text' id='Q_2_1765509798' size='8'/>
+<p hidden>12</p>
+pop  {r4}    <input class='' name='aQ_2_1765509799' type='text' id='Q_2_1765509799' size='8'/>
+<p hidden>13</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q3'>
+      <div>
+        3.	calling functions
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+Assuming sp = 0007ffa8
+<p hidden>16</p>
+Identify the value of the pc and lr after each instruction
+<p hidden>17</p>
+000102b4: bl  000102c4   pc=<input class='' name='Q_3_1765509800' type='text' id='Q_3_1765509800' size='8'/>    lr=<input class='' name='Q_3_1765509801' type='text' id='Q_3_1765509801' size='8'/>
+<p hidden>18</p>
+000102b8: sub  r0, #5
+<p hidden>19</p>
+000102bc: adds r0, #1
+<p hidden>20</p>
+000102c0: bx lr
+<p hidden>21</p>
+000102c4: push {lr}      pc=<input class='' name='Q_3_1765509802' type='text' id='Q_3_1765509802' size='8'/>    sp=<input class='' name='Q_3_1765509803' type='text' id='Q_3_1765509803' size='8'/> 
+<p hidden>22</p>
+000102c8: bl  000102d4
+<p hidden>23</p>
+000102cc:
+<p hidden>24</p>
+000102do:
+<p hidden>25</p>
+000102d4:
+<p hidden>26</p>
+000102d8:
+<p hidden>27</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+Assuming sp = 0007ffa8
+<p hidden>16</p>
+Identify the value of the pc and lr after each instruction
+<p hidden>17</p>
+000102b4: bl  000102c4   pc=<input class='' name='aQ_3_1765509800' type='text' id='Q_3_1765509800' size='8'/>    lr=<input class='' name='aQ_3_1765509801' type='text' id='Q_3_1765509801' size='8'/>
+<p hidden>18</p>
+000102b8: sub  r0, #5
+<p hidden>19</p>
+000102bc: adds r0, #1
+<p hidden>20</p>
+000102c0: bx lr
+<p hidden>21</p>
+000102c4: push {lr}      pc=<input class='' name='aQ_3_1765509802' type='text' id='Q_3_1765509802' size='8'/>    sp=<input class='' name='aQ_3_1765509803' type='text' id='Q_3_1765509803' size='8'/> 
+<p hidden>22</p>
+000102c8: bl  000102d4
+<p hidden>23</p>
+000102cc:
+<p hidden>24</p>
+000102do:
+<p hidden>25</p>
+000102d4:
+<p hidden>26</p>
+000102d8:
+<p hidden>27</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q4'>
+      <div>
+        4.	Push and Pop
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+Enter all values as 8-digit hex in lower case. If there is not enough information
+<p hidden>30</p>
+to determine a digit, write a question mark (?) for that digit
+<p hidden>31</p>
+assume sp = 7fff1c10
+<p hidden>32</p>
+
+<p hidden>33</p>
+000102b8: mov  r4, #7
+<p hidden>34</p>
+000102bc: push {r4}    @sp=<input class='' name='Q_4_1765509804' type='text' id='Q_4_1765509804' size='8'/>
+<p hidden>35</p>
+000102c0: mov  r4, #5  @r4=<input class='' name='Q_4_1765509805' type='text' id='Q_4_1765509805' size='8'/>
+<p hidden>36</p>
+000102c4: push {r5}    @sp=<input class='' name='Q_4_1765509806' type='text' id='Q_4_1765509806' size='8'/>
+<p hidden>37</p>
+000102c8: mov  r5, #2
+<p hidden>38</p>
+000102cc: pop  {r5}    @r5=<input class='' name='Q_4_1765509807' type='text' id='Q_4_1765509807' size='8'/> sp=<input class='' name='Q_4_1765509808' type='text' id='Q_4_1765509808' size='8'/>
+<p hidden>39</p>
+000102d0: pop  {r4}    @r4=<input class='' name='Q_4_1765509809' type='text' id='Q_4_1765509809' size='8'/> sp=<input class='' name='Q_4_1765509810' type='text' id='Q_4_1765509810' size='8'/> mem[7fff1c10]=<input class='' name='Q_4_1765509811' type='text' id='Q_4_1765509811' size='8'/>
+<p hidden>40</p>
+000102d4: push {r4,r5} @
+<p hidden>41</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+Enter all values as 8-digit hex in lower case. If there is not enough information
+<p hidden>30</p>
+to determine a digit, write a question mark (?) for that digit
+<p hidden>31</p>
+assume sp = 7fff1c10
+<p hidden>32</p>
+
+<p hidden>33</p>
+000102b8: mov  r4, #7
+<p hidden>34</p>
+000102bc: push {r4}    @sp=<input class='' name='aQ_4_1765509804' type='text' id='Q_4_1765509804' size='8'/>
+<p hidden>35</p>
+000102c0: mov  r4, #5  @r4=<input class='' name='aQ_4_1765509805' type='text' id='Q_4_1765509805' size='8'/>
+<p hidden>36</p>
+000102c4: push {r5}    @sp=<input class='' name='aQ_4_1765509806' type='text' id='Q_4_1765509806' size='8'/>
+<p hidden>37</p>
+000102c8: mov  r5, #2
+<p hidden>38</p>
+000102cc: pop  {r5}    @r5=<input class='' name='aQ_4_1765509807' type='text' id='Q_4_1765509807' size='8'/> sp=<input class='' name='aQ_4_1765509808' type='text' id='Q_4_1765509808' size='8'/>
+<p hidden>39</p>
+000102d0: pop  {r4}    @r4=<input class='' name='aQ_4_1765509809' type='text' id='Q_4_1765509809' size='8'/> sp=<input class='' name='aQ_4_1765509810' type='text' id='Q_4_1765509810' size='8'/> mem[7fff1c10]=<input class='' name='aQ_4_1765509811' type='text' id='Q_4_1765509811' size='8'/>
+<p hidden>40</p>
+000102d4: push {r4,r5} @
+<p hidden>41</p></pre>
+    </div>
+  </div>
+  
+  
+    <div class='footer'>
+      <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>
+      <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+    </div>
+    </form>
+</body>
+</html>
+      

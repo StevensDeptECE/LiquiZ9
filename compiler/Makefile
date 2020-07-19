@@ -3,6 +3,7 @@ CXX	:=	g++
 DEBUG	:=	-g
 LiQuiz: $(OBJ)
 	$(CXX) $(DEBUG) $(OBJ) -o LiQuiz
+	ln -f LiQuiz ../bin
 
 main.o : main.cpp LiQuizCompiler.hh
 	$(CXX) $(DEBUG) -c $<

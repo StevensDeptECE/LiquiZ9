@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="stylesheet" type="text/css" href='css/quiz.css'>
+  <title>
+    LiQuiz [CPE390 Floating Point]
+  </title>
+  <script src='js/quiz.js'></script>
+</head>
+<body onload='startTime(30)'>
+  <form method="get" action="gradquiz.jsp"></form>
+
+  <!-- Header -->
+  <div id='header' class='header'>
+    <img class='logo' src='media/stevenslogotrans.png'/>
+    <div class='headerText'>
+      <div class='quizTitle'>
+        CPE390 Floating Point
+      </div>
+
+      <div class='headerDetails'>
+        <div class='headerRow'>
+          Dov Kruger
+        </div>
+        <div class='headerRow'>
+          Email  Dov.Kruger@stevens.edu  if you have any questions!
+        </div>
+        <div class='headerRow'>
+          <input id='pledge' type='checkbox' name='pledged' value='pledged'/>
+          <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
+        </div>
+        <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>
+        <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+      </div>
+    </div>
+    <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
+  </div>
+
+  <div class='section'>
+    <div class='question' id='q1'>
+      <div>
+        1.	Exact/Inexact
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+Which of the following numbers are exactly representable in floating point?<p hidden>3</p>
+1.0 <select class='dro' name='q_1_-1421104479'id='q_1_-1421104479'>
+            <option value=''></option>
+        </select><p hidden>4</p>
+11.5 <select class='dro' name='q_1_-1421104478'id='q_1_-1421104478'>
+            <option value=''></option>
+        </select><p hidden>5</p>
+17.0 <select class='dro' name='q_1_-1421104477'id='q_1_-1421104477'>
+            <option value=''></option>
+        </select><p hidden>6</p>
+0.1 <select class='dro' name='q_1_-1421104476'id='q_1_-1421104476'>
+            <option value=''></option>
+        </select><p hidden>7</p>
+0.25 <select class='dro' name='q_1_-1421104475'id='q_1_-1421104475'>
+            <option value=''></option>
+        </select><p hidden>8</p>
+0.125 <select class='dro' name='q_1_-1421104474'id='q_1_-1421104474'>
+            <option value=''></option>
+        </select><p hidden>9</p>
+0.3 <select class='dro' name='q_1_-1421104473'id='q_1_-1421104473'>
+            <option value=''></option>
+        </select><p hidden>10</p>
+3.75 <select class='dro' name='q_1_-1421104472'id='q_1_-1421104472'>
+            <option value=''></option>
+        </select><p hidden>11</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+Which of the following numbers are exactly representable in floating point?<p hidden>3</p>
+1.0 <select class='dro' name='q_1_-1421104479'id='q_1_-1421104479'>
+            <option value=''></option>
+        </select><p hidden>4</p>
+11.5 <select class='dro' name='q_1_-1421104478'id='q_1_-1421104478'>
+            <option value=''></option>
+        </select><p hidden>5</p>
+17.0 <select class='dro' name='q_1_-1421104477'id='q_1_-1421104477'>
+            <option value=''></option>
+        </select><p hidden>6</p>
+0.1 <select class='dro' name='q_1_-1421104476'id='q_1_-1421104476'>
+            <option value=''></option>
+        </select><p hidden>7</p>
+0.25 <select class='dro' name='q_1_-1421104475'id='q_1_-1421104475'>
+            <option value=''></option>
+        </select><p hidden>8</p>
+0.125 <select class='dro' name='q_1_-1421104474'id='q_1_-1421104474'>
+            <option value=''></option>
+        </select><p hidden>9</p>
+0.3 <select class='dro' name='q_1_-1421104473'id='q_1_-1421104473'>
+            <option value=''></option>
+        </select><p hidden>10</p>
+3.75 <select class='dro' name='q_1_-1421104472'id='q_1_-1421104472'>
+            <option value=''></option>
+        </select><p hidden>11</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q2'>
+      <div>
+        2.	Which of the following are true?
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+double x = .0019, y = 2.5, z = 531.86;<p hidden>14</p>
+double a = 1.0, b = 4.5, c = 11.3;<p hidden>15</p>
+x + y == y + x          <select class='dro' name='q_2_-1421104471'id='q_2_-1421104471'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>16</p>
+x + y + z == z + y + x  <select class='dro' name='q_2_-1421104470'id='q_2_-1421104470'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>17</p>
+x + y + z == z + y + x  <select class='dro' name='q_2_-1421104469'id='q_2_-1421104469'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>18</p>
+a + b + y == y + b + a  <select class='dro' name='q_2_-1421104468'id='q_2_-1421104468'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>19</p>
+x + y + z == x + y + z  <select class='dro' name='q_2_-1421104467'id='q_2_-1421104467'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>20</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+double x = .0019, y = 2.5, z = 531.86;<p hidden>14</p>
+double a = 1.0, b = 4.5, c = 11.3;<p hidden>15</p>
+x + y == y + x          <select class='dro' name='q_2_-1421104471'id='q_2_-1421104471'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>16</p>
+x + y + z == z + y + x  <select class='dro' name='q_2_-1421104470'id='q_2_-1421104470'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>17</p>
+x + y + z == z + y + x  <select class='dro' name='q_2_-1421104469'id='q_2_-1421104469'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>18</p>
+a + b + y == y + b + a  <select class='dro' name='q_2_-1421104468'id='q_2_-1421104468'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>19</p>
+x + y + z == x + y + z  <select class='dro' name='q_2_-1421104467'id='q_2_-1421104467'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>20</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q3'>
+      <div>
+        3.	Rules of Inf and NaN
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+1.0 / 0.0 = <input class='' name='Q_3_-1421104466' type='text' id='Q_3_-1421104466' size='6'/><p hidden>23</p>
+-1.0 / 0.0 = <input class='' name='Q_3_-1421104465' type='text' id='Q_3_-1421104465' size='6'/><p hidden>24</p>
+0.0 / 0.0 = <input class='' name='Q_3_-1421104464' type='text' id='Q_3_-1421104464' size='6'/><p hidden>25</p>
+sqrt(1.0 / 0.0) = <input class='' name='Q_3_-1421104463' type='text' id='Q_3_-1421104463' size='6'/><p hidden>26</p>
+sqrt(-1.0) = <input class='' name='Q_3_-1421104462' type='text' id='Q_3_-1421104462' size='6'/><p hidden>27</p>
+2.0 / 0. = <input class='' name='Q_3_-1421104461' type='text' id='Q_3_-1421104461' size='6'/><p hidden>28</p>
+cos(1.0 / 0.0) = <input class='' name='Q_3_-1421104460' type='text' id='Q_3_-1421104460' size='6'/><p hidden>29</p>
+sin(3.0 / 0.0 * 0.0) = <input class='' name='Q_3_-1421104459' type='text' id='Q_3_-1421104459' size='6'/><p hidden>30</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+1.0 / 0.0 = <input class='' name='Q_3_-1421104466' type='text' id='Q_3_-1421104466' size='6'/><p hidden>23</p>
+-1.0 / 0.0 = <input class='' name='Q_3_-1421104465' type='text' id='Q_3_-1421104465' size='6'/><p hidden>24</p>
+0.0 / 0.0 = <input class='' name='Q_3_-1421104464' type='text' id='Q_3_-1421104464' size='6'/><p hidden>25</p>
+sqrt(1.0 / 0.0) = <input class='' name='Q_3_-1421104463' type='text' id='Q_3_-1421104463' size='6'/><p hidden>26</p>
+sqrt(-1.0) = <input class='' name='Q_3_-1421104462' type='text' id='Q_3_-1421104462' size='6'/><p hidden>27</p>
+2.0 / 0. = <input class='' name='Q_3_-1421104461' type='text' id='Q_3_-1421104461' size='6'/><p hidden>28</p>
+cos(1.0 / 0.0) = <input class='' name='Q_3_-1421104460' type='text' id='Q_3_-1421104460' size='6'/><p hidden>29</p>
+sin(3.0 / 0.0 * 0.0) = <input class='' name='Q_3_-1421104459' type='text' id='Q_3_-1421104459' size='6'/><p hidden>30</p></pre>
+    </div>
+  </div>
+  
+  
+  <div class='section'>
+    <div class='question' id='q4'>
+      <div>
+        4.	true or false?
+        <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
+      </div>
+      <pre class='pcode'>
+1.0 / 0.0 == -1.0 / 0.0 ? <select class='dro' name='q_4_-1421104458'id='q_4_-1421104458'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>33</p>
+2.0 / 0.0 == 1.0 / 0.0 + 1 ? <select class='dro' name='q_4_-1421104457'id='q_4_-1421104457'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>34</p>
+0.0 / 0.0 == sqrt(-1.0) ? <select class='dro' name='q_4_-1421104456'id='q_4_-1421104456'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>35</p>
+sqrt(-1.0) != sqrt(-1.0) ? <select class='dro' name='q_4_-1421104455'id='q_4_-1421104455'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>36</p></pre>
+    </div>
+
+    <div class='answer'>
+      <pre class='pcode'>
+1.0 / 0.0 == -1.0 / 0.0 ? <select class='dro' name='q_4_-1421104458'id='q_4_-1421104458'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>33</p>
+2.0 / 0.0 == 1.0 / 0.0 + 1 ? <select class='dro' name='q_4_-1421104457'id='q_4_-1421104457'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>34</p>
+0.0 / 0.0 == sqrt(-1.0) ? <select class='dro' name='q_4_-1421104456'id='q_4_-1421104456'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>35</p>
+sqrt(-1.0) != sqrt(-1.0) ? <select class='dro' name='q_4_-1421104455'id='q_4_-1421104455'>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+        </select><p hidden>36</p></pre>
+    </div>
+  </div>
+  
+  
+    <div class='footer'>
+      <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>
+      <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+    </div>
+    </form>
+</body>
+</html>
+      

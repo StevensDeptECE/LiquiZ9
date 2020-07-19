@@ -87,9 +87,12 @@ To hide the details of an object is called $def:ooterm:encapsulation$.
 {"style":"text", "name":"Math problems", "points":"50"}
 $rnd:m,1,1,10$
 $rnd:a,1,0.1,10$
-$for:m a * F =$
+$for:m a *-->F$
+$for:1/2*a*t^2-->F$
 
-Given $var:m$ and $var:a$ calculate $num:F$
+Given m=$var:m$ and a=$var:a$ calculate F=$fn:F,.1$
+
+Given:  $solve:m,a,F$
 ---
 {"style":"code", "name":"Math problems", "points":"50"}
 $rnd:min,1,1,10$
@@ -98,7 +101,7 @@ $rnd:compop,<,<=,>,>=,!=,==$
 $rnd:assignop,+=,*=,-=,/=$
 In order to print the numbers from $var:min$ to $var:max$ complete the following code:
 
-for (int i = $var:init$; i $f{3} 10; i $var:assignop$ 1) {
+for (int i = $var:init$; i $f{3}$ 10; i $var:assignop$ 1) {
   cout << i;
 }
 ---
