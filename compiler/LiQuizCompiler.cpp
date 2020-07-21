@@ -286,7 +286,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
   string preStart, preEnd;
 
   if (style == "pcode" || style == "code") {
-    preStart = "<pre class='pcode'>";
+    preStart = "<pre class='" + style + "'>";
     preEnd = "</pre>";
   } else {
     preStart = "<pre class='text'>";

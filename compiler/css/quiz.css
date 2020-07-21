@@ -111,6 +111,16 @@ label {
     font-family: 'Libre Franklin', sans-serif;
 }
 
+.pcode {
+    font-family: Courier, fixed;
+}
+
+.code {
+    font-family: Courier, fixed;
+    background-color: black;
+    color: green;
+}
+
 .footer {
     background-color: #A32638;
     color: #ffffff;
@@ -120,3 +130,4 @@ label {
     align-items: center;
     justify-content: space-evenly;
 }
+
