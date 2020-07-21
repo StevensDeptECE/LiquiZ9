@@ -33,3 +33,5 @@
 *~
 
 /bin
+/compiler/output
+/compiler/*.ans
