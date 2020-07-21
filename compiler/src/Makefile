@@ -1,9 +1,8 @@
 OBJ	:=	main.o Questions.o LiQuizCompiler.o
 CXX	:=	g++
 DEBUG	:=	-g
-LiQuiz: $(OBJ)
-	$(CXX) $(DEBUG) $(OBJ) -o LiQuiz
-	ln -f LiQuiz ../bin
+../../bin/LiQuiz: $(OBJ)
+	$(CXX) $(DEBUG) $(OBJ) -o $@ #../bin/LiQuiz
 
 main.o : main.cpp LiQuizCompiler.hh
 	$(CXX) $(DEBUG) -c $<
