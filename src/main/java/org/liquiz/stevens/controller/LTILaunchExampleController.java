@@ -204,6 +204,7 @@ public class LTILaunchExampleController extends LtiLaunchController{
 
         String ansFilePath = fileService.uploadAnswerFile(ansFile, classId).toString();
         fileService.uploadJspFile(jspFile, classId);
+        LOG.info("uploading" +ansFile + "to:" + ansFilePath);
         String quizNameFile = ansFile.getName().replaceFirst("[.][^.]+$", "");
         Quiz quiz = new Quiz(quizName, ltiLaunchData.getCustom_canvas_course_id(), className, ansFilePath, numTries, showAnswersAfter);
         if(!cqs.exists(quiz.getQuizId()))
