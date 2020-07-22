@@ -322,7 +322,7 @@ string TextQuestion::print(const LiQuizCompiler *compiler, ostream &answersFile,
   return replace;
 }
 
-void DropDown::getAnswer() {
+void DropDownQuestion::getAnswer() {
   input = "";
   for (int i = 0; i < answer.length(); i++) {
     if (answer[i] == '*') {
@@ -334,7 +334,7 @@ void DropDown::getAnswer() {
   }
 }
 
-void DropDown::getOptions() {
+void DropDownQuestion::getOptions() {
   replace = R"(<select class='' name=')";
   replace += qID + "'" + "id='" + qID + "'>";
   for (int i = 0; i <= answer.length(); i++) {
@@ -350,7 +350,7 @@ void DropDown::getOptions() {
     </select>)";
 }
 
-string DropDown::print(const LiQuizCompiler *compiler, ostream &answersFile,
+string DropDownQuestion::print(const LiQuizCompiler *compiler, ostream &answersFile,
                        int &partNum, int &questionNum, double &points) {
   input = "";
   answer = text.erase(0, 4);
@@ -449,7 +449,15 @@ static regex parseRandomVar("rnd:([a-zA-Z][a-zA-Z0-9_]*)\\{(-?\\d+(?:\\.?\\d*)),
 unordered_map<string, string> vars;
 default_random_engine generator;
 
-static double parseDouble(const string v, double defaultVal) {
+static double parse(const string v, double defaultVal) {
+  try {
+    return stod(v);
+  } catch (const exception& e) {
+    cerr << "Error parsing string " << v << " as double.\n";
+    return defaultVal;
+  }
+}
+static uint32_t parse(const string v, uint32_t defaultVal) {
   try {
     return stod(v);
   } catch (const exception& e) {
@@ -458,17 +466,17 @@ static double parseDouble(const string v, double defaultVal) {
   }
 }
 
-void RandomVar::setText(const string& delim) {
-  cerr << "Random var " << delim << "\n";
+void RandomVar::setText(const string& body) {
+  cerr << "Random var " << body << "\n";
   smatch m;
-  regex_search(delim, m, parseRandomVar);
+  regex_search(body, m, parseRandomVar);
 
   cout << "matches:" << m[1] << "," << m[2] << "," << m[3] << "," << m[4] << '\n';
   string varName = m[1];
   cout << "varname" << varName << '\n';
-  min = parseDouble(m[2], 0);
-  inc = parseDouble(m[3], 1);
-  max = parseDouble(m[4], 10);
+  min = parse(m[2], 0.0); // parse and give double precision defaults if not found
+  inc = parse(m[3], 1.0);
+  max = parse(m[4], 10.0);
   cerr << "var =" << varName << " min=" << min << " inc=" << inc << " max=" << max << '\n';
   uint32_t numRandom = ceil((max-min)/inc);
   uniform_int_distribution<int32_t> dist(0,numRandom);
@@ -493,9 +501,9 @@ string RandomVar::print(const LiQuizCompiler *compiler,
 }
 static const regex parseVar("var:([a-zA-Z][a-zA-Z0-9_]*)");
 
-void Variable::setText(const std::string& delim) {
+void Variable::setText(const std::string& body) {
   smatch m;
-  regex_search(delim, m, parseVar);
+  regex_search(body, m, parseVar);
   name = m[1];
   cerr << "var " << name << "\n";
 }
@@ -512,14 +520,68 @@ string Variable::print(const LiQuizCompiler *compiler,
   return "";
 }
 
-string Formula::print(const LiQuizCompiler *compiler,
+void FormulaQuestion::setText(const string& body) {
+
+}
+
+string FormulaQuestion::print(const LiQuizCompiler *compiler,
                              ostream &answersFile, int &partNum,
                              int &questionNum, double &points) {
   cerr << "formula\n "; 
   return "formula";
 }
 
-Formula::~Formula() {
+FormulaQuestion::~FormulaQuestion() {
 }
 
+static regex parseMatrixQuestion("mat\\{(\\d+),(\\d+)\\}([^\\$]+)");
+constexpr char underscore = '_';
+void MatrixQuestion::setText(const string& body) {
+  smatch m;
+  regex_search(body, m, parseMatrixQuestion); // parse body of matrix question
+  rows = parse(m[1], 1U), cols = parse(m[2], 1U); // get matrix size, default to 1x1
+  matrixList = m[3];  
+  inputLen = 6; // TODO: get this number from defaults and/or from extra parameter in matrix
+}
+string MatrixQuestion::print(const LiQuizCompiler *compiler,
+                             ostream &answersFile, int &partNum,
+                             int &questionNum, double &points) {
+  replace = "";
+  string token, answer, typeID;
+  token.reserve(64);
+  answer.reserve(64);
+  typeID.reserve(2);
+  istringstream matS(matrixList);
+  for (uint32_t r = 0; r < rows; r++) {
+    for (uint32_t c = 0; c < cols; c++) {
+      if (!getline(matS, token, ',')) {
+        int lineNum = 0; // TODO: add compiler pointer to setText parameters
+        cerr << "Error parsing MatrixQuestion line:" << lineNum << '\n';
+        return replace;
+      }
+      if (token[0] == underscore) {
+        if (token[2] == ':') {
+          switch(token[1]) {
+            case 'Q':
+            case 's':
+            case 'n':
+              typeID = string(1, token[1]);
+          }
+        } else {
+          typeID = "n"; // default type for matrix question is numeric
+        }
+        answer = token.substr(1);
+        addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
+        buildString(replace, "<input class='' name='", qID, "' type='text' id='", qID,
+              "' size='", inputLen, "'/>");
 
+      } else {
+        replace += token;
+      }
+    }
+  }
+  return replace;
+}
+
+MatrixQuestion::~MatrixQuestion() {
+}

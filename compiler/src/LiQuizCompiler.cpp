@@ -469,12 +469,13 @@ unordered_map<string, QuestionType *> LiQuizCompiler::questionTypes{
     {"f", new FillIn()},
     {"tar", new TextQuestion()},
     {"def", new Definition()},
-    {"dro", new DropDown()},
+    {"dro", new DropDownQuestion()},
     {"img", new Image()},
     {"vid", new Video()},
     {"rnd", new RandomVar()},
     {"var", new Variable()},
-    {"for", new Formula()}
+    {"for", new FormulaQuestion()},
+    {"mat", new MatrixQuestion()}
   };
 
 void LiQuizCompiler::dumpVariables() {

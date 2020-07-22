@@ -105,7 +105,7 @@ class TextQuestion : public QuestionType {
                     int &partNum, int &questionNum, double &points) override;
 };
 
-class DropDown : public QuestionType {
+class DropDownQuestion : public QuestionType {
  private:
   std::string answer, option, input;
   std::string typeID = "q";
@@ -151,7 +151,7 @@ class RandomVar : public QuestionType {
     double min, max, inc;
     std::string typeID = "r";
   public:
-    void setText(const std::string& delim) override;
+    void setText(const std::string& body) override;
     void getVar();
     void getRange();
 
@@ -163,21 +163,36 @@ class RandomVar : public QuestionType {
 };
 
 class Variable : public QuestionType {
-private:
-  std::string name;
 public:
-  void setText(const std::string& delim) override;
+  void setText(const std::string& body) override;
   std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
                   int &partNum, int &questionNum, double &points) override;
+private:
+  std::string name;
 };
 
 /*
   A formula question evaluates a set of variables and can then ask the student to compute any variable
   
  */
-class Formula : public QuestionType {
-
+class FormulaQuestion : public QuestionType {
+public:
+  void setText(const std::string& body) override;
   std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
                   int &partNum, int &questionNum, double &points) override;
-  virtual ~Formula();
+  virtual ~FormulaQuestion();
+};
+
+class MatrixQuestion : public QuestionType {
+public:
+  void setText(const std::string& body) override;
+  std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
+                  int &partNum, int &questionNum, double &points) override;
+  virtual ~MatrixQuestion();
+private:
+  uint32_t rows,cols; // the size of the matrix
+  uint32_t inputLen;
+  std::string matrixList; // the list of comma-separated values to be displayed
+  // an underscore (_) means a numeric fillin question
+  // an asterisk (*) means a text fillin question
 };
