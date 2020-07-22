@@ -4,11 +4,14 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="media/quiz.css">
     <title>index</title>
-    <link rel="stylesheet" type="text/css" href="quiz.css">
+
+
 </head>
 
 <body>
+<h1>Absolute Path is:<%= request.getServletContext().getRealPath("/") %></h1>
     <h1>${success}</h1>
     <h1>Hello professor ${name}</h1>
     <p>Here is going to be the options to upload liquiz document,

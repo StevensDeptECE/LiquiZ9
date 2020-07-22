@@ -118,7 +118,9 @@ public class QuizCodec implements CollectibleCodec<Quiz> {
         Document document = documentCodec.decode(reader, decoderContext);
 
         Quiz quiz = new Quiz(document.getObjectId("_id"), document.getInteger("numTries"),
-                            document.getString("quizName"), document.getString("classId"), document.getString("className"), document.getString("answerFile"), document.getDouble("maxGrade"), document.getDate("showAnswersAfter"), document.getLong("quizId"));
+                             document.getString("quizName"), document.getString("classId"), document.getString("className"),
+                             document.getString("answerFile"), document.getDouble("maxGrade"), document.getDate("showAnswersAfter"),
+                             document.getLong("quizId"));
 
         ArrayList<Document> docArr = (ArrayList) document.get("questionsMap");
         for (Document doc : docArr) {

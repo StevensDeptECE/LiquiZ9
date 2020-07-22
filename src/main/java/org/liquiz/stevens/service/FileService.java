@@ -45,7 +45,7 @@ public class FileService {
     public Path uploadJspFile(MultipartFile file, String classId) {
         try {
             String dir = uploadDir + File.separator + "src" + File.separator + "main" + File.separator + "webapp" +
-                    File.separator + "WEB-INF" + File.separator + "jsp" + File.separator + classId;
+                    File.separator + "WEB-INF" + File.separator + "jsp" + File.separator + "quizzes" + File.separator + classId;
             File classDir = new File(dir);
             if(!classDir.exists())
                 classDir.mkdir();

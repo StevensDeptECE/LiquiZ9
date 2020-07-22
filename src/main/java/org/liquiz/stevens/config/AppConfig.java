@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
@@ -50,7 +51,7 @@ public class AppConfig {
     @Bean
     public UrlBasedViewResolver setupViewResolver(){
         UrlBasedViewResolver resolver = new UrlBasedViewResolver();
-        resolver.setPrefix("/WEB-INF/jsp/");
+        resolver.setPrefix("/WEB-INF/jsp/");// "../webapps/LiquiZ9-1.0-SNAPSHOT/WEB-INF/jsp/"
         resolver.setSuffix(".jsp");
         resolver.setViewClass(JstlView.class);
         return resolver;
@@ -105,5 +106,6 @@ public class AppConfig {
                                                       .applyConnectionString(new ConnectionString(connectionString))
                                                       .build());
     }
+
 
 }

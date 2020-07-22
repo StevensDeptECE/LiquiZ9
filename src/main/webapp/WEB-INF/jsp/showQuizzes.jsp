@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: ejone
@@ -12,11 +12,9 @@
     Created on : Jun 24, 2020, 3:33:03 PM
     Author     : ejone
 --%>
-
-<%@page import="java.util.ArrayList"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page import="java.util.ArrayList"%>
 <%@ page import="org.liquiz.stevens.quiz.Quiz" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,7 +31,7 @@
         <table class=''><tr>
             <c:if test="${not empty quizList}">
                 <c:forEach items="${quizList}" var="quiz">
-                    <td><input type='radio' name='quiz' value="${quiz.getQuizName()}">${quiz.getQuizName()}</td>
+                    <td><input type='radio' name='quiz' value="${quiz.getQuizName()}">${quiz.getQuizName()} : Quiz Id ${quiz.getQuizId()}</td>
                 </c:forEach>
             </c:if>
         </table>

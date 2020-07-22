@@ -5,24 +5,23 @@
   Time: 10:39 AM
   To change this template use File | Settings | File Templates.
 --%>
-<%
-    //org.liquiz.stevens.login.Login login = new org.liquiz.stevens.login.Login();
-    //login.checkLogin();
-%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="media/quiz.css" media="all">
     <title>
-
+    demo
     </title>
-    <link rel="stylesheet" type="text/css" href='quiz.css'>
 
-    <script src='quiz.js'></script>
+
+    <script src='../../../../quiz.js'></script>
 </head>
 <body onload='startTime(30)'>
+
+
 
 <form method="post" action="testQuiz">
     <div id='header' class='header'>
@@ -35,6 +34,8 @@
                 <tr><td class='headtext'>Demo Quiz</td><td></td></tr>
                 <tr><td class='headtext'>Dov Kruger</td></tr>
                 <tr><td class='headtext'>Email  Dov.Kruger@stevens.edu  if you have any questions!</td></tr>
+
+                <h1>Absolute Path is:<%= request.getServletContext().getRealPath("/") %></h1>
 
                 <div class='q' id='q1'>1. Multiple Choice Horizontal<span class='pts'> (10 points)</span>
                     <pre class='text'>
@@ -271,10 +272,10 @@ To hide the details of an object is called <select class='' name='q_12_39'><opti
                     <input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'><br><div id='12'></div></div>
 
                 <div class='controls'>
-                    <div style='position: flow'>Time Remaining</div>
+                    <div>Time Remaining</div>
                     <div id='bottomTime' class='time'></div>
                     <input class='controls' type='submit' value='Submit Quiz' onClick='showResult()'/>
                 </div>
-</form>
+    </form>
 </body>
 </html>

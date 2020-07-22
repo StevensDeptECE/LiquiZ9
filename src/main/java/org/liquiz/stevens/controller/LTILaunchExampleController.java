@@ -8,7 +8,9 @@ import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.model.LtiLaunchData;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.LtiSessionService;
+import jdk.nashorn.internal.ir.RuntimeNode;
 import org.apache.log4j.Logger;
+import org.liquiz.stevens.exceptions.FileStorageException;
 import org.liquiz.stevens.service.CanvasService;
 import org.liquiz.stevens.service.FileService;
 import org.liquiz.stevens.util.Assignment;
@@ -67,8 +69,8 @@ public class LTILaunchExampleController extends LtiLaunchController{
     @Autowired
     CodecQuizService cqs;
 
-    //@Inject
-    //CodecQuizSubmissionService cqss;
+    @Inject
+    CodecQuizSubmissionService cqss;
 
 
     /**
@@ -130,18 +132,42 @@ public class LTILaunchExampleController extends LtiLaunchController{
         }
     }
 
+    @RequestMapping("/editQuiz")
+    public ModelAndView editQuiz(HttpServletRequest request, @RequestParam("quiz") String quizName) throws NoLtiSessionException, IOException {
+        LtiSession ltiSession = ltiSessionService.getLtiSession();
+        LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
+        List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
+        boolean isInstructor = roleList !=null && (roleList.contains(LtiLaunchData.InstitutionRole.Instructor));
+        if (ltiSession.getEid() == null || ltiSession.getEid().isEmpty()) {
+            throw new AccessDeniedException("You cannot access this content without a valid session");
+        }
+        Quiz quiz = cqs.getOne(new Document("quizName", quizName));
+        ModelAndView mav = new ModelAndView("editQuiz");
+        mav.addObject("quiz", quiz);
+        return mav;
+    }
+
+    @RequestMapping("/QuizRequest")
+    public ModelAndView quizRequest(HttpServletRequest request, @RequestParam("quiz") String quizName) throws NoLtiSessionException, IOException {
+        LtiSession ltiSession = ltiSessionService.getLtiSession();
+        LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
+        if (ltiSession.getEid() == null || ltiSession.getEid().isEmpty()) {
+            throw new AccessDeniedException("You cannot access this content without a valid session");
+        }
+        Quiz quiz = cqs.getOne(new Document("quizName", quizName));
+        return new ModelAndView("quizzes/" + quiz.getClassId() + "/" + quizName);
+    }
+
     @RequestMapping("/showQuizzes")
     public ModelAndView showQuizzes(HttpServletRequest request) throws NoLtiSessionException, IOException {
 
         //canvasService.ensureApiTokenPresent();
         //canvasService.validateOauthToken();
         //assertPrivledgedUser();
-        List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
-        boolean isInstructor = roleList !=null && (roleList.contains(LtiLaunchData.InstitutionRole.Instructor));
+        //List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
+        //boolean isInstructor = roleList !=null && (roleList.contains(LtiLaunchData.InstitutionRole.Instructor));
         //if(!isInstructor)
         //    throw new AccessDeniedException("You are not an insturctor and you cannot view this page");
-        //MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
-        //CodecQuizService cqs = new CodecQuizService();
 
         ArrayList<Quiz> quizList = (ArrayList<Quiz>) cqs.getList(new Document());
         ModelAndView mav = new ModelAndView("showQuizzes");
@@ -160,6 +186,7 @@ public class LTILaunchExampleController extends LtiLaunchController{
         if (!isInstructor)
             throw new AccessDeniedException("You are not an insturctor and you cannot view this page");
         */
+        LOG.info(canvasService.getEid() + "is seeking to add a quiz to class " + ltiSession.getCanvasCourseId());
         ModelAndView mav = new ModelAndView("addQuiz");
         return mav;
     }
@@ -168,7 +195,7 @@ public class LTILaunchExampleController extends LtiLaunchController{
     public ModelAndView uploadQuiz(HttpServletRequest request, @RequestParam("quizName") String quizName,
                                    @RequestParam("classId") String classId, @RequestParam("className") String className,
                                    @RequestParam("numTries") int numTries, @RequestParam("showAnswersAfter") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime showAnswersAfterLDT,
-                                   @RequestParam("jsp File") MultipartFile jspFile, @RequestParam("Answer File") MultipartFile ansFile) throws NoLtiSessionException, IOException {
+                                   @RequestParam("jsp File") MultipartFile jspFile, @RequestParam("Answer File") MultipartFile ansFile) throws NoLtiSessionException, RuntimeException {
 
         LtiSession ltiSession = ltiSessionService.getLtiSession();
         LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
@@ -178,7 +205,7 @@ public class LTILaunchExampleController extends LtiLaunchController{
         String ansFilePath = fileService.uploadAnswerFile(ansFile, classId).toString();
         fileService.uploadJspFile(jspFile, classId);
         String quizNameFile = ansFile.getName().replaceFirst("[.][^.]+$", "");
-        Quiz quiz = new Quiz(quizName, classId, className, ansFilePath, numTries, showAnswersAfter);
+        Quiz quiz = new Quiz(quizName, ltiLaunchData.getCustom_canvas_course_id(), className, ansFilePath, numTries, showAnswersAfter);
         if(!cqs.exists(quiz.getQuizId()))
             cqs.add(quiz);
         else
@@ -230,7 +257,6 @@ public class LTILaunchExampleController extends LtiLaunchController{
           response.setContentType("application/json");
           response.setCharacterEncoding("UTF-8");
           response.addHeader("Access-Control-Allow-Origin", "*");
-          //MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
           CodecQuizService cqs = new CodecQuizService();
           CodecQuizSubmissionService cqss = new CodecQuizSubmissionService();
           
@@ -268,24 +294,23 @@ public class LTILaunchExampleController extends LtiLaunchController{
           
     }
 
-    @RequestMapping(value = "/quizResult/{id:[//d]+}")
+    @RequestMapping(value = {"/quizResult", "/quizResult/{id:[\\d]+}"})
     public ModelAndView quizResult(HttpServletRequest request, @PathVariable("id") long id) throws NoLtiSessionException, IOException {
-        canvasService.ensureApiTokenPresent();
-        canvasService.validateOauthToken();
+        //canvasService.ensureApiTokenPresent();
+        //canvasService.validateOauthToken();
         LtiSession ltiSession = ltiSessionService.getLtiSession();
-
-        //MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
-        CodecQuizService cqs = new CodecQuizService();
-
         Quiz quiz = cqs.getOne(new Document("quizId", id));
         if(quiz==null)
             throw new RuntimeException("quiz does not exist");
-        List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
+        HttpSession session=request.getSession();
+        session.setAttribute("quizName", quiz.getQuizName());
+        /*List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
         boolean isStudent = roleList !=null && (roleList.contains(LtiLaunchData.InstitutionRole.Learner));
         LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
         if(!isStudent && ltiLaunchData.getCustom_canvas_course_id()!=quiz.getClassId())
             throw new AccessDeniedException("You cannot access this quiz if you are not a student within the correct course");
-        return new ModelAndView("quizzes/" + quiz.getQuizName());
+         */
+        return new ModelAndView("quizzes/" + quiz.getClassId() + "/" + quiz.getQuizName());
     }
 
     @RequestMapping(value = "/quizChoice", method = RequestMethod.POST)
@@ -298,10 +323,13 @@ public class LTILaunchExampleController extends LtiLaunchController{
     }
     
     @RequestMapping(value = "/testQuiz", method = RequestMethod.POST)
-    public void testQuiz(HttpServletRequest request) throws NoLtiSessionException, IOException {
-        canvasService.ensureApiTokenPresent();
-        canvasService.validateOauthToken();
+    public ModelAndView testQuiz(HttpServletRequest request) throws NoLtiSessionException, IOException {
+        //canvasService.ensureApiTokenPresent();
+        //canvasService.validateOauthToken();
         LtiSession ltiSession = ltiSessionService.getLtiSession();
+        LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
+
+        String userId = ltiLaunchData.getCustom_canvas_user_login_id();
         
         Map<String, String[]> paramsMap = request.getParameterMap();
           TreeMap<String, String[]> inputsMap = new TreeMap<>();
@@ -309,32 +337,34 @@ public class LTILaunchExampleController extends LtiLaunchController{
               inputsMap.putAll(paramsMap);
           inputsMap.remove("pledged");
          
-          HttpSession session=request.getSession(false);  
+          HttpSession session=request.getSession(true);
           String quizName=(String)session.getAttribute("quizName");
-          String userId = "ejones";//(String) session.getAttribute("userId");
-          String classId = "c++";//String session.getAttribute("classId");
-          //TODO: get userID from lti session
-          //MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
-          CodecQuizService cqs = new CodecQuizService();
-          CodecQuizSubmissionService cqss = new CodecQuizSubmissionService();
           Quiz quiz = cqs.getOne(new Document("quizName", quizName));
-          if(quiz==null) {
-            quiz = new Quiz(quizName, "43902", "c++", "../../../LiquiZ9/LiquiZServer/data/answerFiles/" + quizName + ".ans", 1, new Date());////"opt/tomcat/webapps/LiquiZServer-1.0/answerFiles/"
-            cqs.add(quiz);
-          }
-          //QuizSubmission quizSub = cqss.get
-          
+          if(quiz == null)
+            throw new RuntimeException("quiz does not exist");
+          QuizSubmission quizSub = new QuizSubmission(quizName, ltiLaunchData.getCustom_canvas_user_login_id(), inputsMap, quiz);
+          String outcome = "your submission was added successfully";
           if(quiz.getNumTries() > cqss.getTries(new Document("quizName", quizName).append("userId", userId))){
-            QuizSubmission quizSub = cqss.getOne(new Document("quizName", quizName).append("userId", userId));
-            if(quizSub==null) {
-              quizSub = new QuizSubmission(quizName, "ejones", inputsMap, quiz);
+            if(quizSub!=null) {
               cqss.add(quizSub);
             }
+            else
+              outcome = "Submission failed";
           }
           else
-             System.out.println("no tries left");
-          
-          //return new ModelAndView("grade", "username", ltiSession.getEid());
+              outcome = "no more tries are allowed so this submission did not count";
+          ModelAndView mav = new ModelAndView("viewGrade", "success", outcome);
+          mav.addObject("username", userId);
+          mav.addObject("grade", quizSub.getGrade());
+
+          return mav;
+    }
+
+    @RequestMapping(value = "/test")
+    public ModelAndView test() throws NoLtiSessionException, RuntimeException {
+        if(true)
+            throw new RuntimeException(System.getProperty("user.dir"));
+        return new ModelAndView("teacherView");
     }
         
     

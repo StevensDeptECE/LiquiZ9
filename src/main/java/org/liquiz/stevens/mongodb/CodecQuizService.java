@@ -92,6 +92,15 @@ public class CodecQuizService {
             quiz =(Quiz) iterator.next();
         return quiz;
     }
+
+    public Quiz getOne(long id) {
+        FindIterable<Quiz> iterable = getCollection().find(eq("quizId", id)).limit(1);
+        Iterator iterator = iterable.iterator();
+        Quiz quiz = null;
+        if(iterator.hasNext())
+            quiz =(Quiz) iterator.next();
+        return quiz;
+    }
     
     /**
      * Returns a list of every Quiz that matches the search arguments.

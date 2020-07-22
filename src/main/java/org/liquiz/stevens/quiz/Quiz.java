@@ -33,8 +33,6 @@ public class Quiz {
     private double maxGrade;
     private Date showAnswersAfter;
     private TreeMap<Integer, Question> questionsMap;
-    
-    //TODO: implement numtries
 
     /**
      * Used to create a quiz
