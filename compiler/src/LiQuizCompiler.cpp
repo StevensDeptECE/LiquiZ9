@@ -450,7 +450,7 @@ void LiQuizCompiler::generateQuiz(const char liquizFileName[]) {
   readFile((baseFileName + "lq").c_str(), bytes, fileSize);
   cursor = 0;
   html.open(outputDir + baseFileName + "html");
-  answers.open(baseFileName + "ans");
+  answers.open(string("ans/") + baseFileName + "ans");
   generateHeader();
   grabQuestions();
   generateFooter();
