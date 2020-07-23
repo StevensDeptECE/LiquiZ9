@@ -90,4 +90,8 @@ $var:x1$
 $var:x2$
 $var:x3$
 $var:y$
-
+---
+{"style":"text", "name":"Matrix Question"}
+Enter the following matrix:
+$mat{2,3}1,_,_,2,_,_$
+---
