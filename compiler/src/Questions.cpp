@@ -17,6 +17,12 @@ void buildString(std::string &dest, const Args &... args) {
   static_cast<void>(unpack);
 }
 
+template <typename... Args>
+void appendString(std::string &dest, const Args &... args) {
+  int unpack[]{0, (dest += to_string(args), 0)...};
+  static_cast<void>(unpack);
+}
+
 QuestionType::~QuestionType() {}
 
 void QuestionType::addAnswer(string &typeID, string &qID, const string &ans,
@@ -542,25 +548,29 @@ void MatrixQuestion::setText(const string& body) {
   rows = parse(m[1], 1U), cols = parse(m[2], 1U); // get matrix size, default to 1x1
   matrixList = m[3];  
   inputLen = 6; // TODO: get this number from defaults and/or from extra parameter in matrix
+	
 }
 string MatrixQuestion::print(const LiQuizCompiler *compiler,
                              ostream &answersFile, int &partNum,
                              int &questionNum, double &points) {
-  replace = "";
   string token, answer, typeID;
   token.reserve(64);
   answer.reserve(64);
   typeID.reserve(2);
   istringstream matS(matrixList);
+	replace = "<table class='mat'>\n";
   for (uint32_t r = 0; r < rows; r++) {
+		replace += "<tr>";
     for (uint32_t c = 0; c < cols; c++) {
+			replace += "<td>";
       if (!getline(matS, token, ',')) {
         int lineNum = 0; // TODO: add compiler pointer to setText parameters
         cerr << "Error parsing MatrixQuestion line:" << lineNum << '\n';
+				replace += "\n</tr>\n</table>\n";
         return replace;
       }
       if (token[0] == underscore) {
-        if (token[2] == ':') {
+        if (token.length() >= 3 && token[2] == ':') {
           switch(token[1]) {
             case 'Q':
             case 's':
@@ -572,14 +582,16 @@ string MatrixQuestion::print(const LiQuizCompiler *compiler,
         }
         answer = token.substr(1);
         addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
-        buildString(replace, "<input class='' name='", qID, "' type='text' id='", qID,
-              "' size='", inputLen, "'/>");
-
+        appendString(replace, "<input class='' name='", qID,
+										"' type='text' id='", qID, "' size='", inputLen, "'/>");
       } else {
         replace += token;
       }
+			replace += "</td>";
     }
+		replace += "</tr>\n";
   }
+	replace += "</table>\n";
   return replace;
 }
 

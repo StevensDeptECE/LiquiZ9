@@ -312,6 +312,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
       </div>
       )";
     html << preStart << endl;
+		partNum = 0;
     smatch m;
     double points = totalPoints / questionCount;
     const string end = "</p>";
