@@ -91,7 +91,7 @@ $var:x2$
 $var:x3$
 $var:y$
 ---
-{"style":"text", "name":"Matrix Question"}
-Enter the following matrix:
-$mat{2,3}1,_,_,2,_,_$
+{"style":"text", "name":"matrix question"}
+Show the truth table for AND
+$mat{5,3}A,B,AND,0,0,_0,0,1,_0,1,0,_0,1,1,_1$
 ---
