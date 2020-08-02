@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin&display=swap');
 
 
+img {
+    max-width: 300px;
+}
 #header {
     background-color: #A32638;
     color: #ffffff;
@@ -11,11 +14,12 @@
     justify-content: center;
 }
 
-.logo {
+img.logo {
     width: 250px;
     height: auto;
     margin: 20px;
     margin-right: 30px;
+    max-width: 100%;
 }
 
 .headerText {
@@ -130,4 +134,3 @@ label {
     align-items: center;
     justify-content: space-evenly;
 }
-
