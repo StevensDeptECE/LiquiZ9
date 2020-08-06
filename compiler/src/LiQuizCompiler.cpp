@@ -295,27 +295,11 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
 
   if (style != "def") {
     //    string temp = question.at("points");
-    double totalPoints = lookup(question, "points", 1, lineNum);
+    double totalPoints = lookup(question, "points", 0, lineNum);
     string questionName = lookup(question, "name", emptystr, lineNum);
-    html << R"(
-  <div class='section'>
-    <div class='question' id='q)";
-    html << questionNum << "'>";
-    html << R"(
-      <div>
-        )";
-    html << questionNum << "." << "\t" << questionName;
-    html << R"(
-        <span class='pts'>  )";
-    html << "(" << totalPoints<< " points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>";
-    html << R"(
-      </div>
-      )";
-    html << preStart << endl;
-		partNum = 0;
     smatch m;
-    double points = totalPoints / questionCount;
     const string end = "</p>";
+		partNum = 0;
 
     while (regex_search(questionText, m, specials)) {
       string delim = m[2];
@@ -334,9 +318,25 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
       }
       findQuestionType(type, points, delim, m.position(), m.length());
     }
+    double points = totalPoints != 0 ? totalPoints / questionCount : partNum;
     questionText.pop_back();
     setAnswer();
 //TODO: What is this?    regex_replace("$", questionText.begin(), questionText.end(), escapedDollar);
+    html << R"(
+  <div class='section'>
+    <div class='question' id='q)";
+    html << questionNum << "'>";
+    html << R"(
+      <div>
+        )";
+    html << questionNum << "." << "\t" << questionName;
+    html << R"(
+        <span class='pts'>  )";
+    html << "(" << totalPoints<< " points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>";
+    html << R"(
+      </div>
+      )";
+    html << preStart << endl;
     html << questionText << preEnd;
 
     html << R"(

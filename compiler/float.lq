@@ -1,0 +1,40 @@
+{"quizspec":"cpe390.qspec", "name":"CPE390 Floating Point"}
+{"style":"code", "name":"Exact/Inexact"}
+Which of the following numbers are exactly representable in floating point?
+1.0 $def:exact:exact$
+11.5 $def:exact:exact$
+17.0 $def:exact:exact$
+0.1 $def:exact:inexact$
+0.25 $def:exact:exact$
+0.125 $def:exact:exact$
+0.3 $def:exact:inexact$
+3.75 $def:exact:exact$
+---
+{"style":"code", "name":"Which of the following are true?"}
+double x = .0019, y = 2.5, z = 531.86;
+double a = 1.0, b = 4.5, c = 11.3;
+x + y == y + x           $def:tf:true$
+x + y + z == z + y + x   $def:tf:false$
+x + y + z == x + (y + z) $def:tf:false$
+a + b + y == y + b + a   $def:tf:true$
+x + y + z == x + y + z   $def:tf:true$
+---
+{"style":"code", "name":"Rules of Inf and NaN"}
+double x = 1.0 / 0.0;  // x = $fQ:inf$
+-1.0 / 0.0 = $fQ:-inf$
+0.0 / 0.0 = $fQ:nan$
+50.0 / 100.0  = $fn:0.5$
+sqrt(1.0 / 0.0) = $fQ:inf$
+sqrt(-1.0) = $fQ:nan$
+2.0 / 0. = $fQ:inf$
+cos(1.0 / 0.0) = $fQ:inf$
+5.0 / x  $fn:0$
+sin(3.0 / 0.0 * 0.0) = $fQ:nan$
+0.0 / x // $fn:0.0$
+---
+{"style":"code", "name":"true or false?"}
+1.0 / 0.0 == -1.0 / 0.0 ? $def:tf:false$
+2.0 / 0.0 == 1.0 / 0.0 + 1 ? $def:tf:true$
+0.0 / 0.0 == sqrt(-1.0) ? $def:tf:false$
+sqrt(-1.0) != sqrt(-1.0) ? $def:tf:true$
+---

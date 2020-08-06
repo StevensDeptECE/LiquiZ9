@@ -95,3 +95,10 @@ $var:y$
 Show the truth table for AND
 $mat{5,3}A,B,AND,0,0,_0,0,1,_0,1,0,_0,1,1,_1$
 ---
+{"style":"text", "name":"matrix question"}
+Solve the system of linear equations
+$mat{3,5}1,2,3,x,5,2,1,-1,y,5,3,0,1,z,8$
+
+x=$fn:2$
+y=$fn:3$
+z=$fn:2$

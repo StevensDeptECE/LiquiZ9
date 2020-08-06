@@ -1,0 +1,70 @@
+{"quizspec":"cpe390.qspec", "name":"C++ Primitive Data Types"}
+{"style":"code", "name":"Integer Types"}
+The type uint32_t is $fQ:32$ bits and $fQ:4$ bytes.
+It is unsigned and therefore the smallest value is $fQ:0$.
+
+The type uint8_t is $fQ:8$ bits and $fQ:1$ bytes.
+It is unsigned and therefore the smallest value is $fQ:0$ and the largest $fQ:255$.
+
+The type int8_t is signed and therefore the smallest value is $fQ:-128$ and the largest value is $fQ:127$.
+---
+{"style":"code", "name":"Identify the constants"}
+For each constant, enter the corresponding type in C++
+
+3       $f:int$
+3U      $f:unsigned int$
+3L      $f:long int$
+3.14    $f:double$
+2.8f    $f:float$
+3.14L   $f:long double$
+'x'     $f:char$
+0x3a51  $f:int$
+0167    $f:int$
+1234ULL $fs:unsigned long long$
+---
+{"style":"code", "name":"Identify the constants"}
+For each C++ constant, Identify the base
+
+321     $def:base:decimal$
+-776    $def:base:decimal$
+0xF2C   $def:base:hexadecimal$
+0677	$def:base:octal$
+0b1011	$def:base:binary$
+---
+{"style":"code", "name":"Evaluate the answer"}
+//Maxint for 16 bits unsigned is 65535
+int a = 3 + 4; // a=$f:7$
+int b = 3 * 2; // b=$f:6$
+int c = 7 / 2; // c=$f:3$
+int d = 7 % 2; // d=$f:1$
+int e = 3 - 4; // e=$f:-1$
+
+uint16_t f = 2-3;       // f=$f:65535$
+uint16_t g = 65534 + 2; // g=$f:0$
+int16_t h = 32765 + 2; // h=$f:32767$
+---
+{"style":"code", "name":"Evaluate the answer"}
+uint32_t a = 2 + 3 * 4; // a=$f:23$
+uint32_t b = 5 / 3;     // b=$f:1$
+uint32_t c = 2 / 3;     // c=$f:0$
+uint32_t d = 5 / 3 * 3; // d=$f:3$
+uint32_t e = 4 / 5 * 5; // e=$f:0$
+uint32_t f = 4 * 5 / 5; // f=$f:4$
+---
+{"style":"code", "name":"bool"}
+bool a = false;
+cout << a << '\n'; // output is $f:0$
+a = true;
+cout << a << '\n'; // output is $f:1$
+a = !a;
+cout << a << '\n'; // output is $f:0$
+cout << (3 > 3) << '\n'; // output is $f:0$
+cout << (4 < 6) << '\n'; // output is $f:1$
+---
+{"style":"code", "name":"logical operators"}
+For each assignment write true or false.
+bool a = 3 < 2 && 4 < 6; // a=$f:false$
+bool b = 3 < 5 && 2 < 4; // b=$f:true$
+bool c = 3 < 2 || 2 < 4; // c=$f:true$
+bool d = 3 < 2 || 4 > 6; // c=$f:false$
+---
