@@ -85,7 +85,7 @@ public class QuizCodec implements CollectibleCodec<Quiz> {
         }
         Document document = new Document("_id", quiz.getId())
                 .append("quizName", quiz.getQuizName())
-                .append("classId", quiz.getClassId())
+                .append("classId", quiz.getCourseId())
                 .append("className", quiz.getClassName())
                 .append("answerFile", quiz.getAnswerFile())
                 .append("numTries", quiz.getNumTries())

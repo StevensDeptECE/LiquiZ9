@@ -7,7 +7,6 @@ package org.liquiz.stevens.quiz;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.time.Duration;
 import java.util.*;
 
 import org.bson.types.ObjectId;
@@ -27,7 +26,7 @@ public class Quiz {
     private String answerFile;
     private long quizId;
     private String quizName;
-    private String classId;
+    private String courseId;
     private String className;
     private int numTries;
     private double maxGrade;
@@ -37,14 +36,14 @@ public class Quiz {
     /**
      * Used to create a quiz
      * @param quizId value for id of the quiz
-     * @param classId id of the class this quiz belongs to
+     * @param courseId id of the class this quiz belongs to
      * @param answerFile name of the answer file to be used
      * @param numTries the number of tries a student has for this quiz
      * @param showAnswersAfter date to show the answers after
      */
-    public Quiz(String quizName, String classId, String className, String answerFile, int numTries, Date showAnswersAfter){
+    public Quiz(String quizName, String courseId, String className, String answerFile, int numTries, Date showAnswersAfter){
         this.quizName = quizName;
-        this.classId = classId;
+        this.courseId = courseId;
         this.className = className;
         this.answerFile = answerFile;
         this.numTries = numTries;
@@ -53,22 +52,22 @@ public class Quiz {
         questionsMap = new TreeMap<>();
         updateAnswers();
     }
-    
+
     /**
      * Used to decode a quiz from the mongodb database
      * @param mongoId id of the quiz in the database
      * @param numTries the number of tries a student has for this quiz
      * @param quizId value for the id of the quiz
-     * @param classId id of the class this quiz belongs to
+     * @param courseId id of the class this quiz belongs to
      * @param answerFile name of the answer file that was used
      * @param maxGrade the max possible grade that could be received
      * @param showAnswersAfter date to show the answers after
      */
-    public Quiz(ObjectId mongoId, int numTries, String quizName, String classId, String className, String answerFile, double maxGrade, Date showAnswersAfter, long quizId){
+    public Quiz(ObjectId mongoId, int numTries, String quizName, String courseId, String className, String answerFile, double maxGrade, Date showAnswersAfter, long quizId){
         this.mongoId = mongoId;
         this.numTries = numTries; 
         this.quizName = quizName;
-        this.classId = classId;
+        this.courseId = courseId;
         this.className = className;
         this.answerFile = answerFile;
         this.maxGrade = maxGrade;
@@ -89,8 +88,8 @@ public class Quiz {
      *
      * @return id of the class this quiz belongs to
      */
-    public final String getClassId() {
-        return classId;
+    public final String getCourseId() {
+        return courseId;
     }
     
     /**
@@ -223,8 +222,8 @@ public class Quiz {
      *
      * @param newId id of the new class
      */
-    public final void setClassId(String newId) {
-        classId = newId;
+    public final void setCourseId(String newId) {
+        courseId = newId;
     }
     
     /**

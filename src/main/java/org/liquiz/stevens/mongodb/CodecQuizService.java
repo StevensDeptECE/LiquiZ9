@@ -109,8 +109,8 @@ public class CodecQuizService {
      * @param doc Document with elements to search for
      * @return List of Quizzes matching search arguments
      */
-    public List<Quiz> getList(Document doc) {
-        List<Quiz> submissionList = new ArrayList();
+    public ArrayList<Quiz> getList(Document doc) {
+        ArrayList<Quiz> submissionList = new ArrayList();
         try (MongoCursor<Quiz> cursor = getCollection().find(doc).iterator()) {
          while (cursor.hasNext()) {
                 submissionList.add(cursor.next());
