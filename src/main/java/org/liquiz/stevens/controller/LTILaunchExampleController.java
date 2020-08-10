@@ -218,9 +218,13 @@ public class LTILaunchExampleController extends LtiLaunchController{
         Date showAnswersAfter = Date.from(showAnswersAfterLDT.atZone(ZoneId.systemDefault()).toInstant());
 
         fileService.uploadJspFile(jspFile, classId);
+<<<<<<< HEAD
         String ansFilePath = fileService.uploadAnswerFile(ansFile, classId).toString();
 
 
+=======
+        LOG.info("uploading" +ansFile + "to:" + ansFilePath);
+>>>>>>> 85eeb75c137a0075304d42fade6595cb00bf0b3e
         String quizNameFile = ansFile.getName().replaceFirst("[.][^.]+$", "");
         Quiz quiz = new Quiz(quizName, classId, className, ansFilePath, numTries, showAnswersAfter);
         if (!cqs.exists(quiz.getQuizId())){
