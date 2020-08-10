@@ -31,7 +31,7 @@
         <table class=''><tr>
             <c:if test="${not empty quizList}">
                 <c:forEach items="${quizList}" var="quiz">
-                    <td><input type='radio' name='quiz' value="${quiz.getQuizName()}">${quiz.getQuizName()} : Quiz Id ${quiz.getQuizId()}</td>
+                    <td><input type='radio' name='quiz' value="${quiz.getQuizId()}">${quiz.getQuizName()} : Quiz Id ${quiz.getQuizId()}</td>
                 </c:forEach>
             </c:if>
         </table>

@@ -16,25 +16,25 @@
 <form action = "uploadQuiz" method = "post" enctype = "multipart/form-data">
 
     <label for="jsp File">jsp File:</label>
-    <input type = "file" id = "jsp File" name = "jsp File"/>
+    <input type = "file" id = "jsp File" name = "jsp File" required/>
     <br />
     <label for="Answer File">Answer File:</label>
-    <input type = "file" id = "Answer File" name = "Answer File" />
+    <input type = "file" id = "Answer File" name = "Answer File" required />
     <br />
     <label for="Quiz Name">Quiz Name:</label>
-    <input type = "text" id = "Quiz Name" name = "quizName"/>
+    <input type = "text" id = "Quiz Name" name = "quizName" required/>
     <br />
     <label for="Class Name">Class Name:</label>
-    <input type = "text" id = "Class Name" name = "className"/>
+    <input type = "text" id = "Class Name" name = "className" required/>
     <br />
     <label for="ClassId">Class Id:</label>
-    <input type = "text" id = "ClassId" name = "classId"/>
+    <input type = "text" id = "ClassId" name = "classId" required/>
     <br />
     <label for="NumTries">Number of attempts allowed:</label>
-    <input type = "number" id = "NumTries" name = "numTries"/>
+    <input type = "number" id = "NumTries" name = "numTries" required/>
     <br />
     <label for="ShowAnswersAfter">Date to show answers after:</label>
-    <input type ="datetime-local" id = "showAnswersAfter" name = "showAnswersAfter"/>
+    <input type ="datetime-local" id = "showAnswersAfter" name = "showAnswersAfter" required/>
     <br />
     <input type = "submit" value = "Upload Quiz" />
 </form>

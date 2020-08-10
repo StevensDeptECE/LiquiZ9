@@ -12,6 +12,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.liquiz.stevens.mongodb.converter.LiquiZCodecProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.web.support.ErrorPageFilter;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.liquiz.stevens.service.LtiLaunchKeyServiceImpl;
@@ -105,6 +106,19 @@ public class AppConfig {
                                                       .codecRegistry(codecRegistry)
                                                       .applyConnectionString(new ConnectionString(connectionString))
                                                       .build());
+    }
+
+    @Bean
+    public ErrorPageFilter errorPageFilter() {
+        return new ErrorPageFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean disableSpringBootErrorFilter(ErrorPageFilter filter) {
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        filterRegistrationBean.setFilter(filter);
+        filterRegistrationBean.setEnabled(false);
+        return filterRegistrationBean;
     }
 
 

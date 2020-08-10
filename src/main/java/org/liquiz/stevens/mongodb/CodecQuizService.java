@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import org.bson.Document;
 import org.liquiz.stevens.quiz.Quiz;
 import org.liquiz.stevens.quiz.QuizSubmission;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -30,7 +31,7 @@ import org.springframework.stereotype.Repository;
 @ApplicationScoped
 public class CodecQuizService {
 
-    @Inject
+    @Autowired
     private MongoClient mongoClient;
 
         
@@ -124,11 +125,11 @@ public class CodecQuizService {
      * @return boolean on whether it exists in the collection
      */
     public boolean exists(long quizId){
-        return getCollection().find(eq("quizId", quizId)).limit(1)!=null;
+        return getCollection().find(eq("quizId", quizId)).first()!=null;
     }
 
     public boolean exists(Document doc){
-        return getCollection().find(doc).limit(1)!=null;
+        return getCollection().find(doc).first()!=null;
     }
         
     private MongoCollection<Quiz> getCollection(){

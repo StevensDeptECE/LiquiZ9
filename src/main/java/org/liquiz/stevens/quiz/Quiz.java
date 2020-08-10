@@ -49,7 +49,7 @@ public class Quiz {
         this.answerFile = answerFile;
         this.numTries = numTries;
         this.showAnswersAfter = showAnswersAfter;
-        this.quizId = new Random().nextLong();
+        this.quizId = Math.abs(new Random().nextLong());
         questionsMap = new TreeMap<>();
         updateAnswers();
     }
@@ -128,6 +128,15 @@ public class Quiz {
             answersList.add(q.getAnswer());
         }
         return answersList;
+    }
+
+    public final double[] getMaxGrades() {
+        int size = questionsMap.size();
+        double[] maxGrades = new double[size];
+        for(int i = 0; i < size; i++) {
+            maxGrades[i] =questionsMap.get(i+1).getGradeValue();
+        }
+        return maxGrades;
     }
     
     /**

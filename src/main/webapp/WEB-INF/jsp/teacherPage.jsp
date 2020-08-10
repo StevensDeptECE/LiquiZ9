@@ -12,6 +12,7 @@
 
 <body>
 <h1>Absolute Path is:<%= request.getServletContext().getRealPath("/") %></h1>
+<h1>User.dir path is :${file}</h1>
     <h1>${success}</h1>
     <h1>Hello professor ${name}</h1>
     <p>Here is going to be the options to upload liquiz document,

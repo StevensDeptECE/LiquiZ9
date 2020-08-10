@@ -27,10 +27,13 @@ public class FileService {
     public Path uploadAnswerFile(MultipartFile file, String classId) {
 
         try {
-            String dir = uploadDir + File.separator + "data" + File.separator + classId;
+            String dir =  ".." + File.separator + "webapps" + File.separator + "liquiz-test" + File.separator + "WEB-INF"
+                    + File.separator + "data" + File.separator + classId;//  uploadDir + File.separator + "data" + File.separator + classId;System.getProperty("user.dir") +
             File classDir = new File(dir);
-            if(!classDir.exists())
-                classDir.mkdir();
+            if(!classDir.exists()) {
+                if(!classDir.mkdir())
+                    throw new FileStorageException("Could not store file" + file.getOriginalFilename() + ". Please contact support!");
+            }
             Path copyLocation = Paths
                     .get(dir + File.separator + StringUtils.cleanPath(file.getOriginalFilename()));
             Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
@@ -44,11 +47,15 @@ public class FileService {
 
     public Path uploadJspFile(MultipartFile file, String classId) {
         try {
-            String dir = uploadDir + File.separator + "src" + File.separator + "main" + File.separator + "webapp" +
-                    File.separator + "WEB-INF" + File.separator + "jsp" + File.separator + "quizzes" + File.separator + classId;
+            String dir = ".." + File.separator + "webapps" + File.separator + "liquiz-test" + File.separator +
+                    "WEB-INF" + File.separator + "jsp" + File.separator + "quizzes" + File.separator + classId;
+            // uploadDir + File.separator + "src" + File.separator + "main" + File.separator + "webapp" +
+            //                    File.separator + "WEB-INF" + File.separator + "jsp" + File.separator + "quizzes" + File.separator + classId; System.getProperty("user.dir") +
             File classDir = new File(dir);
-            if(!classDir.exists())
-                classDir.mkdir();
+            if(!classDir.exists()) {
+                if(!classDir.mkdir())
+                    throw new FileStorageException("Could not store file" + file.getOriginalFilename() + ". Please contact support!");
+            }
             Path copyLocation = Paths
                     .get(dir +  File.separator + StringUtils.cleanPath(file.getOriginalFilename()));
             Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);

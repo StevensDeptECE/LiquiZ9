@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
@@ -69,7 +70,7 @@ public class LTILaunchExampleController extends LtiLaunchController{
     @Autowired
     CodecQuizService cqs;
 
-    @Inject
+    @Autowired
     CodecQuizSubmissionService cqss;
 
 
@@ -106,8 +107,6 @@ public class LTILaunchExampleController extends LtiLaunchController{
         if (ltiSession.getEid() == null || ltiSession.getEid().isEmpty()) {
             throw new AccessDeniedException("You cannot access this content without a valid session");
         }
-        //MongoClient mongo = (MongoClient) request.getServletContext().getAttribute("MONGO_CLIENT");
-        CodecQuizService cqs = new CodecQuizService();
 
         //ArrayList<Quiz> quizList = (ArrayList<Quiz>) cqs.getList(new Document("classId", ltiLaunchData.getCustom_canvas_course_id()));
         System.out.println(ltiSession.getEid());
@@ -124,12 +123,24 @@ public class LTILaunchExampleController extends LtiLaunchController{
         List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
         boolean isInstructor = roleList !=null; //&& (roleList.contains(LtiLaunchData.InstitutionRole.Instructor));
         LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
+        ModelAndView mav = new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
+        mav.addObject("file", System.getProperty("user.dir"));
         if(isInstructor){
-            return new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
+            return mav;
         }
         else{
             throw new AccessDeniedException("You are not an instructor and you cannot view this page");
         }
+    }
+
+    @RequestMapping("/QuizzesToEdit")
+    public ModelAndView quizzesToEdit() throws NoLtiSessionException {
+        LtiSession ltiSession = ltiSessionService.getLtiSession();
+
+        ArrayList<Quiz> quizList = (ArrayList<Quiz>) cqs.getList(new Document());
+        ModelAndView mav = new ModelAndView("showQuizzes");
+        mav.addObject("quizList", quizList);
+        return new ModelAndView();
     }
 
     @RequestMapping("/editQuiz")
@@ -148,14 +159,19 @@ public class LTILaunchExampleController extends LtiLaunchController{
     }
 
     @RequestMapping("/QuizRequest")
-    public ModelAndView quizRequest(HttpServletRequest request, @RequestParam("quiz") String quizName) throws NoLtiSessionException, IOException {
+    public ModelAndView quizRequest(HttpServletRequest request, @RequestParam("quiz") String quizIdString) throws NoLtiSessionException {
         LtiSession ltiSession = ltiSessionService.getLtiSession();
-        LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
-        if (ltiSession.getEid() == null || ltiSession.getEid().isEmpty()) {
+        //LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
+
+        long quizId = Long.parseLong(quizIdString);
+        /*if (ltiSession.getEid() == null || ltiSession.getEid().isEmpty()) {
             throw new AccessDeniedException("You cannot access this content without a valid session");
-        }
-        Quiz quiz = cqs.getOne(new Document("quizName", quizName));
-        return new ModelAndView("quizzes/" + quiz.getClassId() + "/" + quizName);
+        }*/
+        Quiz quiz = cqs.getOne(new Document("quizId", quizId));
+        HttpSession session=request.getSession();
+        session.setAttribute("quizName", quiz.getQuizName());
+
+        return new ModelAndView("quizzes/" + quiz.getClassId() + "/" + quiz.getQuizName());
     }
 
     @RequestMapping("/showQuizzes")
@@ -196,22 +212,26 @@ public class LTILaunchExampleController extends LtiLaunchController{
                                    @RequestParam("classId") String classId, @RequestParam("className") String className,
                                    @RequestParam("numTries") int numTries, @RequestParam("showAnswersAfter") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime showAnswersAfterLDT,
                                    @RequestParam("jsp File") MultipartFile jspFile, @RequestParam("Answer File") MultipartFile ansFile) throws NoLtiSessionException, RuntimeException {
-
         LtiSession ltiSession = ltiSessionService.getLtiSession();
         LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
 
         Date showAnswersAfter = Date.from(showAnswersAfterLDT.atZone(ZoneId.systemDefault()).toInstant());
 
-        String ansFilePath = fileService.uploadAnswerFile(ansFile, classId).toString();
         fileService.uploadJspFile(jspFile, classId);
-        String quizNameFile = ansFile.getName().replaceFirst("[.][^.]+$", "");
-        Quiz quiz = new Quiz(quizName, ltiLaunchData.getCustom_canvas_course_id(), className, ansFilePath, numTries, showAnswersAfter);
-        if(!cqs.exists(quiz.getQuizId()))
-            cqs.add(quiz);
-        else
-            cqs.replaceQuiz(quiz);
-        String success = "Your quiz " + quizNameFile + " was added successfully";
+        String ansFilePath = fileService.uploadAnswerFile(ansFile, classId).toString();
 
+
+        String quizNameFile = ansFile.getName().replaceFirst("[.][^.]+$", "");
+        Quiz quiz = new Quiz(quizName, classId, className, ansFilePath, numTries, showAnswersAfter);
+        if (!cqs.exists(quiz.getQuizId())){
+            cqs.add(quiz);
+            LOG.info(quiz.getQuizName() + "(" + quiz.getQuizId() + ") has been added to the mongo database");
+        }
+        else{
+            cqs.replaceQuiz(quiz);
+            LOG.info(quiz.getQuizName() + "(" + quiz.getQuizId() + ") has been replaced in the mongo database");
+        }
+        String success = "Your quiz " + quizNameFile + " was added successfully";
         ModelAndView mav = new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
         mav.addObject("success", success);
         return mav;
@@ -333,11 +353,12 @@ public class LTILaunchExampleController extends LtiLaunchController{
         
         Map<String, String[]> paramsMap = request.getParameterMap();
           TreeMap<String, String[]> inputsMap = new TreeMap<>();
+          inputsMap.putAll(paramsMap);
           if(inputsMap.containsKey("pledged"))
-              inputsMap.putAll(paramsMap);
-          inputsMap.remove("pledged");
+              inputsMap.remove("pledged");
          
           HttpSession session=request.getSession(true);
+          //use real quiz id
           String quizName=(String)session.getAttribute("quizName");
           Quiz quiz = cqs.getOne(new Document("quizName", quizName));
           if(quiz == null)
@@ -356,6 +377,10 @@ public class LTILaunchExampleController extends LtiLaunchController{
           ModelAndView mav = new ModelAndView("viewGrade", "success", outcome);
           mav.addObject("username", userId);
           mav.addObject("grade", quizSub.getGrade());
+          mav.addObject("maxGrade", quiz.getMaxGrade());
+          mav.addObject("qInputs", quizSub.getInputs());
+          mav.addObject("qGrades", quizSub.getQuestionGrades());
+          mav.addObject("qMaxGrades", quiz.getMaxGrades());
 
           return mav;
     }
