@@ -4,7 +4,8 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="media/quiz.css">
+    <meta http-equiv="Content-Security-Policy" content="style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+    <link rel="stylesheet" type="text/css" href="css/page.css">
     <title>index</title>
 
 
@@ -24,6 +25,9 @@
     </form>
     <form action="addQuiz" method="post">
         <input class='controls' type='submit' value='Add new quiz'/>
+    </form>
+    <form action="quizzesToEdit" method="post">
+        <input class="controls" type="submit" value="Edit Quizzes"/>
     </form>
 </body>
 </html>

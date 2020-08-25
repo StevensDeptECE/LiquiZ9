@@ -160,6 +160,11 @@
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
     </dependencies>
     
 </project>

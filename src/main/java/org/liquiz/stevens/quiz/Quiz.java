@@ -31,11 +31,11 @@ public class Quiz {
     private int numTries;
     private double maxGrade;
     private Date showAnswersAfter;
-    private TreeMap<Integer, Question> questionsMap;
+    private TreeMap<String, Question> questionsMap;
 
     /**
      * Used to create a quiz
-     * @param quizId value for id of the quiz
+     * @param quizName value for id of the quiz
      * @param courseId id of the class this quiz belongs to
      * @param answerFile name of the answer file to be used
      * @param numTries the number of tries a student has for this quiz
@@ -49,7 +49,7 @@ public class Quiz {
         this.numTries = numTries;
         this.showAnswersAfter = showAnswersAfter;
         this.quizId = Math.abs(new Random().nextLong());
-        questionsMap = new TreeMap<>();
+        questionsMap = new TreeMap<>(new qNameComparator());
         updateAnswers();
     }
 
@@ -73,7 +73,7 @@ public class Quiz {
         this.maxGrade = maxGrade;
         this.showAnswersAfter = showAnswersAfter;
         this.quizId = quizId;
-        questionsMap = new TreeMap<>();
+        questionsMap = new TreeMap<>(new qNameComparator());
     }
     
     /**
@@ -112,7 +112,7 @@ public class Quiz {
      *
      * @return TreeMap<Integer,Question> for the question map of the quiz
      */
-    public final TreeMap<Integer, Question> getQuestionsMap() {
+    public final TreeMap<String, Question> getQuestionsMap() {
         return questionsMap;
     }
     
@@ -120,11 +120,12 @@ public class Quiz {
      * Get the answers from each of the questions in the quiz
      * @return list of answers
      */
-    public final ArrayList<String> getAnswers(){
-        ArrayList<String> answersList= new ArrayList<>();
-        for(Map.Entry<Integer, Question> entry : questionsMap.entrySet()){
+    public final String[] getAnswers(){
+        String[] answersList= new String[questionsMap.size()];
+        int index = 0;
+        for(Map.Entry<String, Question> entry : questionsMap.entrySet()){
             Question q = entry.getValue();
-            answersList.add(q.getAnswer());
+            answersList[index++] = q.getAnswer();
         }
         return answersList;
     }
@@ -132,8 +133,10 @@ public class Quiz {
     public final double[] getMaxGrades() {
         int size = questionsMap.size();
         double[] maxGrades = new double[size];
-        for(int i = 0; i < size; i++) {
-            maxGrades[i] =questionsMap.get(i+1).getGradeValue();
+        int index = 0;
+        for(Map.Entry<String, Question> entry : questionsMap.entrySet()){
+            Question q = entry.getValue();
+            maxGrades[index++] = q.getGradeValue();
         }
         return maxGrades;
     }
@@ -144,6 +147,10 @@ public class Quiz {
      */
     public final int getNumTries() {
         return numTries;
+    }
+
+    public final int getNumQuestions() {
+        return questionsMap.size();
     }
     
     /**
@@ -261,12 +268,12 @@ public class Quiz {
         String currentQ = "";
         double currentGrade = 0.0;
         String answers = "";
-        for(Map.Entry<Integer, Question> entry : questionsMap.entrySet()){
+        for(Map.Entry<String, Question> entry : questionsMap.entrySet()){
             Question q = entry.getValue();
             String newQ = q.getName().split("_")[1];
 
             if(currentQ.equals(newQ)){
-                currentGrade+=q.getGrade();
+                //currentGrade+=q.getGrade();
                 answers += "," + q.getAnswer();
                 
             }
@@ -275,7 +282,7 @@ public class Quiz {
                 jOBJ.put("points", currentGrade);
                 jOBJ.put("answers", answers);
                 jARR.add(jOBJ);
-                currentGrade = q.getGrade();
+                //currentGrade = q.getGrade();
                 answers = q.getAnswer();
                 jOBJ = new JSONObject();
             }
@@ -322,16 +329,20 @@ public class Quiz {
     public void addQuestion(String questionName, String qAns, Double gradeVal){
     String[] qAnsArr = qAns.split(",");
     switch(questionName.charAt(0)){
+      case 't':
+      case 'T':
       case 'q':
       case 'Q':
-      case 's': 
+      case 's':
       case 'S':
         SimpleQuestion sqc = new SimpleQuestion(qAns, gradeVal, questionName, questionsMap);
         break;
       case 'N':
       case 'n':
         double lowRange = Double.parseDouble(qAnsArr[0]);
-        double highRange = Double.parseDouble(qAnsArr[1]);
+        double highRange = lowRange;
+        if(qAnsArr.length>1)
+            highRange = Double.parseDouble(qAnsArr[1]);
         NumQuestion nq = new NumQuestion(lowRange, highRange, gradeVal, questionsMap, questionName);
         break;
       case 'M':
@@ -348,9 +359,9 @@ public class Quiz {
      * @param q the question given to the quiz from Mongodb to add to questionsMap
      */
     public void addQuestion(Question q){
-      String split[] = q.getName().split("_");
-      questionsMap.put(Integer.parseInt(split[2]), q);
+      questionsMap.put(q.getName(), q);
   }
 
 
 }
+

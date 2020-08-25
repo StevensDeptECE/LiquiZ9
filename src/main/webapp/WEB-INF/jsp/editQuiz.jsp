@@ -20,7 +20,7 @@ Author     : ejone
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Edit quiz</title>
-    <link rel="stylesheet" type="text/css" href="quiz.css">
+    <link rel="stylesheet" type="text/css" href="css/page.css">
 </head>
 
 <h1>Editing quizzes</h1>

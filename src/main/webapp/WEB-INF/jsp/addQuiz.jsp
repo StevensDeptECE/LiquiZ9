@@ -9,33 +9,29 @@
 <html>
 <head>
     <title>addQuiz</title>
-    <link rel="stylesheet" type="text/css" href='quiz.css'>
+    <link rel="stylesheet" type="text/css" href='css/page.css'>
 </head>
 <body>
 <h1>Upload a Quiz here</h1>
 <form action = "uploadQuiz" method = "post" enctype = "multipart/form-data">
-
-    <label for="jsp File">jsp File:</label>
-    <input type = "file" id = "jsp File" name = "jsp File" required/>
-    <br />
-    <label for="Answer File">Answer File:</label>
-    <input type = "file" id = "Answer File" name = "Answer File" required />
-    <br />
-    <label for="Quiz Name">Quiz Name:</label>
-    <input type = "text" id = "Quiz Name" name = "quizName" required/>
-    <br />
-    <label for="Class Name">Class Name:</label>
-    <input type = "text" id = "Class Name" name = "className" required/>
-    <br />
-    <label for="ClassId">Class Id:</label>
-    <input type = "text" id = "ClassId" name = "classId" required/>
-    <br />
-    <label for="NumTries">Number of attempts allowed:</label>
-    <input type = "number" id = "NumTries" name = "numTries" required/>
-    <br />
-    <label for="ShowAnswersAfter">Date to show answers after:</label>
-    <input type ="datetime-local" id = "showAnswersAfter" name = "showAnswersAfter" required/>
-    <br />
+    <table>
+        <tr>
+            <th>jsp File: </th>
+            <th>Answer File: </th>
+            <th>Class Name: </th>
+            <th>Course Id (if different from the current course): </th>
+            <th>Attempts Allowed: </th>
+            <th>Date to show answers after: </th>
+        </tr>
+        <tr>
+            <td><input type = "file" id = "jspFile" name = "jsp File" required/></td>
+            <td><input type = "file" id = "answerFile" name = "Answer File" required /></td>
+            <td><input type = "text" id = "className" name = "className" required /></td>
+            <td><input type = "text" id = "classId" name = "classId" required/></td>
+            <td><input type = "number" id = "numTries" name = "numTries" required default="1"/></td>
+            <td><input type ="datetime-local" id = "showAnswersAfter" name = "showAnswersAfter" required/></td>
+        </tr>
+    </table>
     <input type = "submit" value = "Upload Quiz" />
 </form>
 </body>

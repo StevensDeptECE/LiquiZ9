@@ -15,7 +15,6 @@ import org.bson.types.ObjectId;
  */
 public abstract class Question {
   double gradeVal;
-  double grade;
   String name;
   private ObjectId id;
 
@@ -25,12 +24,11 @@ public abstract class Question {
      * @param questionsMap TreeMap for all of the questions which it should be added to
      * @param name String for the name
      */
-    public Question(double gradeVal, TreeMap<Integer, Question> questionsMap, String name) {
+    public Question(double gradeVal, TreeMap<String, Question> questionsMap, String name) {
     this.gradeVal = gradeVal;
     this.name = name;
-    grade = 0.0;
     this.id = new ObjectId();
-    questionsMap.put(Integer.parseInt(name.split("_")[2]), this);
+    questionsMap.put(name, this);
   }
   
     /**
@@ -43,7 +41,6 @@ public abstract class Question {
     this.id = id;
     this.gradeVal = gradeVal;
     this.name = name;
-    grade = 0.0;
   }
   
     /**
@@ -77,23 +74,6 @@ public abstract class Question {
     public final String getName() {
       return name;
   }
-    //TODO remove
-    /**
-     *
-     * @param newGrade the new grade for the question
-     */
-    public final void setGrade(double newGrade) {
-      grade = newGrade;
-  }
-  
-    //TODO remove
-    /**
-     *
-     * @return double representing the grade
-     */
-    public final double getGrade() {
-      return grade;
-    }
 
     /**
      *

@@ -95,8 +95,8 @@ public class CodecQuizSubmissionService {
      * @param doc Document with elements to search for
      * @return List of quizSubmission matching search arguments
      */
-    public List<QuizSubmission> getList(Document doc) {
-        List<QuizSubmission> submissionList = new ArrayList();
+    public ArrayList<QuizSubmission> getList(Document doc) {
+        ArrayList<QuizSubmission> submissionList = new ArrayList();
         try (MongoCursor<QuizSubmission> cursor = getCollection().find(doc).iterator()) {
          while (cursor.hasNext()) {
                 submissionList.add(cursor.next());
@@ -125,7 +125,18 @@ public class CodecQuizSubmissionService {
         }
         return avgQuestionScores;
     }
-    
+
+    public double getAvgQuizScore(long quizId) {
+        ArrayList<QuizSubmission> quizList;
+        quizList = (ArrayList<QuizSubmission>) getList(new Document("quizId", quizId));
+        int numOfSubmissions = quizList.size();
+        double avgGrade = 0.0;
+        for(QuizSubmission qSub : quizList) {
+            avgGrade += Math.round((qSub.getGrade()/numOfSubmissions)*1000)/1000;
+        }
+        return avgGrade;
+    }
+
     /**
      * Returns a double that represents the highest grade the student received for the given quiz
      * @param quizId id of quiz to search for

@@ -11,7 +11,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>index</title>
-        <link rel="stylesheet" type="text/css" href="quiz.css">
+        <link rel="stylesheet" type="text/css" href="css/page.css">
     </head>
     <body>
         <form method="post" action="quizChoice">

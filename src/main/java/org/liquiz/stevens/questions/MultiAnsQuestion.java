@@ -27,7 +27,7 @@ public class MultiAnsQuestion extends Question {
      * @param questionsMap TreeMap that question is added to
      * @param name String for the name 
      */
-    public MultiAnsQuestion(String ans[], double gradeVal, boolean subWrongAns, TreeMap<Integer, Question> questionsMap, String name) {
+    public MultiAnsQuestion(String ans[], double gradeVal, boolean subWrongAns, TreeMap<String, Question> questionsMap, String name) {
     super(gradeVal, questionsMap, name);
     this.subWrongAns = subWrongAns;
     answers = ans.clone();
@@ -115,7 +115,6 @@ public class MultiAnsQuestion extends Question {
       }
     }
     finishedGradeVal = Math.round(finishedGradeVal*1000)/1000;
-    setGrade((finishedGradeVal > 0.0) ? finishedGradeVal : 0.0);
     return (finishedGradeVal > 0.0) ? finishedGradeVal : 0.0;
   }
 }

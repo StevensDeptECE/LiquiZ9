@@ -13,7 +13,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="media/quiz.css">
+    <link rel="stylesheet" type="text/css" href="css/page.css">
     <title>viewGrade</title>
 
 
@@ -27,6 +27,7 @@
     <tr>
         <th>Question Number</th>
         <th>User Answer</th>
+        <th>Answer</th>
         <th>Grade</th>
         <th>Max Grade</th>
     </tr>
@@ -40,6 +41,7 @@
         </c:forEach>
             }
         </td>
+        <td>${qAnswers[loop.index]}</td>
         <td>${qGrades[loop.index]}</td>
         <td>${qMaxGrades[loop.index]}</td>
     </tr>

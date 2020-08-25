@@ -39,7 +39,7 @@ input {
     background-color: #202020;
     color: #fff;
     border-color: #ff0000;
-    border-width: 1px;
+    border-width: 1;
     border-style: solid;
 }
 
@@ -51,7 +51,7 @@ input {
 div.q {
     background-color: #000;
     border-color: #ff0;
-    border-width: 1px;
+    border-width: 1;
     width: 80%;
     padding: 10px;
     margin: 10px;
@@ -60,7 +60,7 @@ div.q {
 
 td.orig {
     border-color: #fff;
-    border-width: 1px;
+    border-width: 1;
     border-style: solid;
 }
 .qh {
@@ -82,8 +82,8 @@ td.orig {
 }
 
 video {
-    width: 320px;
-    height: 240px;
+    width: 320;
+    height: 240;
     padding: 10px;
     margin: 10px;
     background-color: red;

@@ -93,6 +93,7 @@ public class QuizSubmissionCodec implements CollectibleCodec<QuizSubmission> {
         Document document = new Document("_id", quiz.getId())
                 .append("quizId", quiz.getQuizId())
                 .append("userId", quiz.getUserId())
+                .append("fullName", quiz.getFullName())
                 .append("grade", quiz.getGrade())
                 .append("dateSubmitted", quiz.getDateSubmitted())
                 .append("userAnswers", questionDocumentList)
@@ -128,8 +129,8 @@ public class QuizSubmissionCodec implements CollectibleCodec<QuizSubmission> {
             questionGradesArr[gIndex++] = doc.getDouble("qgrade");
         }
         
-        QuizSubmission quiz = new QuizSubmission(document.getObjectId("_id"), document.getString("quizId"),
-                document.getString("userId"), document.getDouble("grade"), questionGradesArr, document.getDate("dateSubmitted"));
+        QuizSubmission quiz = new QuizSubmission(document.getObjectId("_id"), document.getLong("quizId"),
+                document.getString("userId"), document.getString("fullName"), document.getDouble("grade"), questionGradesArr, document.getDate("dateSubmitted"));
 
         List<Document> docArr = (List<Document>) document.get("userAnswers");
         for (Document doc : docArr) {

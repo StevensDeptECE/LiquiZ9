@@ -23,7 +23,7 @@ public class SimpleQuestion extends Question {
      * @param qType String for the question type
      * @param questionsMap TreeMap question is added to
      */
-  public SimpleQuestion(String ans, double gradeVal, String qType, TreeMap<Integer, Question> questionsMap) {
+  public SimpleQuestion(String ans, double gradeVal, String qType, TreeMap<String, Question> questionsMap) {
     super(gradeVal, questionsMap, qType);
     char type = qType.charAt(0);
     caseSens = !(type == 'Q' || type == 'S');
@@ -108,10 +108,8 @@ public class SimpleQuestion extends Question {
       caseStudentAns = caseStudentAns.replaceAll("\\s", "");
     if(caseStudentAns.equals(ans)){
       newGrade = 1.0*gradeVal;
-      setGrade(newGrade);
       return newGrade;
     }
-    setGrade(newGrade);
     return newGrade;
   }
 

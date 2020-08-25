@@ -24,7 +24,7 @@ public class NumQuestion extends Question {
      * @param questionsMap TreeMap the question is added to
      * @param name String for the name of the question
      */
-    public NumQuestion(double low, double high, double gradeVal, TreeMap<Integer, Question> questionsMap, String name) {
+    public NumQuestion(double low, double high, double gradeVal, TreeMap<String, Question> questionsMap, String name) {
     super(gradeVal, questionsMap, name);
     if(low < high){
         this.low = low;
@@ -92,7 +92,6 @@ public class NumQuestion extends Question {
         double numStudentAns = Double.parseDouble(studentAns[0]);
         if(numStudentAns >= low && numStudentAns <= high){
             newGrade = 1.0*gradeVal;
-            setGrade(newGrade);
             return newGrade;
         }
     }
@@ -100,7 +99,6 @@ public class NumQuestion extends Question {
     catch (NumberFormatException nfe) {
          System.out.println("not a valid number for question" + name);
     }
-    setGrade(newGrade);
     return newGrade;
   }
 }

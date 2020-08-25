@@ -18,8 +18,9 @@ public class QuizSubmission{
   TreeMap<String, String[]> userAnswers;
   double[] questionGradesArr;
   double grade;
-  String quizId;
+  long quizId;
   String userId;
+  String fullName;
   Date dateSubmitted;
   private ObjectId mongoId;
 
@@ -31,11 +32,12 @@ public class QuizSubmission{
      * @param q the quiz which this submission will be graded based off of so 
      *          update grade can be called in this instructor
      */
-    public QuizSubmission(String quizId, String userId, TreeMap<String,String[]> inputsMap, Quiz q){
+    public QuizSubmission(long quizId, String userId, String fullName, TreeMap<String,String[]> inputsMap, Quiz q){
     this.quizId = quizId;
     this.userId = userId;
     this.grade = 0.0;
     this.userAnswers = inputsMap;
+    this.fullName = fullName;
     dateSubmitted = new Date();
     questionGradesArr = new double[userAnswers.size()];
     updateGrade(q.getQuestionsMap());
@@ -50,11 +52,12 @@ public class QuizSubmission{
      * @param questionGradesArr The array of grades corresponding to each question
      * @param dateSubmitted Date that the quizSubmission was created/finished
      */
-    public QuizSubmission(ObjectId mongoId, String quizId, String userId, double grade, double[] questionGradesArr, Date dateSubmitted){
+    public QuizSubmission(ObjectId mongoId, long quizId, String userId, String fullName, double grade, double[] questionGradesArr, Date dateSubmitted){
       this.mongoId = mongoId;
       this.quizId = quizId;
       this.userId = userId;
       this.grade = grade;
+      this.fullName = fullName;
       this.dateSubmitted = dateSubmitted;
       this.questionGradesArr = questionGradesArr;
       userAnswers = new TreeMap<>();
@@ -80,16 +83,16 @@ public class QuizSubmission{
      *
      * @return QuizId of this submission
      */
-    public final String getQuizId() {
+    public final long getQuizId() {
       return quizId;
   }
   
     /**
      *
-     * @param newName the new name of quizId for this submission
+     * @param newID the new name of quizId for this submission
      */
-    public final void setQuizId(String newName) {
-      quizId = newName;
+    public final void setQuizId(long newID) {
+      quizId = newID;
   }
    
     /**
@@ -99,13 +102,16 @@ public class QuizSubmission{
     public final String getUserId() {
       return userId;
     }
-  
+
+    public final String getFullName() {return fullName;}
+
+    public final void setFullName(String newName) {fullName = newName;}
     /**
      *
      * @param newUserId the new user id associated with this submission
      */
     public final void setUserId(String newUserId) {
-      quizId = newUserId;
+      userId = newUserId;
     }
    
     /**
@@ -175,22 +181,23 @@ public class QuizSubmission{
      * Updates the grade for this submission based on the question map passed 
      * @param questionsMap map of the questions that are used to grade 
      */
-    public void updateGrade(TreeMap<Integer, Question> questionsMap){
-    for(Map.Entry<Integer, Question> entry : questionsMap.entrySet()){
-      int key = entry.getKey();
-      Question q = entry.getValue();
-      
-      String[] inputsString = userAnswers.get(q.getName());
-      
-      double qGrade;
-      if(q==null)
-         System.out.println("error: could not find question in quiz");
-      else if(inputsString != null){
-        qGrade = q.checkAnswer(inputsString);
-        grade+= qGrade;
-        questionGradesArr[key-1] = qGrade;
+    public void updateGrade(TreeMap<String, Question> questionsMap){
+      int index = 0;
+      for(Map.Entry<String, Question> entry : questionsMap.entrySet()){
+        Question q = entry.getValue();
+
+
+        String[] inputsString = userAnswers.get(q.getName());
+
+        double qGrade;
+        if(q==null)
+           System.out.println("error: could not find question in quiz");
+        else if(inputsString != null){
+          qGrade = q.checkAnswer(inputsString);
+          grade+= qGrade;
+          questionGradesArr[index++] = qGrade;
+        }
       }
-    }
   }
   
 }

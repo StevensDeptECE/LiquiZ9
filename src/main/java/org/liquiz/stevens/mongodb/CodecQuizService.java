@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.print.Doc;
 
 import org.bson.Document;
 import org.liquiz.stevens.quiz.Quiz;
@@ -67,6 +68,17 @@ public class CodecQuizService {
         }
         catch(Exception e){
             System.out.println(e);
+        }
+    }
+
+    public boolean delete(long quizId) {
+        try {
+            getCollection().deleteOne(new Document("quizId", quizId));
+            return true;
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return false;
         }
     }
 

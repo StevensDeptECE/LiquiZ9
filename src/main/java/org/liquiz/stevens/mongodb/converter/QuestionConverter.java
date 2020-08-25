@@ -32,7 +32,6 @@ public class QuestionConverter {
     public static Document convert(Question q) {
                 
 		Document doc = new Document("_id", q.getId())
-                                .append("grade", q.getGrade())
                                 .append("gradeVal", q.getGradeValue())
                                 .append("name", q.getName());
                 doc = q.getDocument(doc);
@@ -52,12 +51,10 @@ public class QuestionConverter {
                         case 'Q':
                         case 's': 
                         case 'S':
-                          SimpleQuestion sqc = new SimpleQuestion(doc.getString("ans"), doc.getDouble("gradeVal"), doc.getString("name"), doc.getObjectId("_id"));
-                          return sqc;
+                          return new SimpleQuestion(doc.getString("ans"), doc.getDouble("gradeVal"), doc.getString("name"), doc.getObjectId("_id"));
                         case 'N':
                         case 'n':
-                          NumQuestion nq = new NumQuestion(doc.getDouble("low"), doc.getDouble("high"), doc.getDouble("gradeVal"), doc.getString("name"), doc.getObjectId("_id"));
-                          return nq;
+                          return new NumQuestion(doc.getDouble("low"), doc.getDouble("high"), doc.getDouble("gradeVal"), doc.getString("name"), doc.getObjectId("_id"));
                         case 'M':
                         case 'm':
                           List<Document> ansList = (List<Document>) doc.get("answers");
@@ -67,8 +64,7 @@ public class QuestionConverter {
                             ansArr[index] = docAns.getString("ans");
                             index++;
                           }
-                          MultiAnsQuestion mqc = new MultiAnsQuestion(ansArr, doc.getDouble("gradeVal"), doc.getBoolean("subWrongAns") , doc.getString("name"), doc.getObjectId("_id"));
-                          return mqc;
+                          return new MultiAnsQuestion(ansArr, doc.getDouble("gradeVal"), doc.getBoolean("subWrongAns") , doc.getString("name"), doc.getObjectId("_id"));
                         default:
                           System.out.println("error adding question");     
                     }

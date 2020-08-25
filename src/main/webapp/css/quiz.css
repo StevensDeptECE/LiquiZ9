@@ -1,71 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Franklin&display=swap');
 
-:root {
-    --bg-color: white;
-    --font-color: black;
-    --header-font-color: white;
-    --header-color: #A32638;
-}
-
-[data-theme="dark"] {
-    --bg-color: black;
-    --font-color: white;
-    --header-font-color: white;
-    --header-color: #A32638;
-}
-
-#header {
-    background-color: var(--header-color);
-    color: var(--header-font-color);
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.logo {
-    width: 250px;
-    height: auto;
-    margin: 20px 30px 20px 20px;
-}
-
-.headerText {
-    flex-direction: column;
-    display: flex;
-}
-
-.quizTitle {
-    font-size: 2rem;
-    text-align: center;
-    align-self: center;
-}
-
-.headerDetails {
-    margin-bottom: 5px;
-}
-
-.headerRow {
-    display: flex;
-    align-items: center;
-    text-align: center;
-}
-
-body {
-    background-color: var(--bg-color);
-    color: var(--font-color);
-    font-size: 16pt;
-    margin: 0;
-    font-family: 'Libre Franklin', sans-serif;
-}
-
-.section {
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-
-}
-@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin&display=swap');
 
 img {
     max-width: 300px;
@@ -84,7 +18,8 @@ img {
 img.logo {
     width: 250px;
     height: auto;
-    margin: 20px 30px 20px 20px;
+    margin: 20px;
+    margin-right: 30px;
     max-width: 100%;
 }
 
@@ -117,12 +52,11 @@ img.logo {
 body {
     background-color: #ffffff;
     color: #fff;
+    font-family: Times;
     font-size: 16pt;
     margin: 0;
     font-family: 'Libre Franklin', sans-serif;
 }
-
-
 
 .section {
     margin: 20px;
@@ -173,7 +107,7 @@ video {
 
 label {
     display: flex;
-    margin-bottom: 0;
+    margin-bottom: 0px;
     align-items: baseline;
 
 }
@@ -183,13 +117,13 @@ label {
 }
 
 .pcode {
-    font-family: Courier, fixed, serif;
+    font-family: Courier, fixed;
 }
 
 .code {
-    font-family: Courier, fixed, serif;
-    /*    background-color: black;
-        color: green;*/
+    font-family: Courier, fixed;
+/*    background-color: black;
+    color: green;*/
 }
 
 .footer {
@@ -205,8 +139,8 @@ label {
 .mat {
     border-style: solid;
     border-color: black;
-    border-width: 1px;
+    border-width: 1;
     width: 30%;
-    font-family: Courier, serif;
+    font-family: Courier;
     font-size: 18pt;
 }

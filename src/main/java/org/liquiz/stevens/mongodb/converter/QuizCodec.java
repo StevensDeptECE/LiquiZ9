@@ -74,12 +74,11 @@ public class QuizCodec implements CollectibleCodec<Quiz> {
                     EncoderContext encoderContext
                 ) {
         List<Document> questionDocumentList = new ArrayList<>();
-        for(Map.Entry<Integer, Question> entry : quiz.getQuestionsMap().entrySet()){
+        for(Map.Entry<String, Question> entry : quiz.getQuestionsMap().entrySet()){
             Question mapQ = entry.getValue();
             Document doc = new Document("id", mapQ.getId())
                                         .append("name", mapQ.getName())
-                                        .append("gradeVal", mapQ.getGradeValue())
-                                        .append("grade", mapQ.getGrade());
+                                        .append("gradeVal", mapQ.getGradeValue());
             doc = entry.getValue().getDocument(doc);
             questionDocumentList.add(doc);
         }
