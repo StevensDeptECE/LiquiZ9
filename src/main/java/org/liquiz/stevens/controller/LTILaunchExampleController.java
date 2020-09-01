@@ -122,7 +122,6 @@ public class LTILaunchExampleController extends LtiLaunchController {
     public ModelAndView teacherView() throws NoLtiSessionException {
         LtiLaunchData ltiLaunchData = getTeacherSession();
         ModelAndView mav = new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
-        mav.addObject("file", System.getProperty("user.dir"));
         return mav;
     }
 
@@ -136,16 +135,38 @@ public class LTILaunchExampleController extends LtiLaunchController {
         LtiLaunchData ltiLaunchData = getTeacherSession();
         String courseId = ltiLaunchData.getCustom_canvas_course_id();
         ArrayList<Quiz> quizList = cqs.getList(new Document("classId", courseId));
-        double[] avgGrades = new double[quizList.size()];
-        int index = 0;
+        HashMap<Long, Double> avgGrades = new HashMap<Long, Double>();
         for(Quiz q : quizList)
-            avgGrades[index++] = cqss.getAvgQuizScore(q.getQuizId());
+            avgGrades.put(q.getQuizId(), cqss.getAvgQuizScore(q.getQuizId()));
         ModelAndView mav = new ModelAndView("quizzesToEdit");
         mav.addObject("quizList", quizList);
         mav.addObject("avgGrades", avgGrades);
         return mav;
     }
 
+    /**
+     * Returns a page where a teacher can edit their selected quiz
+     * @param id
+     * @param request
+     * @return
+     * @throws NoLtiSessionException
+     */
+    @RequestMapping(value = {"/editQuiz", "/editQuiz{id:[\\d]+}"})
+    public ModelAndView editQuiz(@PathVariable("id") long id,HttpServletRequest request) throws NoLtiSessionException {
+        LtiLaunchData ltiLaunchData = getTeacherSession();
+
+        Quiz quiz = cqs.getOne(new Document("quizId", id));
+
+        ModelAndView mav = new ModelAndView("editQuiz", "quiz", quiz);
+        return mav;
+    }
+
+    /**
+     * Deletes the selected quizzes and returns the quizzesToEdit page without those deleted quizzes
+     * @param request
+     * @return
+     * @throws NoLtiSessionException
+     */
     @RequestMapping("/deleteQuizzes")
     public ModelAndView deleteQuizzes(HttpServletRequest request) throws NoLtiSessionException {
         LtiLaunchData ltiLaunchData = getTeacherSession();
@@ -170,6 +191,35 @@ public class LTILaunchExampleController extends LtiLaunchController {
         ModelAndView mav = new ModelAndView("quizzesToEdit", "Outcome", Outcome);
         mav.addObject("quizList", quizList);
         mav.addObject("avgGrades", avgGrades);
+        return mav;
+    }
+
+    /**
+     * Deletes the selected submissions and returns to the viewSubmissions page with the new number of submissions
+     * @param id identifies the quiz for which the submissions are returned
+     * @param request
+     * @return
+     * @throws NoLtiSessionException
+     */
+    @RequestMapping(value = {"/deleteSubmissions", "/deleteSubmissions{id:[\\d]+}"})
+    public ModelAndView deleteSubmissions(@PathVariable("id") long id, HttpServletRequest request) throws NoLtiSessionException {
+        LtiLaunchData ltiLaunchData = getTeacherSession();
+
+        String[] quizSubmissionDeleteArray = request.getParameterValues("submission");
+
+        String Outcome = "The quiz submissions with the following ids have been deleted: ";
+
+        for(String quizSubmissionIdString : quizSubmissionDeleteArray){
+            if(cqss.delete(quizSubmissionIdString))
+                Outcome += "(" + quizSubmissionIdString + ") ";
+        }
+
+        ArrayList<QuizSubmission> quizSubList = cqss.getList(new Document("quizId", id));
+        Quiz quiz = cqs.getOne(new Document("quizId", id));
+
+        ModelAndView mav = new ModelAndView("viewSubmissions", "quizSubList", quizSubList);
+        mav.addObject("quizName", quiz.getQuizName());
+        mav.addObject("quizId", quiz.getQuizId());
         return mav;
     }
 
@@ -205,7 +255,7 @@ public class LTILaunchExampleController extends LtiLaunchController {
         ArrayList<QuizSubmission> quizSubList = cqss.getList(new Document("quizId", id));
         Quiz quiz = cqs.getOne(new Document("quizId", id));
 
-        ModelAndView mav = new ModelAndView("viewSubmissions", "quizSubList", quizSubList);
+        ModelAndView mav = new ModelAndView("createSpreadsheetQuiz", "quizSubList", quizSubList);
         mav.addObject("quiz", quiz);
         return mav;
     }
@@ -228,6 +278,7 @@ public class LTILaunchExampleController extends LtiLaunchController {
 
         ModelAndView mav = new ModelAndView("createSpreadsheetSubmission", "quizSub", quizSub);
         mav.addObject("quizAnswers", quizAnswers);
+
         return mav;
     }
 
@@ -264,23 +315,6 @@ public class LTILaunchExampleController extends LtiLaunchController {
         HttpSession session = request.getSession();
         session.setAttribute("quizName", quiz.getQuizName());
         return new ModelAndView("quizzes/" + quiz.getCourseId() + "/" + quiz.getQuizName());
-    }
-
-    /**
-     * Provides a list of quizzes available
-     * @param
-     * @return
-     * @throws NoLtiSessionException
-     * @throws IOException
-     */
-    @RequestMapping("/showQuizzes")
-    public ModelAndView showQuizzes() throws NoLtiSessionException {
-        LtiLaunchData ltiLaunchData = getTeacherSession();
-
-        ArrayList<Quiz> quizList = cqs.getList(new Document());
-        ModelAndView mav = new ModelAndView("showQuizzes");
-        mav.addObject("quizList", quizList);
-        return mav;
     }
 
     /**

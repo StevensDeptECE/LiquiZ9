@@ -1,8 +1,0 @@
-q1_1: ejones
-q1_2: bee
-Q1_3: Ethan
-q1_4: on
-m2_1: essay
-q3_1: 4
-n4_1: 4.2
-grade: 158.0

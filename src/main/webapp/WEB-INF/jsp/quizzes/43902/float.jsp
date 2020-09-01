@@ -46,12 +46,12 @@
       </div>
       <pre class='code'>
 Which of the following numbers are exactly representable in floating point?<p hidden>3</p>
-1.0 <select class='dro' name='q_1_1'id='q_1_1'>
+1.0 <select class='dro' name='q_1_1' id='q_1_1' >
             <option value=''></option>
             <option value='exact'>exact</option>
             <option value='inexact'>inexact</option>
         </select><p hidden>4</p>
-11.5 <select class='dro' name='q_1_2'id='q_1_2'>
+11.5 <select class='dro' name='q_1_2' id='q_1_2'>
             <option value=''></option>
             <option value='exact'>exact</option>
             <option value='inexact'>inexact</option>
@@ -91,42 +91,42 @@ Which of the following numbers are exactly representable in floating point?<p hi
     <div class='answer'>
       <pre class='code'>
 Which of the following numbers are exactly representable in floating point?<p hidden>3</p>
-1.0 <select class='dro' name='aq_1_1'id='q_1_1'>
+1.0 <select class='dro' name='aq_1_1'id='q_1_1' disabled>
             <option value=''></option>
             <option value='exact'>exact</option>
             <option value='inexact'>inexact</option>
         </select><p hidden>4</p>
-11.5 <select class='dro' name='aq_1_2'id='q_1_2'>
+11.5 <select class='dro' name='aq_1_2'id='q_1_2' disabled>
             <option value=''></option>
             <option value='exact'>exact</option>
             <option value='inexact'>inexact</option>
         </select><p hidden>5</p>
-17.0 <select class='dro' name='aq_1_3'id='q_1_3'>
+17.0 <select class='dro' name='aq_1_3'id='q_1_3'disabled>
             <option value=''></option>
             <option value='exact'>exact</option>
             <option value='inexact'>inexact</option>
         </select><p hidden>6</p>
-0.1 <select class='dro' name='aq_1_4'id='q_1_4'>
+0.1 <select class='dro' name='aq_1_4'id='q_1_4' disabled>
             <option value=''></option>
             <option value='exact'>exact</option>
             <option value='inexact'>inexact</option>
         </select><p hidden>7</p>
-0.25 <select class='dro' name='aq_1_5'id='q_1_5'>
+0.25 <select class='dro' name='aq_1_5'id='q_1_5' disabled>
             <option value=''></option>
             <option value='exact'>exact</option>
             <option value='inexact'>inexact</option>
         </select><p hidden>8</p>
-0.125 <select class='dro' name='aq_1_6'id='q_1_6'>
+0.125 <select class='dro' name='aq_1_6'id='q_1_6' disabled>
             <option value=''></option>
             <option value='exact'>exact</option>
             <option value='inexact'>inexact</option>
         </select><p hidden>9</p>
-0.3 <select class='dro' name='aq_1_7'id='q_1_7'>
+0.3 <select class='dro' name='aq_1_7'id='q_1_7' disabled>
             <option value=''></option>
             <option value='exact'>exact</option>
             <option value='inexact'>inexact</option>
         </select><p hidden>10</p>
-3.75 <select class='dro' name='aq_1_8'id='q_1_8'>
+3.75 <select class='dro' name='aq_1_8'id='q_1_8' disabled>
             <option value=''></option>
             <option value='exact'>exact</option>
             <option value='inexact'>inexact</option>
@@ -164,17 +164,17 @@ x + z + z  == z + z + x	     <select class='dro' name='q_2_3'id='q_2_3'>
     <div class='answer'>
       <pre class='code'>
 float x = 1.0f, y = 0.0001, z = 0.000001;<p hidden>14</p>
-x + y == y + x           <select class='dro' id='q_2_1'>
+x + y == y + x           <select class='dro' id='q_2_1' disabled>
             <option value=''></option>
             <option value='true'>true</option>
             <option value='false'>false</option>
         </select><p hidden>15</p>
-x + y + y + y + y == y + y + y + y + x   <select class='dro' id='q_2_2'>
+x + y + y + y + y == y + y + y + y + x   <select class='dro' id='q_2_2' disabled>
             <option value=''></option>
             <option value='true'>true</option>
             <option value='false'>false</option>
         </select><p hidden>16</p>
-x + z + z  == z + z + x	     <select class='dro' id='q_2_3'>
+x + z + z  == z + z + x	     <select class='dro' id='q_2_3' disabled>
             <option value=''></option>
             <option value='true'>true</option>
             <option value='false'>false</option>
@@ -191,7 +191,7 @@ x + z + z  == z + z + x	     <select class='dro' id='q_2_3'>
         <span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>
       </div>
       <pre class='code'>
-double x = 1.0 / 0.0;  // x = <input class='' name='Q_3_1' type='text' id='Q_3_1' size='6'/><p hidden>21</p>
+double x = 1.0 / 0.0;  // x = <input class='' name='Q_3_1' type='text' id='Q_3_1' size='6' /><p hidden>21</p>
 -1.0 / 0.0 = <input class='' name='Q_3_2' type='text' id='Q_3_2' size='6'/><p hidden>22</p>
 0.0 / 0.0 = <input class='' name='Q_3_3' type='text' id='Q_3_3' size='6'/><p hidden>23</p>
 50.0 / 100.0  = <input class='' name='n_3_4' type='text' id='n_3_4' size='6'/><p hidden>24</p>
@@ -252,22 +252,22 @@ sqrt(-1.0) != sqrt(-1.0) ? <select class='dro' name='q_4_4'id='q_4_4'>
 
     <div class='answer'>
       <pre class='code'>
-1.0 / 0.0 == -1.0 / 0.0 ? <select class='dro' id='q_4_1'>
+1.0 / 0.0 == -1.0 / 0.0 ? <select class='dro' id='q_4_1' disabled>
             <option value=''></option>
             <option value='true'>true</option>
             <option value='false'>false</option>
         </select><p hidden>34</p>
-2.0 / 0.0 == 1.0 / 0.0 + 1 ? <select class='dro' id='q_4_2'>
+2.0 / 0.0 == 1.0 / 0.0 + 1 ? <select class='dro' id='q_4_2' disabled>
             <option value=''></option>
             <option value='true'>true</option>
             <option value='false'>false</option>
         </select><p hidden>35</p>
-0.0 / 0.0 == sqrt(-1.0) ? <select class='dro' id='q_4_3'>
+0.0 / 0.0 == sqrt(-1.0) ? <select class='dro' id='q_4_3' disabled>
             <option value=''></option>
             <option value='true'>true</option>
             <option value='false'>false</option>
         </select><p hidden>36</p>
-sqrt(-1.0) != sqrt(-1.0) ? <select class='dro' id='q_4_4'>
+sqrt(-1.0) != sqrt(-1.0) ? <select class='dro' id='q_4_4' disabled>
             <option value=''></option>
             <option value='true'>true</option>
             <option value='false'>false</option>
@@ -278,7 +278,7 @@ sqrt(-1.0) != sqrt(-1.0) ? <select class='dro' id='q_4_4'>
   
     <div class='footer'>
       <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>
-      <input class='controls' type='submit' value='Submit Quiz' onClick='showResult()'/>
+      <input class='controls' type='submit' value='Submit Quiz'/>
     </div>
     </form>
 </body>

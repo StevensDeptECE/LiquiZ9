@@ -1,4 +1,4 @@
-<%--
+<%@ page import="org.liquiz.stevens.quiz.Quiz" %><%--
   Created by IntelliJ IDEA.
   User: ejone
   Date: 8/10/2020
@@ -12,22 +12,29 @@
     <title>Title</title>
 </head>
 <body>
-    <table>
+    <table border="1" cellpadding="3" cellspacing="3">
         <tr>
             <th>Full Name</th>
             <th>Student Id</th>
             <th>Grade</th>
-            <c:forEach begin="0" end="${quiz.getNumQuestions()}" varStatus="loop">
+            <c:forEach begin="0" end="${quiz.getNumQuestions()-1}" varStatus="loop">
                 <th>Q${loop.count}</th>
             </c:forEach>
         </tr>
+        <%
+            Quiz quiz = (Quiz) request.getAttribute("quiz");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "inline; filename=" + quiz.getQuizName().replaceAll(" ","") + ".xls");
+        %>
         <c:forEach var="quizSub" items="${quizSubList}">
+            <tr>
             <td>${quizSub.getFullName()}</td>
             <td>${quizSub.getUserId()}</td>
             <td>${quizSub.getGrade()}</td>
             <c:forEach var="grade" items="${quizSub.getQuestionGrades()}">
                 <td>${grade}</td>
             </c:forEach>
+            </tr>
         </c:forEach>
     </table>
 </body>

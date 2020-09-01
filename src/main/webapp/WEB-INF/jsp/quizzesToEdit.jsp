@@ -28,6 +28,7 @@
 <h1>Editing quizzes</h1>
 <h3>${outcome}</h3>
 <form method="get" action="deleteQuizzes">
+    <input class="controls" type="submit" value="Return to teacher view" formaction="teacherView"/>
     <h2>Pick which quizzes you want to delete, edit or view</h2>
     <div class='choice' id='choice'>
         <table class=''>
@@ -42,6 +43,7 @@
                 <th>Answers Release Date</th>
                 <th>Preview Quiz</th>
                 <th>View Submissions</th>
+                <th>Edit Quiz</th>
             </tr>
             <c:if test="${not empty quizList}">
             <c:forEach items="${quizList}" var="quiz" varStatus="loop">
@@ -52,10 +54,11 @@
                     <td> ${quiz.getCourseId()}</td>
                     <td> ${quiz.getNumTries()}</td>
                     <td> ${quiz.getMaxGrade()}</td>
-                    <td> ${avgGrades[loop.index]}</td>
+                    <td> ${avgGrades.get(quiz.getQuizId())}</td>
                     <td> ${Pref.getDateFormat().format(quiz.getAnswersRelease())}</td>
                     <td> <input class="controls" type="submit" name="${quiz.getQuizId()}" value="Preview Quiz" formaction="quizPreview${quiz.getQuizId()}"></td>
                     <td> <input class="controls" type="submit" name="${quiz.getQuizId()}" value="View Submissions" formaction="viewSubmissions${quiz.getQuizId()}"></td>
+                    <td> <input class="controls" type="submit" name="${quiz.getQuizId()}" value="Edit Quiz" formaction="editQuiz${quiz.getQuizId()}"></td>
                 </tr>
 
             </c:forEach>

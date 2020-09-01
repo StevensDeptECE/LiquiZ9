@@ -186,13 +186,10 @@ public class QuizSubmission{
       for(Map.Entry<String, Question> entry : questionsMap.entrySet()){
         Question q = entry.getValue();
 
-
-        String[] inputsString = userAnswers.get(q.getName());
+        String[] inputsString = userAnswers.get(entry.getKey());
 
         double qGrade;
-        if(q==null)
-           System.out.println("error: could not find question in quiz");
-        else if(inputsString != null){
+        if(inputsString != null){
           qGrade = q.checkAnswer(inputsString);
           grade+= qGrade;
           questionGradesArr[index++] = qGrade;

@@ -15,8 +15,10 @@ public class qNameComparator implements Comparator<String> {
         else {
             if (Integer.parseInt(q1Split[2]) > Integer.parseInt(q2Split[2]))
                 return 1;
-            else
+            else if(Integer.parseInt(q1Split[2]) < Integer.parseInt(q2Split[2]))
                 return -1;
+            else
+                return 0;
         }
     }
 }

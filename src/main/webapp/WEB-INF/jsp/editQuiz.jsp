@@ -1,8 +1,4 @@
-%--
-Document   : quizEdit
-Created on : Jun 24, 2020, 4:36:14 PM
-Author     : ejone
---%>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -28,16 +24,16 @@ Author     : ejone
     <h2>Edit the quiz</h2>
     <div class='quizView' id='quizView'>
         <fmt:parseNumber var="j" type="number" value="${quiz.getQuizId()}" />
-        <h2><c:out value="${j}" /></h2>
-        <fmt:parseDate value="${quiz.getAnswersRelease()}" var="parsedDate"  pattern="dd-MM-yyyy" />
-        <h3>Answers Release: <c:out value="${parsedDate}" /></h3>
+        <h2>Id=<c:out value="${j}" /></h2>
+        <h3>Answers Release: ${quiz.getAnswersRelease()}</h3>
         <h3>Max Grade: ${quiz.getMaxGrade()}</h3>
         <h3>Number of Tries: ${quiz.getNumTries()}</h3>
         <h3>Answer File: ${quiz.getAnswerFile()}</h3>
         <h3>Question List: </h3>
         <%
-            TreeMap<Integer, Question> questionsMap = quiz.getQuestionsMap();
-            for(Map.Entry<Integer, Question> entry : questionsMap.entrySet()){
+            Quiz quiz = (Quiz) request.getAttribute("quiz");
+            TreeMap<String, Question> questionsMap = quiz.getQuestionsMap();
+            for(Map.Entry<String, Question> entry : questionsMap.entrySet()){
                 Question q = entry.getValue();
                 String name = q.getName();
                 String type = q.type();

@@ -305,7 +305,7 @@ public class Quiz {
                 String qAns = qAnsLine.trim();
                 System.out.println(qType + ", " + qAns);
                 
-                maxGrade += Math.round(gVal*1000)/1000;
+                maxGrade += gVal;
                 addQuestion(qType, qAns, gVal);
             } 
             maxGrade = Math.round(maxGrade*1000)/1000;
@@ -359,7 +359,9 @@ public class Quiz {
      * @param q the question given to the quiz from Mongodb to add to questionsMap
      */
     public void addQuestion(Question q){
-      questionsMap.put(q.getName(), q);
+        if(q != null && q.getName() != null) {
+            questionsMap.put(q.getName(), q);
+        }
   }
 
 

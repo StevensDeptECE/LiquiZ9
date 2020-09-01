@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.liquiz.stevens.questions.Question;
 import org.liquiz.stevens.quiz.Quiz;
 import org.liquiz.stevens.quiz.QuizSubmission;
@@ -75,6 +76,18 @@ public class CodecQuizSubmissionService {
             System.out.println(e);
         }
     }
+
+    public boolean delete(String submissionId) {
+        try{
+            ObjectId id = new ObjectId(submissionId);
+            getCollection().deleteOne(new Document("_id", id));
+            return true;
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return false;
+        }
+    }
     
     /**
      * Used to get one quizSubmission from database with search parameters
@@ -112,7 +125,7 @@ public class CodecQuizSubmissionService {
      */
     public double[] getAvgQuizScores(String quizId) {
         ArrayList<QuizSubmission> quizList;
-        quizList = (ArrayList<QuizSubmission>) getList(new Document("quizId", quizId));
+        quizList = getList(new Document("quizId", quizId));
         int numOfSubmissions = quizList.size();
         double[] avgQuestionScores = new double[quizList.get(0).getQuestionGrades().length];
         Arrays.fill(avgQuestionScores, 0.0);
@@ -128,13 +141,15 @@ public class CodecQuizSubmissionService {
 
     public double getAvgQuizScore(long quizId) {
         ArrayList<QuizSubmission> quizList;
-        quizList = (ArrayList<QuizSubmission>) getList(new Document("quizId", quizId));
-        int numOfSubmissions = quizList.size();
+        quizList = getList(new Document("quizId", quizId));
+        double numOfSubmissions = quizList.size();
         double avgGrade = 0.0;
         for(QuizSubmission qSub : quizList) {
-            avgGrade += Math.round((qSub.getGrade()/numOfSubmissions)*1000)/1000;
+            avgGrade += qSub.getGrade();
         }
-        return avgGrade;
+
+        double ret = Math.round(avgGrade/numOfSubmissions*1000.0)/1000.0;
+        return ret;
     }
 
     /**

@@ -13,7 +13,11 @@
 </head>
 <body>
 <h1>Upload a Quiz here</h1>
+<form action="teacherView" method="get">
+    <input class="controls" type="submit" value="Return to teacher view"/>
+</form>
 <form action = "uploadQuiz" method = "post" enctype = "multipart/form-data">
+
     <table>
         <tr>
             <th>jsp File: </th>

@@ -35,11 +35,11 @@
     <tr>
         <td>${loop.count}</td>
         <td>
-            {
+
         <c:forEach var="inputsArr" items="${entry.value}">
-        ${inputsArr},
+        ${inputsArr} |
         </c:forEach>
-            }
+
         </td>
         <td>${qAnswers[loop.index]}</td>
         <td>${qGrades[loop.index]}</td>
