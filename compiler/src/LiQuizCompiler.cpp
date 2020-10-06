@@ -202,7 +202,7 @@ void LiQuizCompiler::getJSONHeader() {
 
 void LiQuizCompiler::generateHeader() {
   getJSONHeader();
-  html <<
+  html << 
 R"(
 <!DOCTYPE html>
 <html>
@@ -379,7 +379,7 @@ void LiQuizCompiler::grabQuestions() {
         questionText += line + "<p hidden>" + to_string(lineNum) + "</p>" + '\n'; // TODO: get rid of this
       }
       for (int i = 0; i < questionText.length(); i++) {
-        if (questionText[i] == '$') {
+        if (questionText[i] == '$') { //TODO: Come up with regex-based approach. This does not allow $ in text!!!
           questionCount++;
         }
       }
@@ -451,7 +451,7 @@ void LiQuizCompiler::generateQuiz(const char liquizFileName[]) {
   readFile((baseFileName + "lq").c_str(), bytes, fileSize);
   cursor = 0;
   html.open(outputDir + baseFileName + "html");
-  answers.open(string("ans/") + baseFileName + "ans");
+  answers.open(outputDir + baseFileName + "ans");
   generateHeader();
   grabQuestions();
   generateFooter();
