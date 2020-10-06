@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <script src="quiz.js"></script>
+    <style>
+      .x {
+          background-color: #000;
+          color: #fff;
+          border-color: #ff0;
+          border-width: 4;
+          border-style: solid;
+          font-size:18pt;
+          width: 80%;
+      }
+          
+    </style>
+  </head>
+    <body>
+    <div style="width:90%;height:500px;background-color:#0c0">
+    <div id="parsons" style="float:left;width:40%;height:400px;background-color:blue">
+    <div class="x" draggable="true" ondragstart="drag(event)">
+    <pre>sum += i;</pre></div>
+    <div class="x" draggable="true" ondragstart="drag(event)">
+    <pre>}</pre></div>
+    <div class="x" draggable="true" ondragstart="drag(event)">
+    <pre>int sum = 0;</pre></div>
+     <div class="x" draggable="true" ondragstart="drag(event)">
+      <pre>for (int i = 0; i < n; i++) {</pre></div>
+    </div>
+    <div id="dest" ondrop="drop(event)" ondragover="allowDrop(event)" style="float:left;width:40%;height:400px;background-color:red">
+      Copy your code here
+    </div>
+    </div>
+  </body>
+</html>
