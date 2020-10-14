@@ -13,6 +13,8 @@ class LiQuizCompiler {
   const static std::regex questionStart;
   const static std::regex specials;
   const static std::regex qID;
+  
+  static uint32_t   uuid;
 
   static std::unordered_map<std::string, QuestionType *> questionTypes;
   std::map<std::string, std::string> variables;
@@ -33,6 +35,7 @@ class LiQuizCompiler {
   //give away answers and place in the output directory
   std::ofstream html;
   std::ofstream answers;
+  std::ofstream xml;
 
   uint32_t cursor; // byte offset into quiz file
   char* bytes; // underlying bytes in quiz
@@ -67,6 +70,7 @@ class LiQuizCompiler {
   void setAnswer();
 
   void generateHeader();
+  void saveXML();
   void makeQuestion(nlohmann::json &question);
   void grabQuestions();
   void generateFooter();
