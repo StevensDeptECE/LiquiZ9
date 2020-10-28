@@ -1,0 +1,13 @@
+{"quizspec":"DovKruger.QSPEC", "name":"C++ Functions"}
+{"style":"code", "name":"Legal or Illegal", "points":"30"}
+void f(double x)           { cout << x * 2 << "\n";    }
+void f(double x, double y) { cout << (x+y)* 2 << "\n"; }
+void f(int a, int b)       { cout << (a + b) << "\n";  }
+Identify each function call as legal or illegal
+f(2.5);   //$dro:*legal,illegal$
+f(2);     //$dro:*legal,illegal$
+f(3.5,4); //$dro:*legal,illegal$
+f(2,3);   //$dro:legal,*illegal$
+f('a',2); //$dro:*legal,illegal$
+f("a",2); //$dro:legal,*illegal$
+---

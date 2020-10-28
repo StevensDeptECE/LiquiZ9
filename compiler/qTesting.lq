@@ -1,0 +1,107 @@
+{"quizspec":"DovKruger.QSPEC", "name":"Number Theoretic"}
+{"style":"def", "name":"comp", "values":"O(n),O(n^2),O(n^3),O(n^4),O(log2(n)),O(log3(n),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log2(n),O(n*√n)"}
+---
+{"style":"def", "name":"ooterm", "values":"parent,child,object,class,message,method,encapsulation,instantiate,instantiation,abstract,interface,concrete,generic"}
+---
+{"style":"def", "name":"cppterm", "values":"base,derived,public,private,protected,virtual,pure virtual,function,pointer,const,template,variadic,static"}
+---
+{"style":"text", "name":"Multiple Choice Horizontal", "points":"35"}
+What's 2+2?
+$mch:1,2,3,*4$
+
+Answer again I guess
+$mcv:1,2,3,*4$
+---
+{"style":"text", "name":"Multiple Choice Vertical", "points":"40"}
+What's 2+2?
+$mcv:1,2,3,*4$
+---
+{"style":"text", "name":"Multiple Answer Horizontal", "points":"45"}
+What's NOT 2+2?
+$mah:*1,*2,*3,4$
+---
+{"style":"text", "name":"Multiple Answer Vertical", "points":"50"}
+What's NOT 2+2?
+$mav:*1,*2,*3,4$
+---
+{"style":"text", "name":"Basic Knowledge", "points":"10"}
+Please enter all answers in lowercase until we add the case insensitive question.
+How many integer registers are there on the Raspberry Pi given that it's in 32-bit mode? $f:16$.
+Some of the registers are special and cannot be used as general registers.
+For example register r15 is the $fQ:pc$, r14 is the $f:sp$, and r13 is $f:lr$.
+The range of registers available for use is generally considered to be r0 to $f:r11$.
+There are $fs:16$ double precision registers starting from $f:d0$ to $f:d15$.
+There are $f:32$ single precision registers starting from $f:s0$ to $f:s31$.
+We can say that register d1 and s2 $dro:can be used independently,cannot be used at the same time,*should never be used because they are reserved,are not valid in the arm architecture$.
+---
+{"style":"text", "name":"Write a Function", "points":"10"}
+author: Andrew Desanti
+In C++, write the function:
+bool isLeap(int year);
+that returns true if the year is a leap year and false if it is not.
+A year is a leap year if it is divisible by 4 but not divisible by 100, OR
+if it is divisible by 400. Recall that && is logical AND and || is logical OR.
+Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)
+$tar:$
+---
+{"style":"text", "name":"Write a Function", "points":"10"}
+author: Andrew Desanti
+Using the above isLeap function, write the following function that counts how many leap years between 2020 and the year:
+$tar:int countLeap(int year)$
+---
+{"style":"pcode", "name":"gcd", "points":"10"}
+gcd(a,b)       // Complexity: $def:comp:O(n^3)$
+  if $f:b$ = 0
+    return a
+  end
+  return $f:gcd$(b, a mod b)
+end
+---
+{"style":"code", "name":"Basic Instructions", "points":"20"}
+After each of the following assembler instruction show the values in the registers
+000102b4: mov  r0, #4    @r0=$f{8}:00000000$   pc=$f{8}:000102b8$
+000102b8: sub  r0, #5    @r0=$f{8}:ffffffff$   pc=$f{8}:000102bc$
+000102bc: adds r0, #1    @r0=$f{8}:00000000$   V=$f{1}:1$ Z=$f{1}:1$ N=$f{1}:0$
+000102bc: adds r0, #1    @r0=$f{8}:00000000$   V=$f{1}:0$ Z=$f{1}:0$ N=$f{1}:0$
+000102bc: subs r0, #1    @r0=$f{8}:ffffffff$   V=$f{1}:1$ Z=$f{1}:0$ N=$f{1}:1$
+$def:test:O(n^3)$
+---
+{"style":"pcode", "name":"Where do computers come from?", "points":"10"}
+$img:Iceland.jpg$
+Click on the glacier in Iceland where computers are born.
+---
+{"style":"pcode", "name":"Watch and React", "points":"20"}
+Watch the movie on the Tacoma Narrows Bridge.
+Should engineers have known the bridge would collapse?
+What caused the collapse?
+$vid:TacomaNarrowsBridge.mp4$
+$tar:Type your essay here$
+---
+{"style":"text", "name":"Object Oriented Terminology", "points":"50"}
+A class is a $def:ooterm:kind of$ object. TODO: select options never made
+An object is a $def:ooterm:instance of$ a class. TODO: select options never made
+To create an object we $def:ooterm:instantiate$ a class.
+An object is an $def:ooterm:instantiation$ of a class.
+To hide the details of an object is called $def:ooterm:encapsulation$.
+---
+{"style":"text", "name":"Math problems", "points":"50"}
+$rnd:m,1,1,10$
+$rnd:a,1,0.1,10$
+$for:m a *-->F$
+$for:1/2*a*t^2-->F$
+
+Given m=$var:m$ and a=$var:a$ calculate F=$fn:F,.1$
+
+Given:  $solve:m,a,F$
+---
+{"style":"code", "name":"Math problems", "points":"50"}
+$rnd:min,1,1,10$
+$rnd:max,5,1,20$
+$rnd:compop,<,<=,>,>=,!=,==$
+$rnd:assignop,+=,*=,-=,/=$
+In order to print the numbers from $var:min$ to $var:max$ complete the following code:
+
+for (int i = $var:init$; i $f{3}$ 10; i $var:assignop$ 1) {
+  cout << i;
+}
+---

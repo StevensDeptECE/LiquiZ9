@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [  //REQUIREMENTS : Grail repo must be active workspace folder,
+                // for each testFile.cc, there must be a test/Makefile handler labeled testFile (no extension on linux, or .exe on windows)
+        {
+            "type": "shell",
+            "label": "make",
+            "options": {
+                "cwd" : "${workspaceFolder}"
+            },
+            "args": [],
+			"command": "make",
+        }
+    ]
+}

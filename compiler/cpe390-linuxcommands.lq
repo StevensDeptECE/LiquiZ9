@@ -1,0 +1,54 @@
+{"quizspec":"cpe390.qspec", "name":"Linux Commands"}
+{"style":"text", "name":"Basic Linux Commands"}
+The command to go to a place in the directory structure is $f:cd$
+Your home directory in linux is /home/username. On Mac OSX it is /Users/username
+On Windows it is usually c:/Users/username but depending on whether you are using
+Ubuntu under windows, mingw, msys2, etc there are other places the directory can be,
+but it will look to you (within the shell environment) that you are in /home/username
+wherever that is.
+
+So, in order to change directory to your home, you can type: $f:cd$
+Alternatively you can type: $f:cd$ HOME (where home  has a dollar sign in front of it,
+which I can't currently do in LiQuiZ!)
+
+because HOME is the environment variable that refers to wherever your home is.
+
+Suppose you are in your home directory. In order to create a directory called git, use the command: $f:mkdir git$
+In order to move into that directory use the command: $fs:cd git$
+
+To list all files in the current directory use the command $f:ls$.
+To list all files showing permissions, the owner and group of the file, and sizes use the command: $f:ls -l$
+Hidden files in unix start with the character $f:.$ Any file starting with this character will not be visible
+in Linux. In order to see all files in the current directory, use command: $f:ls -a$.
+---
+{"style":"text", "name":"Compiling in C++, C and assembler"}
+The standard toolchain we use in this course is called $f:gcc$.
+In order to compile a c++ file test.cc use the command: $f{20}:g++ test.cc$
+In order to compile a c++ file test.cpp use the command: $f{20}:g++ test.cpp$
+In order to compile a c++ file test.cc and see the assembler code generated,
+use the command $f{20}:g++ -S test.cc$.
+
+If a C++ file contains #include it brings in other files. For the following program named main.cpp:
+
+#include <iostream>
+#include "MyHeader.hh"
+
+int main() {
+  callmycode();
+  return 0;
+}
+
+Compile this code using: $f{20}:g++ main.cpp$
+---
+{"style":"text", "name":"Compiling assembler"}
+A file in assembler in linux is named mycode.$f{2}:s$
+In order to compile this file you could use the unix command as. but you can also use gcc or g++. The command to compile the above file is:
+$f:g++ mycode.s$
+---
+{"style":"text", "name":"Compiling multiple files"}
+When compiling multiple files, you need to invoke the compiler multiple times, and the $fQ:linker$ to put the code together. In linux, the name of the program is $f:ld$ but we can just use gcc and g++ to do it all.
+
+In order to just compile program a.cc use the command: $f:g++ -c a.cc$
+In order to just compile program b.cc use the command: $f:g++ -c b.cc$
+In order to link these two together, pull in the c++ libraries and build a program, use the command: $f:g++ a.o b.o$. By default this creates an executable named $f:a.out$ on linux, and on windows $f:a.exe$.
+---

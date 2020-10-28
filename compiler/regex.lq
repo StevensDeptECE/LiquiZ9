@@ -1,0 +1,13 @@
+{"quizspec":"cpe553.qspec", "name":"Regex"}
+{"style":"code", "name":"Write the regex pattern for", "points":"10"}
+A sequence of at least 1 lowercase letter in any order: $f:[a-z]+$
+
+Rules for a c identifier: [a-z$f:A-Z$_][a-z$f:A-Z$0-9_]$f:*$
+
+A single regex that will match any of the words cat, dog or mouse: $dro:*cat,dog,mouse$
+
+What is the shortest string that the regular expression a*b+c will match? $f:bc$
+What is the shortest string that the regular expressions ab*cb*a will match? $f:aca$
+What is the shortest string that the regular expression ab+cb+a will match? $f:abcba$
+Write a regular expression to match any character except the letters a,e,i,o,u: $f:[^aeiou]$
+---

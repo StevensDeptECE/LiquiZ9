@@ -1,0 +1,16 @@
+{
+  "quizspec":   "cpe553.qspec",
+  "coursename": "C++",
+  "parent":     "DovKruger.qspec",
+  "defaults": {
+     "numberOfTries":5,
+     "timeLimit":0,
+     "fillInTheBlankSize":4,
+     "openDate":"2020-05-01 23:59:59",
+     "closeDate":"+0 00:30:00"
+  },
+  "def": {
+    "armloadinstr": ["ldr", "str"],
+    "armarithinstr": ["add", "sub", "and", "orr", "eor", "mul"]
+  }
+}
