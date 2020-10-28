@@ -126,6 +126,43 @@ label {
     color: green;*/
 }
 
+pre.code {
+    font-family: Courier, fixed;
+    font-size:14pt;
+}
+
+input.command {
+    background-color: #ddd;
+    color: #000;
+    font-family: Courier, fixed;
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+input.code {
+    background-color: #ddd;
+    color: #000;
+    font-family: Courier, fixed;
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+input.opcode {
+    background-color: #ddd;
+    color: #000;
+    font-family: Courier, fixed;
+    font-size: 14pt;
+    font-weight: bold;
+    width: 140px;
+}
+    
+input.hex {
+    font-family: Courier, fixed;
+    font-size: 14pt;
+}
+
+
+
 .footer {
     background-color: #A32638;
     color: #ffffff;
