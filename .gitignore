@@ -36,3 +36,4 @@
 LiQuiz
 *.class
 /compiler/output
+tomcat/*

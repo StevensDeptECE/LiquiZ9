@@ -1,0 +1,79 @@
+{"quizspec":"cpe390.qspec", "name":"Demo Quiz"}
+{"style":"def", "name":"comp", "values":" ,O(n),O(n^2),O(n^3),O(n^4),O(log(n)),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log(n),O(n*√n)"}
+---
+{"style":"def", "name":"ooterm", "values":"parent,child,object,class,message,method,encapsulation,instantiate,instantiation,instance of,abstract,interface,concrete,generic,kind of"}
+---
+{"style":"def", "name":"likert5", "values":",strongly disagree,disagree,no opinion,agree,strongly agree"}
+---
+{"style":"text", "name":"Multiple Choice Horizontal", "points":"10"}
+Which of the following is a mammal?
+$mch:fish,bird,*cat$
+---
+{"style":"text", "name":"Multiple Choice Vertical", "points":"15"}
+Who is in the ECE Department?
+$mcv:*Kruger,Thompson,Sinnreich-Levi$
+---
+{"style":"text", "name":"Multiple Answer Horizontal", "points":"45"}
+Who is in the ECE Department?
+$mah:*Kruger,Thompson,Sinnreich-Levi,*Favardin,*Song,*Lu$
+---
+{"style":"text", "name":"Multiple Answer Vertical", "points":"50"}
+Where is Stevens located?
+$mav:*Hoboken,*United States,New York,*New Jersey$
+---
+{"style":"text", "name":"Survey", "points":"50"}
+I like ice cream. $def:likert5: $
+I like programming. $def:likert5: $
+Stevens is a good school. $def:likert5: $
+Teaching online is easy. $def:likert5: $
+---
+{"style":"text", "name":"Basic Knowledge", "points":"10"}
+For example register r15 is the $fQ{3}:pc$, r14 is the $fQ{3}:sp$, and r13 is $fQ{3}:lr$.
+We can say that register d1 and s2 $dro:can be used independently,*share the same bits,should never be used because they are reserved,are not valid in the arm architecture$.
+---
+{"style":"text", "name":"Write a Function", "points":"10"}
+author: Andrew Desanti
+In C++, write the function:
+bool isLeap(int year);
+that returns true if the year is a leap year and false if it is not.
+A year is a leap year if it is divisible by 4 but not divisible by 100, OR
+if it is divisible by 400. Recall that && is logical AND and || is logical OR.
+Example: 1904 is a leap year (divisible by 4) 1900 is not (divisible by 100) but 2000 is a leap year (divisble by 400)
+$tar:$
+---
+{"style":"pcode", "name":"gcd", "points":"10"}
+gcd(a,b)       // Complexity: $def:comp:O(log(n))$
+  if $f:b$ ← 0
+    return a
+  end
+  return $f:gcd$(b, a mod b)
+end 
+---
+{"style":"code", "name":"Basic Instructions", "points":"20"}
+After each of the following assembler instruction show the values in the registers
+000102b4: mov  r0, #4    @r0=$fQ{8}:00000000$   pc=$fQ{8}:000102b8$
+000102b8: sub  r0, #5    @r0=$fQ{8}:ffffffff$   pc=$fQ{8}:000102bc$
+000102bc: adds r0, #1    @r0=$fQ{8}:00000000$   V=$f{1}:1$ Z=$f{1}:1$ N=$f{1}:0$
+000102bc: adds r0, #1    @r0=$fQ{8}:00000000$   V=$f{1}:0$ Z=$f{1}:0$ N=$f{1}:0$
+000102bc: subs r0, #1    @r0=$fQ{8}:ffffffff$   V=$f{1}:1$ Z=$f{1}:0$ N=$f{1}:1$
+---
+{"style":"pcode", "name":"Logic Gates", "points":"10"}
+$img:imageQuestion.png$
+
+What kind of logic gate is this?
+$mch:OR,NOR,*AND,XOR$
+---
+{"style":"pcode", "name":"Watch and React", "points":"20"}
+Watch the movie on the Tacoma Narrows Bridge.
+Should engineers have known the bridge would collapse?
+What caused the collapse?
+$vid:TacomaNarrowsBridge.mp4$
+$tar:Type your essay here$
+---
+{"style":"text", "name":"Object Oriented Terminology", "points":"50"}
+A class is a $def:ooterm:kind of$ object.
+An object is a $def:ooterm:instance of$ a class.
+To create an object we $def:ooterm:instantiate$ a class.
+An object is an $def:ooterm:instantiation$ of a class.
+To hide the details of an object is called $def:ooterm:encapsulation$.
+---

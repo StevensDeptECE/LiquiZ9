@@ -84,15 +84,45 @@ class MultipleAnswerVertical : public QuestionType {
 
 class FillIn : public QuestionType {
  private:
+  static std::string fillinStyle;
+  static uint32_t defaultLen;
   static std::unordered_map<char, std::string> fillTypes;
   std::string answer, typeID, size, orig;
-  int len = 6;
+  int len;
 
  public:
   void getFillInType(const char &type);
-
+  virtual std::string getStyle() const { return fillinStyle; }
+  uint32_t getDefaultLen() const { return defaultLen; }
   std::string print(const LiQuizCompiler *compiler, std::ostream &answersFile,
                     int &partNum, int &questionNum, double &points) override;
+};
+
+class Hex : public FillIn {
+ private:
+  static std::string hexStyle;
+  static uint32_t defaultLen;
+ public:
+  std::string getStyle() const { return hexStyle; }
+  uint32_t getDefaultLen() const { return defaultLen; }
+};
+
+class OpCode : public FillIn {
+ private:
+  static std::string opcodeStyle;
+  static uint32_t defaultLen;
+ public:
+  std::string getStyle() const { return opcodeStyle; }
+  uint32_t getDefaultLen() const { return defaultLen; }
+};
+
+class Command : public FillIn {
+ private:
+  static std::string commandStyle;
+  static uint32_t defaultLen;
+ public:
+  std::string getStyle() const { return commandStyle; }
+  uint32_t getDefaultLen() const { return defaultLen; }
 };
 
 class TextQuestion : public QuestionType {

@@ -1,0 +1,56 @@
+{"quizspec":"cpe390.qspec", "name":"Final Study Questions"}
+{"style":"pcode", "name":"Terminology", "points":"30"}
+A bus is a shared set of $dro:*lines,transistors,antennae$ used to transmit data.
+Latency is the $f:delay$ from the time a signal is sent until it arrives.
+A 1 foot distance takes light 1 $dor:*picosec,nanosec,microsec,millisec,second$.
+A 64-bit computer is faster than a 32-bit computer for double precision floating point because $dro:*data can be transfered in a single cycle,the clock speed is higher,more memory can be addressed$.
+Optical computing holds promise over electrical computing because $mah:*Optimcal circuits will generate less heat,light travels faster than electricity,no crosstalk between signals on busses$.
+Doubling the clock speed of the CPU will increase the speed of which operations?
+$mah:*arithmetic operations,register-register transfers,decoding instructions,loading from memory, storing from memory,reading from cache$
+A superscalar architecture can execute more than $f:1$ instruction per clock.
+Clocks are used so that circuits can be $f:synchronous$ and thus will not require $f:handshaking$.
+Doubling the clock speed increases the $f:power$ used by a computer, resulting in unwanted extra waste $f:heat$.
+Halving the voltage of a circuit reduces the speed, but also reduces power consumption by a factor of $f:4$.
+Boost clock speed lets CPUs run extra fast, but they cannot do this all the time because of the $dro:*voltage,heat,crosstalk,RF interference$.
+ARM CPUs were a niche market because they were not Intel compatible until the invention of $dro:*smartphones,GPS,flux capacitors,Internet of things).
+ARM is making inroads into machine rooms because of $mah:*lower price,lower power,lower Watt/computation,greater security,higher clock speeds,better floating point performance$ than Intel.
+Moore's Law observed that the $dro:*number of transistors,speed of computers,price of chips,price of salsa$ went up by a factor of approximately $f:2$ every 18 months.
+The data bus is $dro:*unidirectional,unitarian,universal,bidirectional,bipartite,bisexual$.
+The address bus is $dro:*unidirectional,unitarian,universal,bidirectional,bipartite,bisexual$.
+Digital computers use $dro:*discrete,continuous,divergent,low$ voltage levels.
+Binary signals use circuits with $f:2$ states.
+TDP for a CPU is measured in what units? $dro:*watts,watt,w$
+Latency for a computer controlling a robot on mars would be approximately 8 $dro:*ms,seconds,minutes,MHz,GHz$.
+The best GPU when compared to current CPUs is typically about $dro:*1000,100,10,1,0.1$ times faster.
+A CPU with a clock speed of 1GHz has a cycle time of 10^$f:-9$ seconds.
+A supercomputer capable of executing a petaflop should be $dro:*jailed for petaphilia,commended for executing 10^15 floating point operations in an hour, thrown out because modern computers execute 10^18 floating point operations per second$.
+The FETs used in modern computers have very high gate $dro:*resistance,capacitance,inductance,threshhold$ which is why they use low $sel(humor,latency,induction,power,voltage$.
+The gate of an FET is controlled by $dro:*current,voltage,heat,vibration,phonons$.
+---
+{"style":"code", "name":"optimization", "points":"20"}
+mul r0, #16  -->  $f:lsl$ r0, $f:#4$
+mov r1, #128
+mul r0, r1   -->  $f:lsl$ r0, $f:#7$
+div r0, r1   -->  $f:lsr$ r0, $f:#7$
+mul r0, r1   -->  $f:mla$ r2, r0, $f:r1$
+add r2, r0
+---
+{"style":"code", "name":"C++ optimization", "points":"30"}
+x mod 32     -->  mov r1, $f:#31$
+                  $f:and$ r0, r1
+if (x != 5)  -->  cmp r0, $f:#5$
+  x += 3;         $f:addne$ r0, $f:#3$
+---
+{"style":"code", "name":"Fill in the missing code", "points":"30"}
+@ Compute (x-y)*(x+y)
+_Z1fii:
+         $add$ r2, $f:r0$, r1
+	 sub   r3, r0,   $f:r1$
+	 $f:mul$ $f:r0$, r2, $f:r3$
+	 bx    $f:lr$
+@ Sum the cubes of the elements in the array
+_Z7sumcubePii:
+         $f:mov$ r2, $f:#0$
+	 $f:ldr$ r3, $f:[r0]$
+	 mla   $f:r2$, r3, $f:r3$
+---

@@ -1,0 +1,21 @@
+[
+  {"points earned":0.0,"answers":""},
+  {"points earned":10.0,"answers":"cat"},
+  {"points earned":15.0,"answers":"Kruger"},
+  {"points earned":0.0,"answers":"[Kruger, Favardin, Song, Lu]"},
+  {"points earned":50.0,"answers":"[Hoboken, United States, New Jersey]"},
+  {"points earned":0.0,"answers":"example,example,example,example"},
+  {"points earned":0.0,"answers":"pc,sp,lr,share the same bits"},
+  {"points earned":0.0,"answers":"N\/A"},
+  {"points earned":0.0,"answers":"O(log(n)),b,gcd"},
+  {"points earned":0.0,"answers":"00000000,000102b8,ffffffff,000102bc,00000000,1,1,0,00000000,0,0,0,ffffffff,1,0,1"},
+  {"points earned":0.0,"answers":"AND"},
+  {"points earned":0.0,"answers":"N\/A"},
+  {"points earned":0.0,"answers":"kind of,instance of,instantiate,instantiation,encapsulation"}
+]
+
+[
+  {"id":"q_1_1","points":10.0,"answers":"hello"},
+  {"id":"q_1_2","points":15.0,"answers":"hello"},
+  {"id":"q_2_3","points":10.0,"answers":"hello"},
+]

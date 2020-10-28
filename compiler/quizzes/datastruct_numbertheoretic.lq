@@ -1,0 +1,68 @@
+{"quizspec":"dkruger.qspec", "name":"Number Theoretic"}
+{"style":"def", "name":"comp", "values":"O(n),O(n^2),O(n^3),O(n^4),O(log2(n)),O(log3(n),O(√(n)),O(2^n),O(3^n),O(10^n),O(n!),O(n^n),O(1),O(n*log2(n),O(n*√n)"}
+---
+{"style":"pcode", "name":"gcd", "points":"20"}
+gcd(a,b)       // Complexity: $def:comp:O(n^2)$
+  if $f:b$ = 0
+    return a
+  end
+  return $f:gcd$(b, a mod b)
+end
+---
+{"style":"pcode", "name":"gcd", "points":"20"}
+gcd(a,b)       // Complexity: $def:comp:O(n^2)$
+  while $f:b$ ≠ 0
+    $f:temp$ ← a
+    a ← b
+    b ← a mod b
+  end
+  return a
+end
+---
+{"style":"pcode", "name":"lcm", "points":"20"}
+lcm(a,b) ← a * b / $f:gcd$(a,b)
+---
+{"style":"pcode", "name":"powermod", "points":"20"}
+powermod(x,n,m)	// Complexity: $def:comp:O(n^2)$
+  prod ← 1
+  while $f:n$ > 0
+    if $f:n$ mod 2 ≠ 0
+      prod ← prod * $f:prod$ mod $f:m$
+    end
+    x ← $f:x$ * $f:x$ mod $f:m$
+    n ← n / 2
+  end
+  return prod
+end
+---
+{"style":"pcode", "name":"Fermat", "points":"20"}
+Fermat(p, k)	// Complexity: k* $def:comp:O(n^2)$
+  for i ← 1 to k
+    a ← random(2, $f:p-1$)
+    if powermod($f:a$, p-1, $f:p$) ≠ 1
+      return false
+    end
+  end
+  return true // probably!
+end
+---
+{"style":"pcode", "name":"Miller-Rabin", "points":"20"}
+MillerRabin(n, k)	// Complexity: k*$def:comp:O(n^2)$
+  for i ← 1 to k
+    a ← random(2, $f:n-2$)
+    s ← number of zeros of n-1
+    d ← leading non-zero digits of n-1
+    x ← d
+    for i ← 1 to s
+      if powermod($f:a$, x, $f:n$) ≠ 1
+        return false
+      end
+      x ← x*$f:x$ mod $f:n$
+    end
+    if powermod($f:a$, x-1, x)  ≠ 1
+      return $f"false$
+    end
+  end
+  return true // probably!
+end
+---

@@ -1,0 +1,16 @@
+{"quizspec":"DovKruger.QSPEC", "name":"Intro"}
+{"style":"pcode", "name":"Where do computers come from?", "points":"30"}
+$img:Iceland.jpg$
+Click on the glacier in Iceland where computers are born.
+---
+{"style":"pcode", "name":"Watch and React", "points":"50"}
+Watch the movie on the Tacoma Narrows Bridge.
+Should engineers have known the bridge would collapse?
+What caused the collapse?
+$vid:TacomaNarrowsBridge.mp4$
+$tar:Type your essay here$
+---
+{"style":"pcode", "name":"Simple Math", "points":"5"}
+What is 2+2?
+$mch:2,3,*4,5,19$
+---

@@ -1,0 +1,82 @@
+{"quizspec":"DovKruger.QSPEC", "name":"C++ Midterm Short"}
+{"style":"pcode", "name":"Integer Math", "points":"35"}
+int a1 = 25 / 4;      //a1=$f:6$
+int a2 = 17 % 7;      //a2=$f:3$
+int a3 = 7 % 17;      //a3=$f:7$
+double a4 = 5.5+2*3;  //a4=$f:11.5$
+int a5 = ++a4;        //a5=$f:12$
+int a6 = a4++;        //a6=$f:12$
+// a4 = $f:12.5$
+---
+{"style":"pcode", "name":"size and memory layout", "points":"10"}
+int a7 = sizeof(uint64_t); //a7=[a7]
+  int a9 = sizeof(double);   //a9=[a9]
+
+  class A {
+    double x;
+    char c;
+  }; // In order to make access faster, on a 64-bit computer A is aligned to  [a10] bytes therefore the size of this one would be [a11]
+---
+{"style":"pcode", "name":"Floating Point Computation", "points":"10"}
+For each line write the answer that is computed.
+If a whole number like 5, use 5.0 as the answer.
+For infinity, use inf for NaN use nan (all lowercase)
+double rec(int n) {
+  if (n <= 3)
+    return 2;
+  return 2.0 * rec(n-2);
+}
+double b1 = 9 / 10;       //b1 = $f:0$
+double b2 = (int)2.5 * 3; //b2 = $f:6$
+double b3 = int(2.5) * 3; //b3 = $f:6$
+double b4 = int(2.5 * 3); //b4 = $f:7$
+double Z = 0.0;
+double b5 = -1.0 / Z;     //b5 = $f:-inf$
+double b6 = 5.0 / b5;     //b6 = $f:0$
+double b7 = b5 + b6;      //b7 = $f:-inf$
+double b10 = rec(5);      //b10=[b10]
+---
+{"style":"pcode", "name":"Rules of Inf and NaN", "points":"10"}
+1.0 / 0.0 = $f:inf$
+-1.0 / 0.0 = $f:-inf$
+0.0 / 0.0 = $f:nan$
+sqrt(1.0 / 0.0) = $f:inf$
+sqrt(-1.0) = $f:nan$
+2.0 / 0. = $f:inf$
+cos(1.0 / 0.0) = $f:inf$
+---
+{"style":"pcode", "name":"true or false?", "points":"10"}
+1.0 / 0.0 == -1.0 / 0.0 ? $f:false$
+2.0 / 0.0 == 1.0 / 0.0 + 1 ? $f:true$
+0.0 / 0.0 == sqrt(-1.0) ? $f:false$
+sqrt(-1.0) != sqrt(-1.0) ? $f:false$
+---
+{"style":"pcode", "name":"Memory Alignment", "points":"10"}
+class A {
+  char y;
+  double x;
+  char w;
+  uint64_t z;
+  uint32_t a;
+  char c;
+};
+//State the size of the above class in bytes: $f:40$
+//Reorder for greater packing efficiency and state the size: $f:24$
+---
+{"style":"pcode", "name":"Follow The Code", "points","20"}
+class A {
+public:
+  A(int x) { cout << 'A' << x; }
+  ~A()     { cout << "~A"; } 
+};
+class B : public A {
+private:
+  int x;
+public:
+  B(int x) : A(x+1), x(x) { cout << "B" << x; }
+  ~B()                    { cout << "~B"; }
+};
+int main() {
+  B b1(2); // the output is $f:out$
+}
+---

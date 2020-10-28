@@ -78,20 +78,12 @@ void MultipleChoiceHorizontal::getAnswer() {
 }
 
 void MultipleChoiceHorizontal::getOptions() {
-  replace = "";
   int count = 1;
   buildString(temp, "<input type='radio' name='", qID, "' value='");
-  replace += 
-R"(        <div class='horizontal'>
-          )";
+  replace = "        <div class='horizontal'>";
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
-      replace += R"(<label>
-          )";
-      replace += temp + option + "'>" + option;
-      replace += R"(  
-          </label>
-          )";
+      appendString(replace, "<label>", temp, option,  "'>", option, "</label>");
       option = "";
       count++;
     } else {
@@ -99,8 +91,7 @@ R"(        <div class='horizontal'>
     }
   }
   count = 1;
-  replace += R"(
-        </div>)";
+  replace += "\n</div>";
 }
 
 string MultipleChoiceHorizontal::print(const LiQuizCompiler *compiler,
@@ -142,10 +133,7 @@ void MultipleChoiceVertical::getAnswer() {
 void MultipleChoiceVertical::getOptions() {
   replace = "";
   int count = 1;
-  buildString(temp, "<input type='radio' name='", qID, "' value='");
-  replace += 
-R"(        <div class='vertical'>
-          )";
+  buildString(temp, "<input type='radio' name='", qID, "' value='", "        <div class='vertical'>");
   for (int i = 0; i <= answer.length(); i++) {
     if (answer[i] == ',' || i == answer.length()) {
       replace += R"(<label>
@@ -161,8 +149,7 @@ R"(        <div class='vertical'>
     }
   }
   count = 1;
-  replace += R"(
-        </div>)";
+  replace += "\n        </div>";
 }
 
 string MultipleChoiceVertical::print(const LiQuizCompiler *compiler,
@@ -281,6 +268,8 @@ void FillIn::getFillInType(const char &type) {
   (fillTypes.find(type) != fillTypes.end()) ? typeID = type : typeID = "q";
 }
 
+string FillIn::fillinStyle = "fillin"; // default fillin style
+
 string FillIn::print(const LiQuizCompiler *compiler, ostream &answersFile,
                      int &partNum, int &questionNum, double &points) {
   replace = "";
@@ -304,7 +293,7 @@ string FillIn::print(const LiQuizCompiler *compiler, ostream &answersFile,
   }
 
   addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
-  buildString(replace, "<input class='' name='", qID, "' type='text' id='", qID,
+  buildString(replace, "<input class='", getStyle(), "' name='", qID, "' type='text' id='", qID,
               "' size='", len, "'/>");
   size = "";
   answer = "";
@@ -313,11 +302,31 @@ string FillIn::print(const LiQuizCompiler *compiler, ostream &answersFile,
   return replace;
 }
 
+/*
+ These types are used only for grading. 
+ In terms of styles and behavior on the client side there are many more
+ 
+ A hex fillin will only accept hex digits so there should be a difference style (fixed font, perhaps different color)
+ and JavaScript to reject any letter not in 0-9,A-F, and why not uniform all caps while we are at it.
+ convention will be css name "hex" and JavaScript function checkHex()
+
+ 
+ */
 unordered_map<char, string> FillIn::fillTypes{
     {'Q', "case insensitive"},
     {'s', "space insensitive"},
     {'n', "numeric"},
     {'S', "space and case insensitive"}};
+
+string Hex::hexStyle = "hex"; // Style for hex questions
+uint32_t Hex::defaultLen = 8;
+
+string OpCode::opcodeStyle = "opcode"; // Style for opcode questions
+uint32_t OpCode::defaultLen = 5;
+
+string Command::commandStyle = "command"; // Style for command line question, longer by default
+uint32_t Command::defaultLen = 20;
+
 
 string TextQuestion::print(const LiQuizCompiler *compiler, ostream &answersFile,
                            int &partNum, int &questionNum, double &points) {
@@ -385,8 +394,11 @@ string Video::print(const LiQuizCompiler *, ostream &answersFile, int &partNum,
 }
 
 void Definition::getOptions() {
-  replace = R"(<select class='dro' name=')";
-  replace += qID + "'" + "id='" + qID + "'>";
+  //TODO: support any form of multiple choice with predefined definitions, not just dropdowns
+  
+  // build a string with the select and the first option which is empty. By default, question is unanswered unless
+  // the user selects something.
+  buildString(replace, "<select class='dro' name='",  qID, "' id='", qID, "'><option value=''></option");
   for (int i = 0; i <= defs.length(); i++) {
     if (defs[i] == ',' || i == defs.length()) {
       replace += R"(
@@ -582,7 +594,7 @@ string MatrixQuestion::print(const LiQuizCompiler *compiler,
         }
         answer = token.substr(1);
         addAnswer(typeID, qID, answer, points, answersFile, partNum, questionNum);
-        appendString(replace, "<input class='' name='", qID,
+        appendString(replace, "<input class='mat' name='", qID,
 										"' type='text' id='", qID, "' size='", inputLen, "'/>");
       } else {
         replace += token;

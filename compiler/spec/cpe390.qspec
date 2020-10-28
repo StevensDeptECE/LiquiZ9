@@ -1,8 +1,8 @@
 {
   "course": "CPE390",
   "desc": "Computer Architecture",
+  "#parent":     "DovKruger.qspec",
   "defaults": {
-     "img":"stevenslogotrans.png",
      "numberOfTries":4,
      "timeLimit":0,
      "fillInTheBlankSize":4,
