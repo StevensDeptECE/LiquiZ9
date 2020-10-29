@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -308,14 +309,15 @@ public class LTILaunchExampleController extends LtiLaunchController {
      * @throws NoLtiSessionException
      */
     @RequestMapping("/QuizRequest")
-    public ModelAndView quizRequest(HttpServletRequest request, @RequestParam("quiz") String quizIdString) throws NoLtiSessionException {
+    public @ResponseBody String quizRequest(HttpServletRequest request,
+                         @RequestParam("quiz") String quizIdString) throws NoLtiSessionException {
         LtiLaunchData ltiLaunchData = getTeacherSession();
 
         long quizId = Long.parseLong(quizIdString);
         Quiz quiz = cqs.getOne(new Document("quizId", quizId));
         HttpSession session = request.getSession();
         session.setAttribute("quizName", quiz.getQuizName());
-        return new ModelAndView("quizzes/" + quiz.getCourseId() + "/" + quiz.getQuizName());
+        return quiz.getContent();
     }
 
     /**
@@ -357,20 +359,20 @@ public class LTILaunchExampleController extends LtiLaunchController {
      * @throws RuntimeException
      */
     @RequestMapping("/uploadQuiz")
-    public ModelAndView uploadQuiz(@RequestParam("classId") String classId, @RequestParam("className") String className,
-                                   @RequestParam("numTries") int numTries, @RequestParam("showAnswersAfter") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime showAnswersAfterLDT,
-                                   @RequestParam("jsp File") MultipartFile jspFile, @RequestParam("Answer File") MultipartFile ansFile) throws NoLtiSessionException,
-        RuntimeException {
+    public ModelAndView uploadQuiz(
+        @RequestParam("classId") String classId,
+        @RequestParam("className") String className,
+        @RequestParam("numTries") int numTries,
+        @RequestParam("showAnswersAfter") @DateTimeFormat(
+            iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime showAnswersAfterLDT,
+        @RequestParam("jsp File") MultipartFile jspFile,
+        @RequestParam("Answer File") MultipartFile ansFile) throws NoLtiSessionException, RuntimeException {
+
         LtiLaunchData ltiLaunchData = getTeacherSession();
 
         Date showAnswersAfter = Date.from(showAnswersAfterLDT.atZone(ZoneId.systemDefault()).toInstant());
-        String realPath = context.getRealPath("/WEB-INF/jsp/");
-        fileService.uploadFile(jspFile, classId, true,
-            Paths
-                .get(realPath)
-                .resolve("quizzes")
-                .resolve(classId)
-                .toString());
+
+        String content = fileToString(jspFile);
         Path ansFilePath = fileService.uploadFile(
             ansFile,
             classId,
@@ -382,9 +384,14 @@ public class LTILaunchExampleController extends LtiLaunchController {
         String quizName = jspFile.getOriginalFilename().replaceFirst(".jsp","");
 
         LOG.info("uploading" + ansFile + "to:" + ansFilePath);
-        Quiz quiz = new Quiz(quizName,
-            ltiLaunchData.getCustom_canvas_course_id(), className,
-            ansFilePath.toString(), numTries, showAnswersAfter);
+        Quiz
+            quiz =
+            new Quiz(quizName,
+                ltiLaunchData.getCustom_canvas_course_id(),
+                className,
+                ansFilePath.toString(),
+                numTries,
+                showAnswersAfter, content);
         if (!cqs.exists(quiz.getQuizId())) {
             cqs.add(quiz);
             LOG.info(quiz.getQuizName() + "(" + quiz.getQuizId() + ") has been added to the mongo database");
@@ -396,6 +403,15 @@ public class LTILaunchExampleController extends LtiLaunchController {
         ModelAndView mav = new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
         mav.addObject("success", success);
         return mav;
+    }
+
+    private String fileToString(MultipartFile jspFile) {
+        try {
+            return new String(jspFile.getBytes(), StandardCharsets.UTF_8);
+        } catch (IOException ioException) {
+            LOG.error("could not read file", ioException);
+            return "";
+        }
     }
 
     /**
@@ -497,7 +513,8 @@ public class LTILaunchExampleController extends LtiLaunchController {
      * @throws IOException
      */
     @RequestMapping(value = {"/quizResult", "/quizResult{id:[\\d]+}"})
-    public ModelAndView quizResult(HttpServletRequest request, @PathVariable(
+    public @ResponseBody String quizResult(HttpServletRequest request,
+                                       @PathVariable(
         "id") long id, @ModelAttribute LtiLaunchData ltiData, HttpSession session) throws NoLtiSessionException{
 
         LtiLaunchData ltiLaunchData = getStudentSession(ltiData);
@@ -505,7 +522,7 @@ public class LTILaunchExampleController extends LtiLaunchController {
         if (quiz == null)
             throw new RuntimeException("quiz does not exist");
         session.setAttribute("quizId", id);
-        return new ModelAndView("quizzes/" + quiz.getCourseId() + "/" + quiz.getQuizName());
+        return quiz.getContent();
     }
 
     /**
@@ -516,14 +533,16 @@ public class LTILaunchExampleController extends LtiLaunchController {
      * @throws NoLtiSessionException
      */
     @RequestMapping(value = {"/quizPreview", "/quizPreview{id:[\\d]+}"})
-    public ModelAndView quizPreview(HttpServletRequest request, @PathVariable("id") long id) throws NoLtiSessionException{
+    public @ResponseBody String quizPreview(HttpServletRequest request,
+                                     @PathVariable("id") long id) throws NoLtiSessionException{
         LtiLaunchData ltiLaunchData = getTeacherSession();
         Quiz quiz = cqs.getOne(new Document("quizId", id));
+        LOG.info(quiz.getContent());
         if (quiz == null)
             throw new RuntimeException("quiz does not exist");
         HttpSession session = request.getSession();
         session.setAttribute("quizId", id);
-        return new ModelAndView("quizzes/" + quiz.getCourseId() + "/" + quiz.getQuizName());
+        return quiz.getContent();
     }
 
     /**

@@ -5,10 +5,6 @@
  */
 package org.liquiz.stevens.quiz;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.*;
-
 import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,6 +13,10 @@ import org.liquiz.stevens.questions.NumQuestion;
 import org.liquiz.stevens.questions.Question;
 import org.liquiz.stevens.questions.SimpleQuestion;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
+
 /**
  *
  * @author ejone
@@ -24,6 +24,7 @@ import org.liquiz.stevens.questions.SimpleQuestion;
 public class Quiz {
     private ObjectId mongoId;
     private String answerFile;
+    private String content;
     private long quizId;
     private String quizName;
     private String courseId;
@@ -40,8 +41,14 @@ public class Quiz {
      * @param answerFile name of the answer file to be used
      * @param numTries the number of tries a student has for this quiz
      * @param showAnswersAfter date to show the answers after
+     * @param content
      */
-    public Quiz(String quizName, String courseId, String className, String answerFile, int numTries, Date showAnswersAfter){
+    public Quiz(String quizName,
+                String courseId,
+                String className,
+                String answerFile,
+                int numTries,
+                Date showAnswersAfter, String content){
         this.quizName = quizName;
         this.courseId = courseId;
         this.className = className;
@@ -49,6 +56,7 @@ public class Quiz {
         this.numTries = numTries;
         this.showAnswersAfter = showAnswersAfter;
         this.quizId = Math.abs(new Random().nextLong());
+        this.content = content;
         questionsMap = new TreeMap<>(new qNameComparator());
         updateAnswers();
     }
@@ -58,12 +66,21 @@ public class Quiz {
      * @param mongoId id of the quiz in the database
      * @param numTries the number of tries a student has for this quiz
      * @param quizId value for the id of the quiz
+     * @param content
      * @param courseId id of the class this quiz belongs to
      * @param answerFile name of the answer file that was used
      * @param maxGrade the max possible grade that could be received
      * @param showAnswersAfter date to show the answers after
      */
-    public Quiz(ObjectId mongoId, int numTries, String quizName, String courseId, String className, String answerFile, double maxGrade, Date showAnswersAfter, long quizId){
+    public Quiz(ObjectId mongoId,
+                int numTries,
+                String quizName,
+                String courseId,
+                String className,
+                String answerFile,
+                double maxGrade,
+                Date showAnswersAfter,
+                long quizId, String content){
         this.mongoId = mongoId;
         this.numTries = numTries; 
         this.quizName = quizName;
@@ -73,6 +90,7 @@ public class Quiz {
         this.maxGrade = maxGrade;
         this.showAnswersAfter = showAnswersAfter;
         this.quizId = quizId;
+        this.content = content;
         questionsMap = new TreeMap<>(new qNameComparator());
     }
     
@@ -365,5 +383,8 @@ public class Quiz {
   }
 
 
+    public String getContent() {
+        return this.content;
+    }
 }
 
