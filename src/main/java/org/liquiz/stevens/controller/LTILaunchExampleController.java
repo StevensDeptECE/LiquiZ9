@@ -1,7 +1,6 @@
 package org.liquiz.stevens.controller;
 
 import com.mongodb.client.MongoClient;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import edu.ksu.canvas.requestOptions.MultipleSubmissionsOptions;
 import edu.ksu.lti.launch.controller.LtiLaunchController;
 import edu.ksu.lti.launch.controller.OauthController;
@@ -10,7 +9,15 @@ import edu.ksu.lti.launch.model.LtiLaunchData;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.service.LtiSessionService;
 import org.apache.log4j.Logger;
+import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.liquiz.stevens.mongodb.CodecQuizService;
+import org.liquiz.stevens.mongodb.CodecQuizSubmissionService;
+import org.liquiz.stevens.questions.Question;
+import org.liquiz.stevens.quiz.Quiz;
+import org.liquiz.stevens.quiz.QuizSubmission;
 import org.liquiz.stevens.quiz.qNameComparator;
 import org.liquiz.stevens.service.CanvasService;
 import org.liquiz.stevens.service.FileService;
@@ -21,29 +28,23 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import org.liquiz.stevens.mongodb.CodecQuizService;
-import org.liquiz.stevens.mongodb.CodecQuizSubmissionService;
-import org.bson.Document;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.liquiz.stevens.questions.Question;
-import org.liquiz.stevens.quiz.Quiz;
-import org.liquiz.stevens.quiz.QuizSubmission;
 
 @Controller
 @Scope("session")
@@ -327,10 +328,19 @@ public class LTILaunchExampleController extends LtiLaunchController {
     @RequestMapping("/addQuiz")
     public ModelAndView addQuiz() throws NoLtiSessionException, IOException {
         LtiLaunchData ltiLaunchData = getTeacherSession();
-        LOG.info(canvasService.getEid() + "is seeking to add a quiz to class " + ltiLaunchData.getCustom_canvas_course_id());
-        ModelAndView mav = new ModelAndView("addQuiz");
+        String
+            course_id =
+            ltiLaunchData.getCustom_canvas_course_id();
+        LOG.info(canvasService.getEid() + " is seeking to add a quiz to class" +
+            " " + course_id);
+//        Map<String, String> data = Map.of("courseId", course_id);
+        HashMap<String, String> data = new HashMap<>();
+        data.put("courseId", course_id);
+        ModelAndView mav = new ModelAndView("addQuiz", data);
         return mav;
     }
+    @Autowired
+    ServletContext context;
 
     /**
      * Adds all of the information and files to the server and saves it as a quiz on the database
@@ -349,17 +359,32 @@ public class LTILaunchExampleController extends LtiLaunchController {
     @RequestMapping("/uploadQuiz")
     public ModelAndView uploadQuiz(@RequestParam("classId") String classId, @RequestParam("className") String className,
                                    @RequestParam("numTries") int numTries, @RequestParam("showAnswersAfter") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime showAnswersAfterLDT,
-                                   @RequestParam("jsp File") MultipartFile jspFile, @RequestParam("Answer File") MultipartFile ansFile) throws NoLtiSessionException, RuntimeException {
+                                   @RequestParam("jsp File") MultipartFile jspFile, @RequestParam("Answer File") MultipartFile ansFile) throws NoLtiSessionException,
+        RuntimeException {
         LtiLaunchData ltiLaunchData = getTeacherSession();
 
         Date showAnswersAfter = Date.from(showAnswersAfterLDT.atZone(ZoneId.systemDefault()).toInstant());
-
-        fileService.uploadFile(jspFile, classId, true);
-        String ansFilePath = fileService.uploadFile(ansFile, classId, false).toString();
+        String realPath = context.getRealPath("/WEB-INF/jsp/");
+        fileService.uploadFile(jspFile, classId, true,
+            Paths
+                .get(realPath)
+                .resolve("quizzes")
+                .resolve(classId)
+                .toString());
+        Path ansFilePath = fileService.uploadFile(
+            ansFile,
+            classId,
+            false,
+            Paths
+                .get(context.getRealPath(""))
+                .resolve(classId)
+                .toString());
         String quizName = jspFile.getOriginalFilename().replaceFirst(".jsp","");
 
         LOG.info("uploading" + ansFile + "to:" + ansFilePath);
-        Quiz quiz = new Quiz(quizName, ltiLaunchData.getCustom_canvas_course_id(), className, ansFilePath, numTries, showAnswersAfter);
+        Quiz quiz = new Quiz(quizName,
+            ltiLaunchData.getCustom_canvas_course_id(), className,
+            ansFilePath.toString(), numTries, showAnswersAfter);
         if (!cqs.exists(quiz.getQuizId())) {
             cqs.add(quiz);
             LOG.info(quiz.getQuizName() + "(" + quiz.getQuizId() + ") has been added to the mongo database");
@@ -414,8 +439,8 @@ public class LTILaunchExampleController extends LtiLaunchController {
      */
     @RequestMapping(value = "/getAnswers", method = RequestMethod.GET)
     public void getAnswers( HttpServletResponse response) throws NoLtiSessionException, IOException {
-        canvasService.ensureApiTokenPresent();
-        canvasService.validateOauthToken();
+//        canvasService.ensureApiTokenPresent();
+//        canvasService.validateOauthToken();
 
         LtiSession ltiSession = ltiSessionService.getLtiSession();
         LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
@@ -472,13 +497,13 @@ public class LTILaunchExampleController extends LtiLaunchController {
      * @throws IOException
      */
     @RequestMapping(value = {"/quizResult", "/quizResult{id:[\\d]+}"})
-    public ModelAndView quizResult(HttpServletRequest request, @PathVariable("id") long id) throws NoLtiSessionException{
+    public ModelAndView quizResult(HttpServletRequest request, @PathVariable(
+        "id") long id, @ModelAttribute LtiLaunchData ltiData, HttpSession session) throws NoLtiSessionException{
 
-        LtiLaunchData ltiLaunchData = getStudentSession();
+        LtiLaunchData ltiLaunchData = getStudentSession(ltiData);
         Quiz quiz = cqs.getOne(new Document("quizId", id));
         if (quiz == null)
             throw new RuntimeException("quiz does not exist");
-        HttpSession session = request.getSession();
         session.setAttribute("quizId", id);
         return new ModelAndView("quizzes/" + quiz.getCourseId() + "/" + quiz.getQuizName());
     }
@@ -610,7 +635,21 @@ public class LTILaunchExampleController extends LtiLaunchController {
      * @return
      * @throws NoLtiSessionException
      */
-    private LtiLaunchData getStudentSession() throws NoLtiSessionException {
+    private LtiLaunchData getStudentSession(LtiLaunchData ltiData) throws NoLtiSessionException {
+        LOG.debug("launch!");
+        String canvasCourseId = ltiData.getCustom_canvas_course_id();
+        String eID = ltiData.getCustom_canvas_user_login_id();
+        LtiSession ltiSession = new LtiSession();
+        ltiSession.setApplicationName(getApplicationName());
+        ltiSession.setInitialViewPath(getInitialViewPath());
+        ltiSession.setEid(eID);
+        ltiSession.setCanvasCourseId(canvasCourseId);
+        ltiSession.setCanvasDomain(ltiData.getCustom_canvas_api_domain());
+        ltiSession.setLtiLaunchData(ltiData);
+        ServletRequestAttributes
+            sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpSession newSession = sra.getRequest().getSession();
+        newSession.setAttribute(LtiSession.class.getName(), ltiSession);
         LtiLaunchData ltiLaunchData = accessCheck();
         List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
         if(roleList == null || !(roleList.contains(LtiLaunchData.InstitutionRole.Student) || roleList.contains(LtiLaunchData.InstitutionRole.Learner)))

@@ -33,7 +33,10 @@
 *~
 
 /bin
+tomcat/*
+.idea/*
+*.iml
+target/
 LiQuiz
 *.class
 /compiler/output
-tomcat/*
