@@ -2,7 +2,6 @@ package org.liquiz.stevens.controller;
 
 import com.mongodb.client.MongoClient;
 import edu.ksu.canvas.requestOptions.MultipleSubmissionsOptions;
-import edu.ksu.lti.launch.controller.LtiLaunchController;
 import edu.ksu.lti.launch.controller.OauthController;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.model.LtiLaunchData;
@@ -29,8 +28,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,6 +35,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -49,8 +48,8 @@ import java.util.*;
 
 @Controller
 @Scope("session")
-public class LTILaunchExampleController extends LtiLaunchController {
-    private static final Logger LOG = Logger.getLogger(LTILaunchExampleController.class);
+public class QuizController {
+    private static final Logger LOG = Logger.getLogger(QuizController.class);
 
     @Autowired
     public LtiSessionService ltiSessionService;
@@ -84,9 +83,13 @@ public class LTILaunchExampleController extends LtiLaunchController {
     @RequestMapping("/")
     public ModelAndView basePath(HttpServletRequest request) {
         LOG.info("Showing Activity Reporting configuration XML");
-        String ltiLaunchUrl = OauthController.getApplicationBaseUrl(request, true) + "/launch";
-        LOG.debug("LTI launch URL: " + ltiLaunchUrl);
-        return new ModelAndView("ltiConfigure", "url", ltiLaunchUrl);
+        String appUrl = OauthController.getApplicationBaseUrl(request, true);
+        String domain = OauthController.getApplicationBaseUrl(request, false);
+        LOG.debug("LTI launch URL: " + appUrl);
+        HashMap<String, String> data = new HashMap<>();
+        data.put("url", appUrl);
+        data.put("domain", domain);
+        return new ModelAndView("ltiConfigure", data);
     }
 
     @RequestMapping("/helloWorld")
@@ -422,9 +425,8 @@ public class LTILaunchExampleController extends LtiLaunchController {
      */
     @RequestMapping(value = "/grade", method = RequestMethod.POST)
     public void grade(HttpServletRequest request) throws NoLtiSessionException, IOException {
+        LtiLaunchData studentSession = getStudentSession();
 
-        canvasService.ensureApiTokenPresent();
-        canvasService.validateOauthToken();
 
         String outcome = request.getParameter("lis_outcome_service_url");
         if (outcome == null)
@@ -512,17 +514,19 @@ public class LTILaunchExampleController extends LtiLaunchController {
      * @throws NoLtiSessionException
      * @throws IOException
      */
-    @RequestMapping(value = {"/quizResult", "/quizResult{id:[\\d]+}"})
-    public @ResponseBody String quizResult(HttpServletRequest request,
-                                       @PathVariable(
-        "id") long id, @ModelAttribute LtiLaunchData ltiData, HttpSession session) throws NoLtiSessionException{
+    @RequestMapping(value = {"/quizResult"})
+    public ModelAndView quizResult(HttpServletRequest request,
+                                           @FormParam("qID") @DefaultValue(
+                                               "-1") Long id,
+                                           HttpSession session) throws NoLtiSessionException{
 
-        LtiLaunchData ltiLaunchData = getStudentSession(ltiData);
-        Quiz quiz = cqs.getOne(new Document("quizId", id));
+        long qID = Long.parseLong(request.getParameter("qID"));
+        LtiLaunchData ltiLaunchData = getStudentSession();
+        Quiz quiz = cqs.getOne(new Document("quizId", qID));
         if (quiz == null)
             throw new RuntimeException("quiz does not exist");
         session.setAttribute("quizId", id);
-        return quiz.getContent();
+        return new ModelAndView("/showQuiz", "quiz", quiz);
     }
 
     /**
@@ -554,21 +558,25 @@ public class LTILaunchExampleController extends LtiLaunchController {
      * @throws IOException
      */
     @RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
-    public ModelAndView testQuiz(HttpServletRequest request) throws NoLtiSessionException, IOException {
+    public ModelAndView testQuiz(HttpServletRequest request,
+                                 @RequestBody List<List<String>> submittedAnswers) throws NoLtiSessionException, IOException {
         //TODO: change to student session
-        LtiLaunchData ltiLaunchData = getTeacherSession();
-
+        LtiLaunchData ltiLaunchData = getStudentSession();
+        LOG.info(submittedAnswers);
         String userId = ltiLaunchData.getCustom_canvas_user_login_id();
 
         Map<String, String[]> paramsMap = request.getParameterMap();
-        if(paramsMap.containsKey("pledged"))
-            paramsMap.remove("pledged");
+//        paramsMap.remove("pledged");
         TreeMap<String, String[]> inputsMap = new TreeMap<>(new qNameComparator());
-        inputsMap.putAll(paramsMap);
+        for (List<String> submittedAnswer : submittedAnswers) {
+            if(submittedAnswer.get(0).contains("_")) {
+                inputsMap.put(submittedAnswer.get(0),
+                    submittedAnswer.get(1).split(","));
+            }
+        }
 
-        HttpSession session = request.getSession(true);
-        //use real quiz id
-        long quizId = (long) session.getAttribute("quizId");
+
+        long quizId = Long.parseLong(request.getParameter("quizId"));
         Quiz quiz = cqs.getOne(new Document("quizId", quizId));
         if (quiz == null)
             throw new RuntimeException("quiz does not exist");
@@ -654,21 +662,7 @@ public class LTILaunchExampleController extends LtiLaunchController {
      * @return
      * @throws NoLtiSessionException
      */
-    private LtiLaunchData getStudentSession(LtiLaunchData ltiData) throws NoLtiSessionException {
-        LOG.debug("launch!");
-        String canvasCourseId = ltiData.getCustom_canvas_course_id();
-        String eID = ltiData.getCustom_canvas_user_login_id();
-        LtiSession ltiSession = new LtiSession();
-        ltiSession.setApplicationName(getApplicationName());
-        ltiSession.setInitialViewPath(getInitialViewPath());
-        ltiSession.setEid(eID);
-        ltiSession.setCanvasCourseId(canvasCourseId);
-        ltiSession.setCanvasDomain(ltiData.getCustom_canvas_api_domain());
-        ltiSession.setLtiLaunchData(ltiData);
-        ServletRequestAttributes
-            sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpSession newSession = sra.getRequest().getSession();
-        newSession.setAttribute(LtiSession.class.getName(), ltiSession);
+    private LtiLaunchData getStudentSession() throws NoLtiSessionException {
         LtiLaunchData ltiLaunchData = accessCheck();
         List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
         if(roleList == null || !(roleList.contains(LtiLaunchData.InstitutionRole.Student) || roleList.contains(LtiLaunchData.InstitutionRole.Learner)))
@@ -676,19 +670,5 @@ public class LTILaunchExampleController extends LtiLaunchController {
             throw new AccessDeniedException("You are not an Student and you cannot view this page");
         }
         return ltiLaunchData;
-    }
-
-    /**
-     * After authenticating the LTI launch request, the user is forwarded to
-     * this path. It is the initial page your user will see in their browser.
-     */
-    @Override
-    protected String getInitialViewPath() {
-        return "/teacherView";
-    }
-
-    @Override
-    protected String getApplicationName() {
-        return "Liquiz_test2";
     }
 }

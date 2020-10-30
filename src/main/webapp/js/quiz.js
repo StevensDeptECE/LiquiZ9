@@ -53,7 +53,7 @@ function startTime(limit) {
 
 function checkAndSubmit() {
   var pledge = document.getElementById("pledge");
-  console.log(userid + ", " + passwd);
+  // console.log(userid + ", " + passwd);
   console.log(name + ", " + pledge);
   var submission = [];
   var f = document.forms[0];
@@ -61,7 +61,7 @@ function checkAndSubmit() {
     submission.push([f.elements[i].id, f.elements[i].value]);
   console.log(submission);
   var json = new XMLHttpRequest();
-  json.open("post", "gradquiz.jsp", true);
+  json.open("post", "/liquiz/submitQuiz?quizId="+f.getAttribute("data-quizId"), true);
   json.setRequestHeader("Content-Type", "application/json");
   // Create a state change callback
   json.onreadystatechange = function () {

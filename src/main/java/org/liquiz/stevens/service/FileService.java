@@ -1,7 +1,7 @@
 package org.liquiz.stevens.service;
 
 import org.apache.log4j.Logger;
-import org.liquiz.stevens.controller.LTILaunchExampleController;
+import org.liquiz.stevens.controller.QuizController;
 import org.liquiz.stevens.exceptions.FileStorageException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileService {
     private static final Logger
-        LOG = Logger.getLogger(LTILaunchExampleController.class);
+        LOG = Logger.getLogger(QuizController.class);
     @Value("${app.upload.dir.jspfile:${user.dir}}")
     public String uploadDirJspFile;
 
