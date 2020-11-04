@@ -366,7 +366,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
   }
 }
 
-static regex questionPattern("\\$[f\\$");
+static regex questionPattern("\\$(?:mch|mcv|dro|mah|mav|fQ|fq|fn|fs|fS)\\$");
 
 void LiQuizCompiler::grabQuestions() {
   string line;
