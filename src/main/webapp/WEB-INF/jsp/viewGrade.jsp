@@ -7,13 +7,13 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@page language="java" contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="java.io.File" %>
-<%@ page import="java.util.TreeMap" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
+<c:set var="context" value="${pageContext.request.contextPath}"/>
 
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="css/page.css">
+    <link rel="stylesheet" type="text/css" href="${context}/css/page.css">
     <title>viewGrade</title>
 
 
@@ -34,13 +34,7 @@
     <c:forEach var="entry" items="${qInputs}" varStatus="loop">
     <tr>
         <td>${loop.count}</td>
-        <td>
-
-        <c:forEach var="inputsArr" items="${entry.value}">
-        ${inputsArr} |
-        </c:forEach>
-
-        </td>
+        <td>${fn:join(entry.value, '|')}    </td>
         <td>${qAnswers[loop.index]}</td>
         <td>${qGrades[loop.index]}</td>
         <td>${qMaxGrades[loop.index]}</td>

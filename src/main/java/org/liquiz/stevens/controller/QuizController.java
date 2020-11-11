@@ -40,8 +40,6 @@ import javax.ws.rs.FormParam;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -376,25 +374,18 @@ public class QuizController {
         Date showAnswersAfter = Date.from(showAnswersAfterLDT.atZone(ZoneId.systemDefault()).toInstant());
 
         String content = fileToString(jspFile);
-        Path ansFilePath = fileService.uploadFile(
-            ansFile,
-            classId,
-            false,
-            Paths
-                .get(context.getRealPath(""))
-                .resolve(classId)
-                .toString());
+        String answers = fileToString(ansFile);
         String quizName = jspFile.getOriginalFilename().replaceFirst(".jsp","");
 
-        LOG.info("uploading" + ansFile + "to:" + ansFilePath);
         Quiz
             quiz =
             new Quiz(quizName,
                 ltiLaunchData.getCustom_canvas_course_id(),
                 className,
-                ansFilePath.toString(),
+                answers,
                 numTries,
-                showAnswersAfter, content);
+                showAnswersAfter,
+                content);
         if (!cqs.exists(quiz.getQuizId())) {
             cqs.add(quiz);
             LOG.info(quiz.getQuizName() + "(" + quiz.getQuizId() + ") has been added to the mongo database");
@@ -562,7 +553,6 @@ public class QuizController {
                                  @RequestBody List<List<String>> submittedAnswers) throws NoLtiSessionException, IOException {
         //TODO: change to student session
         LtiLaunchData ltiLaunchData = getStudentSession();
-        LOG.info(submittedAnswers);
         String userId = ltiLaunchData.getCustom_canvas_user_login_id();
 
         Map<String, String[]> paramsMap = request.getParameterMap();
@@ -583,12 +573,11 @@ public class QuizController {
         QuizSubmission quizSub = new QuizSubmission(quiz.getQuizId(), ltiLaunchData.getCustom_canvas_user_login_id(), ltiLaunchData.getLis_person_name_full(), inputsMap, quiz);
         String outcome = "your submission was added successfully";
         if (quiz.getNumTries() > cqss.getTries(new Document("quizId", quizId).append("userId", userId))) {
-            if (quizSub != null) {
-                cqss.add(quizSub);
-            } else
-                outcome = "Submission failed";
-        } else
-            outcome = "no more tries are allowed so this submission did not count";
+            cqss.add(quizSub);
+        } else {
+            outcome =
+                "no more tries are allowed so this submission did not count";
+        }
         ModelAndView mav = new ModelAndView("viewGrade", "success", outcome);
         mav.addObject("username", userId);
         mav.addObject("grade", quizSub.getGrade());
