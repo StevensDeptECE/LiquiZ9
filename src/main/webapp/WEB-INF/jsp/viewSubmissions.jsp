@@ -42,5 +42,9 @@
     </table>
     <input class='controls' type='submit' value='Delete Selected Quizzes'/>
 </form>
+<form method="post" action="grade">
+    <h1>Just Hit Submit to send a grade in</h1>
+    <input type="submit" value="submit">
+</form>
 </body>
 </html>

@@ -18,6 +18,7 @@
             <lticm:property name="url">${url}/teacher/launch</lticm:property>>
             <lticm:property name="enabled">true</lticm:property>
             <lticm:property name="visibility">admins</lticm:property>
+            <lticm:property name="windowTarget">_blank</lticm:property>
         </lticm:options>
         <lticm:options name="assignment_selection">
             <lticm:property name="url">${url}/student/launch</lticm:property>>

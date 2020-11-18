@@ -53,15 +53,14 @@ function startTime(limit) {
 
 function checkAndSubmit() {
   var pledge = document.getElementById("pledge");
-  // console.log(userid + ", " + passwd);
   console.log(name + ", " + pledge);
   var submission = [];
   var f = document.forms[0];
-  for (var i = 0; i < f.elements.length; i++)
+  for (var i = 0; i < f.elements.length; i++) {
     submission.push([f.elements[i].id, f.elements[i].value]);
-  console.log(submission);
+  }
   var json = new XMLHttpRequest();
-  json.open("post", "/liquiz/submitQuiz?quizId="+f.getAttribute("data-quizId"), true);
+  json.open("post", "/liquiz/submitQuiz?quizId="+f.getAttribute("data-quizId")+"&custom_canvas_assignment_id="+encodeURI(f.custom_canvas_assignment_id.value)+"&custom_canvas_course_id="+encodeURI(f.custom_canvas_course_id.value), true);
   json.setRequestHeader("Content-Type", "application/json");
   // Create a state change callback
   json.onreadystatechange = function () {

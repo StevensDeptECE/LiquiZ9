@@ -1,11 +1,15 @@
 package org.liquiz.stevens.controller;
 
 import com.mongodb.client.MongoClient;
+import edu.ksu.canvas.model.Progress;
+import edu.ksu.canvas.oauth.OauthToken;
 import edu.ksu.canvas.requestOptions.MultipleSubmissionsOptions;
+import edu.ksu.canvas.requestOptions.MultipleSubmissionsOptions.StudentSubmissionOption;
 import edu.ksu.lti.launch.controller.OauthController;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
 import edu.ksu.lti.launch.model.LtiLaunchData;
 import edu.ksu.lti.launch.model.LtiSession;
+import edu.ksu.lti.launch.oauth.LtiLaunch;
 import edu.ksu.lti.launch.service.LtiSessionService;
 import org.apache.log4j.Logger;
 import org.bson.Document;
@@ -51,6 +55,8 @@ public class QuizController {
 
     @Autowired
     public LtiSessionService ltiSessionService;
+    @Autowired
+    public LtiLaunch lti;
 
     protected Assignment assignment;
 
@@ -124,6 +130,7 @@ public class QuizController {
     @RequestMapping("/teacherView")
     public ModelAndView teacherView() throws NoLtiSessionException {
         LtiLaunchData ltiLaunchData = getTeacherSession();
+        lti.ensureApiTokenPresent();
         ModelAndView mav = new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
         return mav;
     }
@@ -410,33 +417,19 @@ public class QuizController {
 
     /**
      * updates the grade for the user on canvas
-     * @param request
      * @throws NoLtiSessionException
-     * @throws IOException
      */
     @RequestMapping(value = "/grade", method = RequestMethod.POST)
-    public void grade(HttpServletRequest request) throws NoLtiSessionException, IOException {
-        LtiLaunchData studentSession = getStudentSession();
-
-
-        String outcome = request.getParameter("lis_outcome_service_url");
-        if (outcome == null)
-            throw new RuntimeException("outcome is null");
-        assignment.setLis_outcome_service_url(outcome);
-        String sourcedid = request.getParameter("lis_result_sourcedid");
-        if (sourcedid == null)
-            throw new RuntimeException("sourcedid is null");
-        assignment.setLis_result_sourcedid(sourcedid);
-
-        List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
-        boolean isStudent = roleList != null && (roleList.contains(LtiLaunchData.InstitutionRole.Learner));
-        LOG.info(canvasService.getEid() + "is accessing this endpoint");
-
-        assertPrivledgedUser();
-        LtiSession ltiSession = ltiSessionService.getLtiSession();
-        Map<String, MultipleSubmissionsOptions.StudentSubmissionOption> studentMap;
-        MultipleSubmissionsOptions submissionsOptions = new MultipleSubmissionsOptions(ltiSession.getCanvasCourseId().toString(), Integer.parseInt(assignment.getLis_result_sourcedid()), null);
-        //return new ModelAndView("grade/" + ltiSession.getCanvasCourseId().toString() + "/" + ltiSession.getEid().toString());
+    @ResponseBody
+    public String grade() throws NoLtiSessionException {
+        LtiLaunchData teacherSession = getTeacherSession();
+        submitGrades(
+            teacherSession.getCustom_canvas_course_id(),
+            4,
+            87.5,
+            "2"
+        );
+        return "OK..the grade was submitted";
     }
 
     /**
@@ -510,14 +503,19 @@ public class QuizController {
                                            @FormParam("qID") @DefaultValue(
                                                "-1") Long id,
                                            HttpSession session) throws NoLtiSessionException{
-
+        lti.ensureApiTokenPresent();
         long qID = Long.parseLong(request.getParameter("qID"));
-        LtiLaunchData ltiLaunchData = getStudentSession();
+        getStudentSession();
         Quiz quiz = cqs.getOne(new Document("quizId", qID));
         if (quiz == null)
             throw new RuntimeException("quiz does not exist");
         session.setAttribute("quizId", id);
-        return new ModelAndView("/showQuiz", "quiz", quiz);
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("quiz", quiz);
+        data.put("custom_canvas_assignment_id", request.getParameter("custom_canvas_assignment_id"));
+        data.put("custom_canvas_course_id", request.getParameter(
+            "custom_canvas_course_id"));
+        return new ModelAndView("/showQuiz", data);
     }
 
     /**
@@ -530,11 +528,12 @@ public class QuizController {
     @RequestMapping(value = {"/quizPreview", "/quizPreview{id:[\\d]+}"})
     public @ResponseBody String quizPreview(HttpServletRequest request,
                                      @PathVariable("id") long id) throws NoLtiSessionException{
-        LtiLaunchData ltiLaunchData = getTeacherSession();
+        getTeacherSession();
         Quiz quiz = cqs.getOne(new Document("quizId", id));
-        LOG.info(quiz.getContent());
-        if (quiz == null)
+        if (quiz == null) {
             throw new RuntimeException("quiz does not exist");
+        }
+        LOG.info(quiz.getContent());
         HttpSession session = request.getSession();
         session.setAttribute("quizId", id);
         return quiz.getContent();
@@ -546,17 +545,13 @@ public class QuizController {
      * @param request
      * @return
      * @throws NoLtiSessionException
-     * @throws IOException
      */
     @RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
     public ModelAndView testQuiz(HttpServletRequest request,
-                                 @RequestBody List<List<String>> submittedAnswers) throws NoLtiSessionException, IOException {
-        //TODO: change to student session
+                                 @RequestBody List<List<String>> submittedAnswers) throws NoLtiSessionException {
         LtiLaunchData ltiLaunchData = getStudentSession();
         String userId = ltiLaunchData.getCustom_canvas_user_login_id();
 
-        Map<String, String[]> paramsMap = request.getParameterMap();
-//        paramsMap.remove("pledged");
         TreeMap<String, String[]> inputsMap = new TreeMap<>(new qNameComparator());
         for (List<String> submittedAnswer : submittedAnswers) {
             if(submittedAnswer.get(0).contains("_")) {
@@ -565,14 +560,19 @@ public class QuizController {
             }
         }
 
-
         long quizId = Long.parseLong(request.getParameter("quizId"));
         Quiz quiz = cqs.getOne(new Document("quizId", quizId));
         if (quiz == null)
             throw new RuntimeException("quiz does not exist");
-        QuizSubmission quizSub = new QuizSubmission(quiz.getQuizId(), ltiLaunchData.getCustom_canvas_user_login_id(), ltiLaunchData.getLis_person_name_full(), inputsMap, quiz);
+        QuizSubmission quizSub = new QuizSubmission(
+            quiz.getQuizId(),
+            ltiLaunchData.getCustom_canvas_user_login_id(),
+            ltiLaunchData.getLis_person_name_full(),
+            inputsMap,
+            quiz);
         String outcome = "your submission was added successfully";
-        if (quiz.getNumTries() > cqss.getTries(new Document("quizId", quizId).append("userId", userId))) {
+        if (quiz.getNumTries() > cqss.getTries(new Document("quizId", quizId)
+            .append("userId", userId))) {
             cqss.add(quizSub);
         } else {
             outcome =
@@ -586,34 +586,63 @@ public class QuizController {
         mav.addObject("qAnswers", quiz.getAnswers());
         mav.addObject("qGrades", quizSub.getQuestionGrades());
         mav.addObject("qMaxGrades", quiz.getMaxGrades());
-
         return mav;
     }
 
-    @RequestMapping(value = "/test")
-    public ModelAndView test() throws NoLtiSessionException, RuntimeException {
-        if (true)
-            throw new RuntimeException(System.getProperty("user.dir"));
-        return new ModelAndView("teacherView");
+    private Optional<Progress> submitGrades(String courseId,
+                                            int assignmentId,
+                                            double grade,
+                                            String studentId) throws NoLtiSessionException {
+        lti.ensureApiTokenPresent();
+        LtiSession ltiSession = ltiSessionService.getLtiSession();
+        OauthToken oauthToken = ltiSession.getOauthToken();
+        HashMap<String, StudentSubmissionOption>
+            studentSubmissionOptionMap =
+            new HashMap<>();
+        MultipleSubmissionsOptions
+            submissionOptions =
+            new MultipleSubmissionsOptions(courseId,
+                assignmentId,
+                studentSubmissionOptionMap);
+        StudentSubmissionOption
+            studentSubmissionOption =
+            generateStudentSubmissionsOptions(submissionOptions, grade);
+        studentSubmissionOptionMap.put(
+            studentId,
+            studentSubmissionOption);
+        try {
+            return canvasService.gradeMultipleSubmissionsByCourse(
+                oauthToken,
+                submissionOptions
+            );
+        } catch (IOException e){
+            e.printStackTrace();
+            throw new RuntimeException("Who knows?");
+        }
     }
 
-
-    private void assertPrivledgedUser() throws NoLtiSessionException {
+    private void assertPrivilegedUser() throws NoLtiSessionException {
         if (canvasService.getEid() == null || canvasService.getEid().isEmpty()) {
             throw new NoLtiSessionException();
         }
         List<LtiLaunchData.InstitutionRole> roles = canvasService.getRoles();
         if (!roleChecker.roleAllowed(roles)) {
-            LOG.error("User (" + canvasService.getEid() + ") doesn't have privledge to launch" + roles);
+            LOG.error("User (" + canvasService.getEid() + ") doesn't have privilege to launch" + roles);
             throw new NoLtiSessionException();
         }
 
 
     }
 
-    private MultipleSubmissionsOptions.StudentSubmissionOption generateStudentSubmissionsOptions(MultipleSubmissionsOptions submissionsOptions) {
-        Double grade = 100.0;
-        return submissionsOptions.createStudentSubmissionOption(null, grade.toString(), false, false, null, null);
+    private StudentSubmissionOption generateStudentSubmissionsOptions(
+        MultipleSubmissionsOptions submissionsOptions, double grade) {
+        return submissionsOptions.createStudentSubmissionOption(
+            null,
+            String.valueOf(grade),
+            false,
+            false,
+            null,
+            null);
     }
 
     /**

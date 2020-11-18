@@ -36,8 +36,8 @@
     </div>
     <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
 </div>
-    <input type="hidden" name="lis_outcome_service_url" value="${outcome}"/>
-    <input type="hidden" name="lis_result_sourcedid" value="${sourcedid}"/>
+    <input type="hidden" name="custom_canvas_assignment_id" value="${custom_canvas_assignment_id}"/>
+    <input type="hidden" name="custom_canvas_course_id" value="${custom_canvas_course_id}"/>
 <div id="root"></div>
 </form>
 <div class='footer'>
