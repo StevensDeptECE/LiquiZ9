@@ -6,14 +6,7 @@
 package org.liquiz.stevens.mongodb.converter;
 
 import com.mongodb.MongoClient;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.bson.BsonReader;
-import org.bson.BsonString;
-import org.bson.BsonValue;
-import org.bson.BsonWriter;
-import org.bson.Document;
+import org.bson.*;
 import org.bson.codecs.Codec;
 import org.bson.codecs.CollectibleCodec;
 import org.bson.codecs.DecoderContext;
@@ -21,6 +14,10 @@ import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.types.ObjectId;
 import org.liquiz.stevens.quiz.QuizSubmission;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Mongo decoder for Orders.
@@ -97,6 +94,7 @@ public class QuizSubmissionCodec implements CollectibleCodec<QuizSubmission> {
                 .append("grade", quiz.getGrade())
                 .append("dateSubmitted", quiz.getDateSubmitted())
                 .append("userAnswers", questionDocumentList)
+                .append("canvasUserId", quiz.getCanvasUserId())
                 .append("questionGradesArr", questionGradesList);
 
 
@@ -129,8 +127,14 @@ public class QuizSubmissionCodec implements CollectibleCodec<QuizSubmission> {
             questionGradesArr[gIndex++] = doc.getDouble("qgrade");
         }
         
-        QuizSubmission quiz = new QuizSubmission(document.getObjectId("_id"), document.getLong("quizId"),
-                document.getString("userId"), document.getString("fullName"), document.getDouble("grade"), questionGradesArr, document.getDate("dateSubmitted"));
+        QuizSubmission quiz = new QuizSubmission(document.getObjectId("_id"),
+            document.getLong("quizId"),
+            document.getString("userId"),
+            document.getString("fullName"),
+            document.getDouble("grade"),
+            questionGradesArr,
+            document.getDate("dateSubmitted"),
+            document.getString("canvasUserId"));
 
         List<Document> docArr = (List<Document>) document.get("userAnswers");
         for (Document doc : docArr) {

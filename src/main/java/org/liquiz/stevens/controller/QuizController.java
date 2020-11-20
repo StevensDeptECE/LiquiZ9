@@ -323,9 +323,9 @@ public class QuizController {
                 for (QuizSubmission submission : submissions.values()) {
                     csvPrinter.printRecord(
                         submission.getFullName(),
-                        submission.getUserId(), //should be canvas number ID
-                        submission.getUserId(), // should student ID number
-                        submission.getUserId(), // should be login id
+                        submission.getCanvasUserId(),
+                        "",
+                        "",
                         "Somewhere",
                         (submission.getGrade() / quiz.getMaxGrade())*100.0
                     );
@@ -614,8 +614,9 @@ public class QuizController {
      * @throws NoLtiSessionException
      */
     @RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
-    public ModelAndView testQuiz(HttpServletRequest request,
-                                 @RequestBody List<List<String>> submittedAnswers) throws NoLtiSessionException {
+    public ModelAndView testQuiz(
+        HttpServletRequest request,
+        @RequestBody List<List<String>> submittedAnswers) throws NoLtiSessionException {
         LtiLaunchData ltiLaunchData = getStudentSession();
         String userId = ltiLaunchData.getCustom_canvas_user_login_id();
 
@@ -636,7 +637,8 @@ public class QuizController {
             ltiLaunchData.getCustom_canvas_user_login_id(),
             ltiLaunchData.getLis_person_name_full(),
             inputsMap,
-            quiz);
+            quiz,
+            ltiLaunchData.getCustom_canvas_user_id());
         String outcome = "your submission was added successfully";
         if (quiz.getNumTries() > cqss.getTries(new Document("quizId", quizId)
             .append("userId", userId))) {

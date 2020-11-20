@@ -1,5 +1,4 @@
-<%@page language="java" contentType="text/html" pageEncoding="UTF-8" %>
-<%@page import="java.io.File" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="context" value="${pageContext.request.contextPath}"/>
 <html>
@@ -36,8 +35,6 @@
     </div>
     <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
 </div>
-    <input type="hidden" name="custom_canvas_assignment_id" value="${custom_canvas_assignment_id}"/>
-    <input type="hidden" name="custom_canvas_course_id" value="${custom_canvas_course_id}"/>
 <div id="root"></div>
 </form>
 <div class='footer'>

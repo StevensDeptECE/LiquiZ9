@@ -60,7 +60,7 @@ function checkAndSubmit() {
     submission.push([f.elements[i].id, f.elements[i].value]);
   }
   var json = new XMLHttpRequest();
-  json.open("post", "/liquiz/submitQuiz?quizId="+f.getAttribute("data-quizId")+"&custom_canvas_assignment_id="+encodeURI(f.custom_canvas_assignment_id.value)+"&custom_canvas_course_id="+encodeURI(f.custom_canvas_course_id.value), true);
+  json.open("post", "/liquiz/submitQuiz?quizId="+f.getAttribute("data-quizId"), true);
   json.setRequestHeader("Content-Type", "application/json");
   // Create a state change callback
   json.onreadystatechange = function () {

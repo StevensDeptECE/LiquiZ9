@@ -8,11 +8,12 @@ package org.liquiz.stevens.quiz;
  *
  * @author ejone
  */
+import org.bson.types.ObjectId;
+import org.liquiz.stevens.questions.Question;
+
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
-import org.bson.types.ObjectId;
-import org.liquiz.stevens.questions.Question;
 
 public class QuizSubmission{
   TreeMap<String, String[]> userAnswers;
@@ -23,16 +24,21 @@ public class QuizSubmission{
   String fullName;
   Date dateSubmitted;
   private ObjectId mongoId;
-
+  private String canvasUserId;
     /**
      * For initializing a new quiz
      * @param quizId the id of the quiz that the answers are received from
      * @param userId the id of the user from canvas
      * @param inputsMap a treemap of the users inputs for the quiz
-     * @param q the quiz which this submission will be graded based off of so 
-     *          update grade can be called in this instructor
+     * @param q the quiz which this submission will be graded based off of so
+*          update grade can be called in this instructor
+     * @param canvasUserId
      */
-    public QuizSubmission(long quizId, String userId, String fullName, TreeMap<String,String[]> inputsMap, Quiz q){
+    public QuizSubmission(long quizId,
+                          String userId,
+                          String fullName,
+                          TreeMap<String, String[]> inputsMap,
+                          Quiz q, String canvasUserId){
     this.quizId = quizId;
     this.userId = userId;
     this.grade = 0.0;
@@ -40,6 +46,7 @@ public class QuizSubmission{
     this.fullName = fullName;
     dateSubmitted = new Date();
     questionGradesArr = new double[userAnswers.size()];
+    this.canvasUserId = canvasUserId;
     updateGrade(q.getQuestionsMap());
   }
   
@@ -51,8 +58,16 @@ public class QuizSubmission{
      * @param grade the grade that was previously calculated for this quiz
      * @param questionGradesArr The array of grades corresponding to each question
      * @param dateSubmitted Date that the quizSubmission was created/finished
+     * @param canvasUserId
      */
-    public QuizSubmission(ObjectId mongoId, long quizId, String userId, String fullName, double grade, double[] questionGradesArr, Date dateSubmitted){
+    public QuizSubmission(ObjectId mongoId,
+                          long quizId,
+                          String userId,
+                          String fullName,
+                          double grade,
+                          double[] questionGradesArr,
+                          Date dateSubmitted,
+                          String canvasUserId){
       this.mongoId = mongoId;
       this.quizId = quizId;
       this.userId = userId;
@@ -60,6 +75,7 @@ public class QuizSubmission{
       this.fullName = fullName;
       this.dateSubmitted = dateSubmitted;
       this.questionGradesArr = questionGradesArr;
+      this.canvasUserId  = canvasUserId;
       userAnswers = new TreeMap<>();
   }
   
@@ -196,5 +212,8 @@ public class QuizSubmission{
         }
       }
   }
-  
+
+  public String getCanvasUserId() {
+    return this.canvasUserId;
+  }
 }
