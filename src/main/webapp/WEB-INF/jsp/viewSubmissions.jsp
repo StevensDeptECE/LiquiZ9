@@ -26,7 +26,6 @@
             <th>User ID</th>
             <th>Grade</th>
             <th>Date Submitted</th>
-            <th>View Excel Sheet</th>
         </tr>
             <c:forEach var="quizSubmission" items="${quizSubList}" varStatus="loop">
                 <tr>
@@ -36,14 +35,16 @@
                     <td>${quizSubmission.getUserId()}</td>
                     <td>${quizSubmission.getGrade()}</td>
                     <td>${quizSubmission.getDateSubmitted()}</td>
-                    <td> <input class="controls" type="submit" name="${quizSubmission.getId().toString()}" value="View Submission Spreadsheet" formaction="createSpreadsheetSubmission${quizSubmission.getId().toString()}"/></td>
                 </tr>
             </c:forEach>
     </table>
     <input class='controls' type='submit' value='Delete Selected Quizzes'/>
 </form>
-<form method="post" action="grade">
-    <h1>Just Hit Submit to send a grade in</h1>
+<form method="post" action="/grades/$quizId}">
+    <h1>Generate Grade Upload</h1>
+    <label>Canvas Assignment ID:
+        <input type="number" name="lmsAssignmentId" />
+    </label>
     <input type="submit" value="submit">
 </form>
 </body>

@@ -11,6 +11,8 @@ import edu.ksu.lti.launch.model.LtiLaunchData;
 import edu.ksu.lti.launch.model.LtiSession;
 import edu.ksu.lti.launch.oauth.LtiLaunch;
 import edu.ksu.lti.launch.service.LtiSessionService;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -36,17 +38,23 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Controller
 @Scope("session")
@@ -268,6 +276,66 @@ public class QuizController {
         ModelAndView mav = new ModelAndView("createSpreadsheetQuiz", "quizSubList", quizSubList);
         mav.addObject("quiz", quiz);
         return mav;
+    }
+
+    @RequestMapping(value = "/grades/{id:[\\d]+}", method = RequestMethod.GET)
+    public void getSpreadsheetForCanvasImport(
+        @PathVariable("id") long quizId,
+        @FormParam("lmsAssignmentId") int lmsAssignmentId,
+        HttpServletResponse response) {
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=grades.csv");
+
+        Quiz quiz = cqs.getOne(new Document("quizId", quizId));
+
+        Map<String, QuizSubmission> submissions = cqss
+            .getList(new Document("quizId", quizId))
+            .stream()
+            .collect(Collectors.toMap(
+                QuizSubmission::getUserId,
+                Function.identity(),
+                (sub1, sub2) -> {
+                    if (sub1.getDateSubmitted().after(sub2.getDateSubmitted())) {
+                        return sub1;
+                    } else {
+                        return sub2;
+                    }
+                }
+            ));
+
+        try {
+            ServletOutputStream outputStream = response.getOutputStream();
+
+            try (
+                OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
+                CSVPrinter csvPrinter = new CSVPrinter(
+                    writer,
+                    CSVFormat.DEFAULT
+                        .withHeader(
+                            "Student",
+                            "ID",
+                            "SIS User ID",
+                            "SIS Login ID",
+                            "Section",
+                            String.format("%s (%d)", quiz.getQuizName(), lmsAssignmentId)
+                    ));
+            ) {
+                for (QuizSubmission submission : submissions.values()) {
+                    csvPrinter.printRecord(
+                        submission.getFullName(),
+                        submission.getUserId(), //should be canvas number ID
+                        submission.getUserId(), // should student ID number
+                        submission.getUserId(), // should be login id
+                        "Somewhere",
+                        (submission.getGrade() / quiz.getMaxGrade())*100.0
+                    );
+                }
+                csvPrinter.flush();
+            }
+            response.flushBuffer();
+        } catch (IOException ex) {
+            throw new RuntimeException("IOError writing file to output stream");
+        }
     }
 
     /**
