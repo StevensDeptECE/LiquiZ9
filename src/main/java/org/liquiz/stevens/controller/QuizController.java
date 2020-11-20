@@ -508,33 +508,27 @@ public class QuizController {
      * @throws IOException
      */
     @RequestMapping(value = "/getAnswers", method = RequestMethod.GET)
-    public void getAnswers( HttpServletResponse response) throws NoLtiSessionException, IOException {
-//        canvasService.ensureApiTokenPresent();
-//        canvasService.validateOauthToken();
-
+    public void getAnswers(HttpServletResponse response,
+                           @RequestParam("qID") @DefaultValue("-1") Long quizId) throws NoLtiSessionException, IOException {
         LtiSession ltiSession = ltiSessionService.getLtiSession();
         LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
-        List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
-        boolean isStudent = roleList != null && (roleList.contains(LtiLaunchData.InstitutionRole.Learner));
 
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.addHeader("Access-Control-Allow-Origin", "*");
-        CodecQuizService cqs = new CodecQuizService();
-        CodecQuizSubmissionService cqss = new CodecQuizSubmissionService();
 
         String userId = ltiLaunchData.getCustom_canvas_user_id();
         String quizName = "demo";
 
-        Quiz quiz = cqs.getOne(new Document("quizName", quizName));
+        Quiz quiz = cqs.getOne(new Document("quizId", quizId));
         QuizSubmission quizSubmission = cqss.getOne(new Document("quizName", quizName).append("userName", userId));
         //TODO: throw denied access if not in class
         JSONArray jArr = new JSONArray();
         JSONObject jObj;
 
-        if (quiz != null && quizSubmission != null && new Date().after(quiz.getAnswersRelease())) {
-            double[] questionGradesArr = quizSubmission.getQuestionGrades();
+        if (quiz != null && new Date().after(quiz.getAnswersRelease())) {
+            double[] questionGradesArr = new double[quiz.getNumQuestions()];
             TreeMap<String, Question> questionsMap = quiz.getQuestionsMap();
 
             Iterator<Map.Entry<String, Question>> questionsItr = questionsMap.entrySet().iterator();
@@ -560,50 +554,37 @@ public class QuizController {
 
     /**
      * Provides a quiz based the long id in the url. Meant to be used for students.
-     * @param request
      * @param id
      * @return
      * @throws NoLtiSessionException
      * @throws IOException
      */
     @RequestMapping(value = {"/quizResult"})
-    public ModelAndView quizResult(HttpServletRequest request,
-                                           @FormParam("qID") @DefaultValue(
-                                               "-1") Long id,
-                                           HttpSession session) throws NoLtiSessionException{
-        long qID = Long.parseLong(request.getParameter("qID"));
+    public ModelAndView showQuiz(
+        @FormParam("qID") @DefaultValue("-1") Long id) throws NoLtiSessionException{
+
         getStudentSession();
-        Quiz quiz = cqs.getOne(new Document("quizId", qID));
-        if (quiz == null)
+        Quiz quiz = cqs.getOne(new Document("quizId", id));
+        if (quiz == null) {
             throw new RuntimeException("quiz does not exist");
-        session.setAttribute("quizId", id);
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("quiz", quiz);
-        data.put("custom_canvas_assignment_id", request.getParameter("custom_canvas_assignment_id"));
-        data.put("custom_canvas_course_id", request.getParameter(
-            "custom_canvas_course_id"));
-        return new ModelAndView("/showQuiz", data);
+        }
+        return new ModelAndView("/showQuiz", "quiz", quiz);
     }
 
     /**
      * Gives a preview of a quiz to a professor
-     * @param request
      * @param id
      * @return
      * @throws NoLtiSessionException
      */
     @RequestMapping(value = {"/quizPreview", "/quizPreview{id:[\\d]+}"})
-    public @ResponseBody String quizPreview(HttpServletRequest request,
-                                     @PathVariable("id") long id) throws NoLtiSessionException{
+    public ModelAndView quizPreview(@PathVariable("id") long id) throws NoLtiSessionException{
         getTeacherSession();
         Quiz quiz = cqs.getOne(new Document("quizId", id));
         if (quiz == null) {
             throw new RuntimeException("quiz does not exist");
         }
-        LOG.info(quiz.getContent());
-        HttpSession session = request.getSession();
-        session.setAttribute("quizId", id);
-        return quiz.getContent();
+        return new ModelAndView("/previewQuiz", "quiz", quiz);
     }
 
     /**

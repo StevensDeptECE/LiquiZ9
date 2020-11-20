@@ -30,7 +30,7 @@
                 <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
             </div>
             <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>
-            <input class='controls' type='button' value='Submit Quiz' onClick='checkAndSubmit()'/>
+            <input class='controls' type='button' value='Show Answers' onClick='showResult()'/>
         </div>
     </div>
     <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
@@ -39,8 +39,9 @@
 </form>
 <div class='footer'>
     <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>
-    <input class='controls' type='button' value='Submit Quiz' onClick='checkAndSubmit()'/>
+    <input class='controls' type='button' value='Show Answers' onClick='showResult()'/>
 </div>
+
 <script src="${context}/js/quiz.js"></script>
 </body>
 </html>
