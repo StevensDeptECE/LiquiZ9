@@ -278,7 +278,7 @@ public class QuizController {
         return mav;
     }
 
-    @RequestMapping(value = "/grades/{id:[\\d]+}", method = RequestMethod.GET)
+    @RequestMapping(value = "/grades/{id:[\\d]+}", method = RequestMethod.POST)
     public void getSpreadsheetForCanvasImport(
         @PathVariable("id") long quizId,
         @FormParam("lmsAssignmentId") int lmsAssignmentId,
@@ -571,7 +571,6 @@ public class QuizController {
                                            @FormParam("qID") @DefaultValue(
                                                "-1") Long id,
                                            HttpSession session) throws NoLtiSessionException{
-        lti.ensureApiTokenPresent();
         long qID = Long.parseLong(request.getParameter("qID"));
         getStudentSession();
         Quiz quiz = cqs.getOne(new Document("quizId", qID));

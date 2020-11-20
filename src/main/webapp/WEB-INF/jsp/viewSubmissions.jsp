@@ -7,11 +7,12 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="context" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>view quizzes</title>
-    <link rel="stylesheet" type="text/css" href="css/page.css">
+    <link rel="stylesheet" type="text/css" href="${context}/css/page.css">
 </head>
 <body>
 <form method="get" action="deleteSubmissions${quizId}">
@@ -40,7 +41,7 @@
     </table>
     <input class='controls' type='submit' value='Delete Selected Quizzes'/>
 </form>
-<form method="post" action="/grades/$quizId}">
+<form method="post" action="${context}/grades/${quizId}">
     <h1>Generate Grade Upload</h1>
     <label>Canvas Assignment ID:
         <input type="number" name="lmsAssignmentId" />
