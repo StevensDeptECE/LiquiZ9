@@ -19,6 +19,7 @@
     <input class="controls" type="submit" value="Return to teacher view" formaction="teacherView"/>
     <h1>${quizName}</h1>
     <input class="controls" type="submit" name="${quizId}" value="View as Spreadsheet" formaction="createSpreadsheetQuiz${quizId}"/>
+    <input type="submit" value="Download Grade File" formaction="${context}/grades/${quizId}" formmethod="post" />
     <table border="1">
         <tr>
             <th>Delete</th>
@@ -40,13 +41,6 @@
             </c:forEach>
     </table>
     <input class='controls' type='submit' value='Delete Selected Quizzes'/>
-</form>
-<form method="post" action="${context}/grades/${quizId}">
-    <h1>Generate Grade Upload</h1>
-    <label>Canvas Assignment ID:
-        <input type="number" name="lmsAssignmentId" />
-    </label>
-    <input type="submit" value="submit">
 </form>
 </body>
 </html>

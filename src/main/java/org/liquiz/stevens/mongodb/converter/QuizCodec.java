@@ -89,6 +89,7 @@ public class QuizCodec implements CollectibleCodec<Quiz> {
                 .append("showAnswersAfter", quiz.getAnswersRelease())
                 .append("quizId", quiz.getQuizId())
                 .append("content", quiz.getContent())
+                .append("assignmentId", quiz.getAssignmentId())
                 .append("questionsMap", questionDocumentList);
 
 
@@ -118,7 +119,8 @@ public class QuizCodec implements CollectibleCodec<Quiz> {
                              document.getString("quizName"), document.getString("classId"), document.getString("className"),
                              document.getString("answerFile"), document.getDouble("maxGrade"), document.getDate("showAnswersAfter"),
                              document.getLong("quizId"),
-            document.getString("content"));
+            document.getString("content"),
+            document.getInteger("assignmentId"));
 
         ArrayList<Document> docArr = (ArrayList) document.get("questionsMap");
         for (Document doc : docArr) {

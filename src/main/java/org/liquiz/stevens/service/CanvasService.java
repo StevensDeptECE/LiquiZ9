@@ -1,8 +1,10 @@
 package org.liquiz.stevens.service;
 
 import edu.ksu.canvas.CanvasApiFactory;
+import edu.ksu.canvas.interfaces.AssignmentWriter;
 import edu.ksu.canvas.interfaces.SubmissionWriter;
 import edu.ksu.canvas.model.Progress;
+import edu.ksu.canvas.model.assignment.Assignment;
 import edu.ksu.canvas.oauth.OauthToken;
 import edu.ksu.canvas.requestOptions.MultipleSubmissionsOptions;
 import edu.ksu.lti.launch.exception.NoLtiSessionException;
@@ -68,5 +70,18 @@ public class CanvasService {
         LtiSession ltiSession = ltiSessionService.getLtiSession();
         LtiLaunchData launchData = ltiSession.getLtiLaunchData();
         return launchData.getRolesList();
+    }
+
+    public Optional<Assignment> createAssignment(Assignment assignment,
+                                                 OauthToken oauthToken) throws IOException, NoLtiSessionException {
+        LtiSession ltiSession = ltiSessionService.getLtiSession();
+        LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
+        String
+            courseId =
+            ltiLaunchData.getCustom_canvas_course_id();
+
+        AssignmentWriter assignmentWriter =
+            canvasApiFactory.getWriter(AssignmentWriter.class, oauthToken);
+        return assignmentWriter.createAssignment(courseId, assignment);
     }
 }

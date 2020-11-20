@@ -31,6 +31,7 @@
             </div>
             <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>
             <input class='controls' type='button' value='Show Answers' onClick='showResult()'/>
+            <input class='controls' type='submit' value='Publish Quiz' formaction='publishQuiz${quiz.quizId}' formmethod="post"/>
         </div>
     </div>
     <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>

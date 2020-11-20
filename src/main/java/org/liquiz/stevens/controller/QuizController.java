@@ -43,9 +43,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -281,7 +278,6 @@ public class QuizController {
     @RequestMapping(value = "/grades/{id:[\\d]+}", method = RequestMethod.POST)
     public void getSpreadsheetForCanvasImport(
         @PathVariable("id") long quizId,
-        @FormParam("lmsAssignmentId") int lmsAssignmentId,
         HttpServletResponse response) {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=grades.csv");
@@ -317,7 +313,9 @@ public class QuizController {
                             "SIS User ID",
                             "SIS Login ID",
                             "Section",
-                            String.format("%s (%d)", quiz.getQuizName(), lmsAssignmentId)
+                            String.format("%s (%d)",
+                                quiz.getQuizName(),
+                                quiz.getAssignmentId())
                     ));
             ) {
                 for (QuizSubmission submission : submissions.values()) {
@@ -561,7 +559,7 @@ public class QuizController {
      */
     @RequestMapping(value = {"/quizResult"})
     public ModelAndView showQuiz(
-        @FormParam("qID") @DefaultValue("-1") Long id) throws NoLtiSessionException{
+        @RequestParam("qID") @DefaultValue("-1") Long id) throws NoLtiSessionException{
 
         getStudentSession();
         Quiz quiz = cqs.getOne(new Document("quizId", id));
@@ -588,6 +586,63 @@ public class QuizController {
     }
 
     /**
+     * Publishes a quiz to Canvas
+     * @param id
+     * @return
+     * @throws NoLtiSessionException
+     */
+    @RequestMapping(value = {"/publishQuiz", "/publishQuiz{id:[\\d]+}"},
+                    method = RequestMethod.POST)
+    public ModelAndView publishQuiz(@PathVariable("id") long id) throws NoLtiSessionException{
+        lti.ensureApiTokenPresent();
+        LtiLaunchData teacherSession = getTeacherSession();
+        OauthToken
+            oauthToken =
+            ltiSessionService.getLtiSession().getOauthToken();
+
+        Quiz quiz = cqs.getOne(new Document("quizId", id));
+        if (quiz == null) {
+            throw new RuntimeException("quiz does not exist");
+        }
+        try {
+            edu.ksu.canvas.model.assignment.Assignment
+                assignment =
+                new edu.ksu.canvas.model.assignment.Assignment();
+            assignment.setName(quiz.getQuizName());
+            assignment.setPointsPossible(quiz.getMaxGrade());
+            assignment.setSubmissionTypes(Collections.singletonList("external_tool"));
+            assignment.setDescription(String.valueOf(id));
+
+            edu.ksu.canvas.model.assignment.Assignment.ExternalToolTagAttribute
+                toolAttributes = assignment.new ExternalToolTagAttribute();
+
+            toolAttributes.setNewTab(true);
+            toolAttributes.setUrl("http://localhost:8090/liquiz" +
+                "/student/launch");//?qID="+id);
+            toolAttributes.setResourceLinkId(teacherSession.getResource_link_id());
+
+            assignment.setExternalToolTagAttributes(
+                toolAttributes
+            );
+            Optional<edu.ksu.canvas.model.assignment.Assignment>
+                createdAssignment =
+                canvasService
+                    .createAssignment(assignment,
+                        oauthToken);
+            if(createdAssignment.isPresent()){
+                LOG.info("Assignment Created: "+ createdAssignment.get().getId());
+                quiz.setAssignmentId(createdAssignment.get().getId());
+                cqs.replaceQuiz(quiz);
+            } else {
+                throw new RuntimeException("Could not save assignment");
+            }
+        } catch (IOException e){
+            throw new RuntimeException("could not publish quiz");
+        }
+        return new ModelAndView("/previewQuiz", "quiz", quiz);
+    }
+
+    /**
      * Sets up the submission to be saved, graded and added to the database. It also sets up the next view to see answers
      * and grades for the student.
      * @param request
@@ -597,19 +652,19 @@ public class QuizController {
     @RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
     public ModelAndView testQuiz(
         HttpServletRequest request,
+        @RequestParam("quizId") long quizId,
         @RequestBody List<List<String>> submittedAnswers) throws NoLtiSessionException {
         LtiLaunchData ltiLaunchData = getStudentSession();
         String userId = ltiLaunchData.getCustom_canvas_user_login_id();
 
         TreeMap<String, String[]> inputsMap = new TreeMap<>(new qNameComparator());
         for (List<String> submittedAnswer : submittedAnswers) {
-            if(submittedAnswer.get(0).contains("_")) {
+            if(submittedAnswer.get(0).startsWith("Q_")) {
                 inputsMap.put(submittedAnswer.get(0),
                     submittedAnswer.get(1).split(","));
             }
         }
 
-        long quizId = Long.parseLong(request.getParameter("quizId"));
         Quiz quiz = cqs.getOne(new Document("quizId", quizId));
         if (quiz == null)
             throw new RuntimeException("quiz does not exist");

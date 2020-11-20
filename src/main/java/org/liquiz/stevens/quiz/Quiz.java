@@ -32,6 +32,7 @@ public class Quiz {
     private double maxGrade;
     private Date showAnswersAfter;
     private TreeMap<String, Question> questionsMap;
+    private Integer assignmentId;
 
     /**
      * Used to create a quiz
@@ -66,6 +67,7 @@ public class Quiz {
      * @param numTries the number of tries a student has for this quiz
      * @param quizId value for the id of the quiz
      * @param content the contents of the quiz in HTML form
+     * @param assignmentId
      * @param courseId id of the class this quiz belongs to
      * @param answers a string representing the answers to the quiz
      * @param maxGrade the max possible grade that could be received
@@ -79,7 +81,8 @@ public class Quiz {
                 String answers,
                 double maxGrade,
                 Date showAnswersAfter,
-                long quizId, String content){
+                long quizId, String content,
+                Integer assignmentId){
         this.mongoId = mongoId;
         this.numTries = numTries; 
         this.quizName = quizName;
@@ -90,6 +93,7 @@ public class Quiz {
         this.showAnswersAfter = showAnswersAfter;
         this.quizId = quizId;
         this.content = content;
+        this.assignmentId = assignmentId;
         questionsMap = new TreeMap<>(new qNameComparator());
     }
     
@@ -388,6 +392,14 @@ public class Quiz {
 
     public String getContent() {
         return this.content;
+    }
+
+    public void setAssignmentId(Integer id) {
+        this.assignmentId = id;
+    }
+
+    public Integer getAssignmentId() {
+        return assignmentId;
     }
 }
 

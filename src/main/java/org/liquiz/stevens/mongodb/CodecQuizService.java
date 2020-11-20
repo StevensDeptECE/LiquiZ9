@@ -5,24 +5,21 @@
  */
 package org.liquiz.stevens.mongodb;
 
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import static com.mongodb.client.model.Filters.eq;
+import org.bson.Document;
+import org.liquiz.stevens.quiz.Quiz;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.print.Doc;
 
-import org.bson.Document;
-import org.liquiz.stevens.quiz.Quiz;
-import org.liquiz.stevens.quiz.QuizSubmission;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  *
@@ -84,7 +81,8 @@ public class CodecQuizService {
 
     public boolean replaceQuiz(Quiz quiz) {
         try {
-            getCollection().findOneAndReplace(new Document("quizName", quiz.getQuizName()), quiz);
+            getCollection().findOneAndReplace(new Document("quizId",
+                quiz.getQuizId()), quiz);
             return true;
         }
         catch(Exception e){
