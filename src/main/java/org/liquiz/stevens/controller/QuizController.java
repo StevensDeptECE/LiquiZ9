@@ -324,8 +324,8 @@ public class QuizController {
                         submission.getCanvasUserId(),
                         "",
                         "",
-                        "Somewhere",
-                        (submission.getGrade() / quiz.getMaxGrade())*100.0
+                        "",
+                        submission.getGrade()
                     );
                 }
                 csvPrinter.flush();
