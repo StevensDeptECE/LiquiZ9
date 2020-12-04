@@ -51,6 +51,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Controller
@@ -658,9 +659,14 @@ public class QuizController {
         String userId = ltiLaunchData.getCustom_canvas_user_login_id();
 
         TreeMap<String, String[]> inputsMap = new TreeMap<>(new qNameComparator());
+        Pattern questionPattern = Pattern.compile("[qTQmsnS]_[0-9]*_[0-9]*");
+
         for (List<String> submittedAnswer : submittedAnswers) {
-            if(submittedAnswer.get(0).startsWith("Q_")) {
-                inputsMap.put(submittedAnswer.get(0),
+            String inputName = submittedAnswer.get(0);
+            if(questionPattern
+                .matcher(inputName)
+                .matches()) {
+                inputsMap.put(inputName,
                     submittedAnswer.get(1).split(","));
             }
         }
