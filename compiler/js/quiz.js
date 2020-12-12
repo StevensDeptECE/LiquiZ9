@@ -89,7 +89,7 @@ function protestRequest() {
 function loadJSON(callback) {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
-  xobj.open("GET", "http://localhost:8080/LiquiZServer/getAnswers", true);
+  xobj.open("GET", "/getAnswers", true);
   xobj.onreadystatechange = function () {
     if (xobj.readyState == 4 && xobj.status == "200") {
       callback(xobj.responseText);
@@ -133,7 +133,7 @@ function showResult() {
     }
   }
 
-  getJSON("http://localhost:8080/LiquiZServer/getAnswers", function (
+  getJSON("/getAnswers", function (
     err,
     data
   ) {

@@ -53,15 +53,14 @@ function startTime(limit) {
 
 function checkAndSubmit() {
   var pledge = document.getElementById("pledge");
-  console.log(userid + ", " + passwd);
   console.log(name + ", " + pledge);
   var submission = [];
   var f = document.forms[0];
-  for (var i = 0; i < f.elements.length; i++)
+  for (var i = 0; i < f.elements.length; i++) {
     submission.push([f.elements[i].id, f.elements[i].value]);
-  console.log(submission);
+  }
   var json = new XMLHttpRequest();
-  json.open("post", "gradquiz.jsp", true);
+  json.open("post", "/liquiz/submitQuiz?quizId="+f.getAttribute("data-quizId"), true);
   json.setRequestHeader("Content-Type", "application/json");
   // Create a state change callback
   json.onreadystatechange = function () {
@@ -89,9 +88,9 @@ function protestRequest() {
 function loadJSON(callback) {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
-  xobj.open("GET", "http://localhost:8080/LiquiZServer/getAnswers", true);
+  xobj.open("GET", "/liquiz/getAnswers", true);
   xobj.onreadystatechange = function () {
-    if (xobj.readyState == 4 && xobj.status == "200") {
+    if (xobj.readyState === 4 && xobj.status === "200") {
       callback(xobj.responseText);
     }
   };
@@ -114,14 +113,17 @@ function getJSON(url, callback) {
 }
 
 function showResult() {
+  const f = document.forms[0];
+  const quizID = f.getAttribute("data-quizId")
   var answerSections = document.getElementsByClassName("answer");
-  for (var i = 0; i < answerSections.length; i++) {
+  let i;
+  for (i = 0; i < answerSections.length; i++) {
     answerSections[i].style.display = "block";
     // answerSections[i].style.color = "#ff0000";
   }
 
   var inputs = document.getElementsByTagName("input");
-  for (var i = 0; i < inputs.length; i++) {
+  for (i = 0; i < inputs.length; i++) {
     if (inputs[i].checked === true) {
       inputs[i].disabled = false;
     } else {
@@ -133,7 +135,7 @@ function showResult() {
     }
   }
 
-  getJSON("http://localhost:8080/LiquiZServer/getAnswers", function (
+  getJSON("/liquiz/getAnswers?qID="+encodeURI(quizID), function (
     err,
     data
   ) {
@@ -141,6 +143,11 @@ function showResult() {
       alert("Something went wrong: " + err);
     } else {
       var answerObj = data;
+      for(let i = 0; i<data.length; i++){
+        let answerElement = document.getElementById("A" + data[i].id);
+        answerElement.value = data[i].answers;
+        //TODO this only works for text inputs and maybe select.  What does backend for checkbox and radio look like?
+      }
       var questionAmount = Object.keys(answerObj).length;
       var sectionCurrent, sectionLast = answerObj[0]["id"].split("_")[1];
       var pointsTotal = 0;
@@ -152,7 +159,7 @@ function showResult() {
         var options = document.getElementsByName(qID);
         sectionCurrent = answerObj[i]["id"].split("_")[1];
 
-        if (sectionCurrent != sectionLast) {
+        if (sectionCurrent !== sectionLast) {
           var section = document.getElementById(sectionLast);
           section.innerHTML =
             "You earned: " +
@@ -169,7 +176,7 @@ function showResult() {
         pointsEarned += answerObj[i]["pointsE"];
 
         for (var j = 0; j < options.length; j++) {
-          options[j].setAttribute("disabled", true);
+          options[j].setAttribute("disabled", "true");
           if (answer.includes(options[j].value)) {
             if (options[j].type === "radio") {
               options[j].checked = true;
@@ -187,3 +194,25 @@ function showResult() {
     }
   });
 }
+
+(function () {
+  let template = document.getElementById("quiz-content");
+  let root = document.getElementById("root");
+  let sections = template.content.querySelectorAll("div.section");
+  for (let i = 0; i < sections.length; i++) {
+    root.appendChild(sections[i].cloneNode(true));
+  }
+
+  const questions = document.querySelectorAll('.question');
+  for(let i = 0; i < questions.length; i++) {
+    let q = document.querySelectorAll('.question')[i]
+    let a = q.cloneNode(true);
+    a.className = "answer"
+    let ids = a.querySelectorAll('*[id]');
+    for(let j = 0; j < ids.length; j++){
+      ids[j].id = "A" + ids[j].id;
+      ids[j].name = "A" + ids[j].name;
+    }
+    q.appendChild(a);
+  }
+})();

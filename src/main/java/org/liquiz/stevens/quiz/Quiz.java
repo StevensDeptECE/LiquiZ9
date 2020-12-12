@@ -5,10 +5,6 @@
  */
 package org.liquiz.stevens.quiz;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.*;
-
 import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,6 +13,8 @@ import org.liquiz.stevens.questions.NumQuestion;
 import org.liquiz.stevens.questions.Question;
 import org.liquiz.stevens.questions.SimpleQuestion;
 
+import java.util.*;
+
 /**
  *
  * @author ejone
@@ -24,6 +22,8 @@ import org.liquiz.stevens.questions.SimpleQuestion;
 public class Quiz {
     private ObjectId mongoId;
     private String answerFile;
+    private final String content;
+    private final String answers;
     private long quizId;
     private String quizName;
     private String courseId;
@@ -32,23 +32,31 @@ public class Quiz {
     private double maxGrade;
     private Date showAnswersAfter;
     private TreeMap<String, Question> questionsMap;
+    private Integer assignmentId;
 
     /**
      * Used to create a quiz
      * @param quizName value for id of the quiz
      * @param courseId id of the class this quiz belongs to
-     * @param answerFile name of the answer file to be used
+     * @param answers a string representing the answers to the quiz
      * @param numTries the number of tries a student has for this quiz
      * @param showAnswersAfter date to show the answers after
+     * @param content the contents of the quiz in HTML form
      */
-    public Quiz(String quizName, String courseId, String className, String answerFile, int numTries, Date showAnswersAfter){
+    public Quiz(String quizName,
+                String courseId,
+                String className,
+                String answers,
+                int numTries,
+                Date showAnswersAfter, String content){
         this.quizName = quizName;
         this.courseId = courseId;
         this.className = className;
-        this.answerFile = answerFile;
+        this.answers = answers;
         this.numTries = numTries;
         this.showAnswersAfter = showAnswersAfter;
         this.quizId = Math.abs(new Random().nextLong());
+        this.content = content;
         questionsMap = new TreeMap<>(new qNameComparator());
         updateAnswers();
     }
@@ -58,21 +66,34 @@ public class Quiz {
      * @param mongoId id of the quiz in the database
      * @param numTries the number of tries a student has for this quiz
      * @param quizId value for the id of the quiz
+     * @param content the contents of the quiz in HTML form
+     * @param assignmentId
      * @param courseId id of the class this quiz belongs to
-     * @param answerFile name of the answer file that was used
+     * @param answers a string representing the answers to the quiz
      * @param maxGrade the max possible grade that could be received
      * @param showAnswersAfter date to show the answers after
      */
-    public Quiz(ObjectId mongoId, int numTries, String quizName, String courseId, String className, String answerFile, double maxGrade, Date showAnswersAfter, long quizId){
+    public Quiz(ObjectId mongoId,
+                int numTries,
+                String quizName,
+                String courseId,
+                String className,
+                String answers,
+                double maxGrade,
+                Date showAnswersAfter,
+                long quizId, String content,
+                Integer assignmentId){
         this.mongoId = mongoId;
         this.numTries = numTries; 
         this.quizName = quizName;
         this.courseId = courseId;
         this.className = className;
-        this.answerFile = answerFile;
+        this.answers = answers;
         this.maxGrade = maxGrade;
         this.showAnswersAfter = showAnswersAfter;
         this.quizId = quizId;
+        this.content = content;
+        this.assignmentId = assignmentId;
         questionsMap = new TreeMap<>(new qNameComparator());
     }
     
@@ -128,6 +149,10 @@ public class Quiz {
             answersList[index++] = q.getAnswer();
         }
         return answersList;
+    }
+
+    public final String getAnswersString(){
+        return this.answers;
     }
 
     public final double[] getMaxGrades() {
@@ -295,30 +320,30 @@ public class Quiz {
     
    
     private void updateAnswers(){
-    try {
-      File myObj = new File(answerFile);
-        try (Scanner myReader = new Scanner(myObj)) {
+        try (Scanner myReader = new Scanner(this.answers)) {
             while (myReader.hasNextLine()) {
-                String qType = myReader.next();
-                double gVal = myReader.nextDouble();
-                String qAnsLine = myReader.nextLine();
-                String qAns = qAnsLine.trim();
-                System.out.println(qType + ", " + qAns);
-                
-                maxGrade += gVal;
-                addQuestion(qType, qAns, gVal);
-            } 
-            maxGrade = Math.round(maxGrade*1000)/1000;
-        }  
-        catch(InputMismatchException ex){
+                String questionName = myReader.next();
+                if (questionName.startsWith("defs")) {
+                    myReader.nextLine();
+                } else {
+                    double pointValue = myReader.nextDouble();
+                    if(pointValue == 0){
+                        pointValue = 1;
+                    }
+                    String qAnsLine = myReader.nextLine();
+                    String answer = qAnsLine.trim();
+                    System.out.println(questionName + ", " + answer);
+
+                    maxGrade += pointValue;
+                    addQuestion(questionName, answer, pointValue);
+                }
+            }
+            maxGrade = Math.round(maxGrade * 1000.0) / 1000.0;
+        } catch (InputMismatchException ex) {
             System.out.println("An error occurred reading in the file.");
         }
-    }
-    //TODO: respond on server side, log it, major problem
-    catch (FileNotFoundException e) {
-      System.out.println("An error occurred reading in the file.");
-    }
-  }
+
+     }
 
     /**
      * Adds a question to the quiz's treemap questionsMap
@@ -365,5 +390,16 @@ public class Quiz {
   }
 
 
+    public String getContent() {
+        return this.content;
+    }
+
+    public void setAssignmentId(Integer id) {
+        this.assignmentId = id;
+    }
+
+    public Integer getAssignmentId() {
+        return assignmentId;
+    }
 }
 

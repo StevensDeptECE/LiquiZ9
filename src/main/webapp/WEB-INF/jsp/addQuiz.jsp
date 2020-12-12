@@ -21,19 +21,29 @@
     <table>
         <tr>
             <th>jsp File: </th>
-            <th>Answer File: </th>
-            <th>Class Name: </th>
-            <th>Course Id (if different from the current course): </th>
-            <th>Attempts Allowed: </th>
-            <th>Date to show answers after: </th>
+            <td><input type = "file" id = "jspFile" name = "jsp File" required/></td>
         </tr>
         <tr>
-            <td><input type = "file" id = "jspFile" name = "jsp File" required/></td>
+            <th>Answer File: </th>
             <td><input type = "file" id = "answerFile" name = "Answer File" required /></td>
-            <td><input type = "text" id = "className" name = "className" required /></td>
-            <td><input type = "text" id = "classId" name = "classId" required/></td>
+        </tr>
+        <tr>
+            <th>Class Name: </th>
+            <td><input type = "text" id = "className" name = "className" required value="${courseName}" /></td>
+        </tr>
+        <tr>
+            <th>Course Id (if different from the current course): </th>
+            <td><input type = "text" id = "classId" name = "classId" required value="${courseId}"/></td>
+        </tr>
+        <tr>
+            <th>Attempts Allowed: </th>
             <td><input type = "number" id = "numTries" name = "numTries" required default="1"/></td>
+        </tr>
+        <tr>
+            <th>Date to show answers after: </th>
             <td><input type ="datetime-local" id = "showAnswersAfter" name = "showAnswersAfter" required/></td>
+        </tr>
+        <tr>
         </tr>
     </table>
     <input type = "submit" value = "Upload Quiz" />

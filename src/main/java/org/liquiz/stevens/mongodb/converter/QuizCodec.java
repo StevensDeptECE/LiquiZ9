@@ -6,14 +6,7 @@
 package org.liquiz.stevens.mongodb.converter;
 
 import com.mongodb.MongoClient;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.bson.BsonReader;
-import org.bson.BsonString;
-import org.bson.BsonValue;
-import org.bson.BsonWriter;
-import org.bson.Document;
+import org.bson.*;
 import org.bson.codecs.Codec;
 import org.bson.codecs.CollectibleCodec;
 import org.bson.codecs.DecoderContext;
@@ -22,6 +15,10 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.types.ObjectId;
 import org.liquiz.stevens.questions.Question;
 import org.liquiz.stevens.quiz.Quiz;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Mongo decoder for Quiz.
@@ -91,6 +88,8 @@ public class QuizCodec implements CollectibleCodec<Quiz> {
                 .append("maxGrade", quiz.getMaxGrade())
                 .append("showAnswersAfter", quiz.getAnswersRelease())
                 .append("quizId", quiz.getQuizId())
+                .append("content", quiz.getContent())
+                .append("assignmentId", quiz.getAssignmentId())
                 .append("questionsMap", questionDocumentList);
 
 
@@ -119,7 +118,9 @@ public class QuizCodec implements CollectibleCodec<Quiz> {
         Quiz quiz = new Quiz(document.getObjectId("_id"), document.getInteger("numTries"),
                              document.getString("quizName"), document.getString("classId"), document.getString("className"),
                              document.getString("answerFile"), document.getDouble("maxGrade"), document.getDate("showAnswersAfter"),
-                             document.getLong("quizId"));
+                             document.getLong("quizId"),
+            document.getString("content"),
+            document.getInteger("assignmentId"));
 
         ArrayList<Document> docArr = (ArrayList) document.get("questionsMap");
         for (Document doc : docArr) {
