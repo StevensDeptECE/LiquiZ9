@@ -203,8 +203,8 @@ private:
 
 /*
   A formula question evaluates a set of variables and can then ask the student to compute any variable
-  
- */
+
+*/
 class FormulaQuestion : public QuestionType {
 public:
   void setText(const std::string& body) override;
