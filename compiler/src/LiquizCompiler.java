@@ -16,8 +16,7 @@ import org.json.*;
     see: https://devqa.io/how-to-parse-json-in-java/
 */
 
-public class LiquizCompiler
-{
+public class LiquizCompiler extends QuestionType {
     static final string emptystr;
     static final string escapedDollar;
     static final string defaultQuiz;
@@ -73,7 +72,7 @@ public class LiquizCompiler
       questionStart = Pattern.compile("^\\{");
       specials = Pattern.compile("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
       qID = Pattern.compile("name='[q||T||Q||m||s||n||S]_[0-9]*_[0-9]*'");
-      questionPattern = ("\\$(?:mch|mcv|dro|mah|mav|fQ|fq|fn|fs|fS)\\$");
+      questionPattern = Pattern.compile("\\$(?:mch|mcv|dro|mah|mav|fQ|fq|fn|fs|fS)\\$");
 
       uuid = 1;
 
@@ -185,7 +184,7 @@ public class LiquizCompiler
         return;
       }
       JSONObject header = parse(line);
-      #if 0
+      /*#if 0
         if (expect(specName, this, header, "quizspec")) {
           includeQSpec(specName);
         }
@@ -193,7 +192,7 @@ public class LiquizCompiler
         if (header.find("quizspec") != header.end()) {
         specName = header.at("quizspec");//TODO: pull error checking into separate function above
         includeQSpec(nullptr, specName);
-    }  
+        }  */
   quizName = header.at("name"); //TODO: error checking
     }
 
@@ -411,7 +410,7 @@ public class LiquizCompiler
 
     }
 
-    private void QuestionHashMap()
+    private void QuestionHashMap() //hashmap for question types
     {
       questionTypes.put("mch", new MultipleChoiceHorizontal());
       questionTypes.put("mcv", new MultipleChoiceVertical());
@@ -454,6 +453,7 @@ public class LiquizCompiler
 	    }
     }
 
+    // < T > is the template declaration, also knows as Generics in Java
     public static < T > T lookup(JSONObject json, final string key, final T defaultVal, int lineNum) {
       try {
         auto it = json.find(key);
