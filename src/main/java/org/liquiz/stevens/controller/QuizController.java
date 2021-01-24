@@ -512,6 +512,7 @@ public class QuizController {
         LtiSession ltiSession = ltiSessionService.getLtiSession();
         LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
 
+
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -526,7 +527,11 @@ public class QuizController {
         JSONArray jArr = new JSONArray();
         JSONObject jObj;
 
-        if (quiz != null && new Date().after(quiz.getAnswersRelease())) {
+        List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
+        boolean isInstructor =
+            roleList !=  null && roleList.contains(LtiLaunchData.InstitutionRole.Instructor);
+
+        if (quiz != null && (new Date().after(quiz.getAnswersRelease()) || isInstructor)) {
             double[] questionGradesArr = new double[quiz.getNumQuestions()];
             TreeMap<String, Question> questionsMap = quiz.getQuestionsMap();
 
