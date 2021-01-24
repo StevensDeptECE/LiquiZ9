@@ -567,7 +567,6 @@ public class QuizController {
     public ModelAndView showQuiz(
         @RequestParam("qID") @DefaultValue("-1") Long id) throws NoLtiSessionException{
 
-        getStudentSession();
         Quiz quiz = cqs.getOne(new Document("quizId", id));
         if (quiz == null) {
             throw new RuntimeException("quiz does not exist");
