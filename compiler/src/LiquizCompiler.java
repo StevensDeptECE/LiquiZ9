@@ -2,6 +2,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.HashMap;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import org.json.*;
 
@@ -193,7 +194,7 @@ public class LiquizCompiler extends QuestionType {
         specName = header.at("quizspec");//TODO: pull error checking into separate function above
         includeQSpec(nullptr, specName);
         }  */
-  quizName = header.at("name"); //TODO: error checking
+      quizName = header.at("name"); //TODO: error checking
     }
 
     private void setAnswer(){
@@ -211,64 +212,60 @@ public class LiquizCompiler extends QuestionType {
     }
 
     private void generateHeader(){
-      
-     //TODO Translate raw string to java
-      /*
-      getJSONHeader();
-        html << 
-      R"(
-    <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8"/>
-        <link rel="stylesheet" type="text/css" href='css/)" <<
-        styleSheet <<
-      R"('>
-        <title>
-      LiQuiz [)" <<
-        quizName <<
-      R"(]
-        </title>
-        <script src='js/quiz.js'></script>
-        </head>
-      <body onload='startTime()" <<
-      timeLimit << ")'>" <<
-    R"(
-      <form method="get" action="/Grade"></form>
-        <!-- Header -->
-      <div id='header' class='header'>
-        <img class='logo' src='media/)" <<
-      imgFile << "'/>" <<
-    R"(
-      <div class='headerText'>
-        <div class='quizTitle'>
-          )" <<
-      quizName <<
-    R"(
-      </div>
-      <div class='headerDetails'>
-        <div class='headerRow'>
-          )" <<
-      author <<
-    R"(
-        </div>
-        <div class='headerRow'>
-          Email  )" <<
-           email << "  if you have any questions!" <<
-    R"(
-        </div>
-          <div class='headerRow'>
-            <input id='pledge' type='checkbox' name='pledged' value='pledged'/>
-            <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
-          </div>
-          <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>
-          <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
-        </div>
-        </div>
-        <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
-      </div>
-    )";
-    */
+    getJSONHeader();
+    System.out.printf(html + 
+    "("+
+    "<!DOCTYPE html>"+
+    "<html>"+
+    "<head>"+
+    "  <meta charset="UTF-8"/>"+
+    "  <link rel="stylesheet" type="text/css" href='css/%s')" +
+        styleSheet +
+    "('>"+
+    "  <title>"+
+    "    LiQuiz [)" +
+        quizName +
+    "(]"+
+    "  </title>"+
+    "  <script src='js/quiz.js'></script>"+
+    "</head>"+
+    "<body onload='startTime()" +
+    timeLimit + ")'>" +
+    "("+
+    "  <form method="get" action="/Grade"></form>"+
+    "  <!-- Header -->"+
+    "  <div id='header' class='header'>"+
+    "    <img class='logo' src='media/)" +
+      imgFile + "'/>" +
+    "("+
+    "  <div class='headerText'>"+
+    "    <div class='quizTitle'>"+
+          ")" +
+      quizName +
+    "("+
+    "  </div>"+
+    "  <div class='headerDetails'>"+
+    "    <div class='headerRow'>"+
+    "      )" +
+      author +
+    "("+
+    "    </div>"+
+    "    <div class='headerRow'>"+
+    "      Email  )" +
+           email + " if you have any questions!" +
+    "("+
+    "    </div>"+
+    "      <div class='headerRow'>"+
+    "        <input id='pledge' type='checkbox' name='pledged' value='pledged'/>"+
+    "        <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>"+
+    "      </div>"+
+    "      <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>"+
+    "      <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>"+
+    "    </div>"+
+    "    </div>"+
+    "    <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>"+
+    "  </div>"+
+    ")");
     }
     
     private void makeQuestion(JSONObject question){
@@ -306,42 +303,40 @@ public class LiquizCompiler extends QuestionType {
         }
         findQuestionType(type, points, delim, m.position(), m.length());
       }
-    double points = totalPoints != 0 ? totalPoints / questionCount : partNum;
+
+      double points = totalPoints != 0 ? totalPoints / questionCount : partNum;
         questionText.pop_back();
         setAnswer();
         
-        //TODO Translate raw string to java
-        /*html << R"(
-      <div class='section'>
-        <div class='question' id='q)";
-        html << questionNum << "'>";
-        html << R"(
-          <div>
-            )";
-        html << questionNum << "." << "\t" << questionName;
-        html << R"(
-            <span class='pts'>  )";
-        html << "(" << totalPoints<< " points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>";
-        html << R"(
-          </div>
-          )";
-        html << preStart << endl;
-        html << questionText << preEnd;
+      System.out.printf(html + "("+
+      "<div class='section'>"+
+      "  <div class='question' id='q)"+
+        html + questionNum + "'>"+
+        html + "("+
+      "    <div>"+
+      "      )"+
+        html + questionNum + "." + "\t" + questionName+
+        html + "("+
+      "      <span class='pts'>  )"+
+        html + "(" + totalPoints+ " points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>"+
+        html + "("+
+      "    </div>"+
+      "    )"
+        html + preStart + '\n'+
+        html + questionText + preEnd+
 
-        html << R"(
-        </div>
-
-        <div class='answer'>
-          )";
-        html << preStart;
-        html << R"(
-    )";
-        html << answerText << preEnd;
-        html << R"(
-        </div>
-      </div>
-      
-      )";*/
+        html + "("+
+      "  </div>"+
+      "  <div class='answer'>"+
+      "    )"
+        html + preStart+
+        html + "("+
+      ")"+
+        html + answerText + preEnd+
+        html + "("+
+      "  </div>"
+      "</div>"+
+      ")");
       
         questionNum++;
       } else {
@@ -385,7 +380,7 @@ public class LiquizCompiler extends QuestionType {
     }
     
     private void generateFooter(){
-      String html = scanf(
+      System.out.printf(
         "<div class='footer'>" +
         "<pre id='bottomTime'></pre>" +
         "<input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>" +
@@ -403,11 +398,37 @@ public class LiquizCompiler extends QuestionType {
     }
     
     private void readFile(final char filename[], char bytes, long fileSize){ // (long is used as an unsigned integer)
+      //ifstream f(fileName, ios::in | ios::ate);
+      InputStream f = new FileInputStream(fileName);
+      
+      /*if (!f.good()) {
+        throw fileName; //TODO: add Ex object
+      }*/
 
+      fileSize = f.available();
+      //f.seekg(0, ios::beg);
+      f.reset();
+      bytes = new char[fileSize];
+      f.read();
+      f.close();
     }
-
+    
     private bool getline(string line){
-
+      while (cursor < fileSize && bytes[cursor] == '#') { // skip comment
+        cursor++;
+        while (cursor < fileSize && bytes[cursor] != '\n')
+          cursor++;
+        lineNum++;
+      }
+      if (cursor >= fileSize)
+        return false;
+      long startLine = cursor;
+      while (cursor < fileSize && bytes[cursor] != '\n')
+        cursor++;
+      line = new string(bytes[startLine], cursor - startLine + 1);
+      lineNum++;
+      cursor++;
+      return true;
     }
 
     private void QuestionHashMap() //hashmap for question types
