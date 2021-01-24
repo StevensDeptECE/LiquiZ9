@@ -654,7 +654,7 @@ public class QuizController {
      * @return
      * @throws NoLtiSessionException
      */
-    @RequestMapping(value = "/submitQuiz", method = RequestMethod.POST)
+    @RequestMapping(value = "/student/submitQuiz", method = RequestMethod.POST)
     public ModelAndView testQuiz(
         HttpServletRequest request,
         @RequestParam("quizId") long quizId,
