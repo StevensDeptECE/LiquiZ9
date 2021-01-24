@@ -60,7 +60,7 @@ function checkAndSubmit() {
     submission.push([f.elements[i].id, f.elements[i].value]);
   }
   var json = new XMLHttpRequest();
-  json.open("post", "/liquiz/submitQuiz?quizId="+f.getAttribute("data-quizId"), true);
+  json.open("post", "submitQuiz?quizId="+f.getAttribute("data-quizId"), true);
   json.setRequestHeader("Content-Type", "application/json");
   // Create a state change callback
   json.onreadystatechange = function () {
@@ -88,7 +88,7 @@ function protestRequest() {
 function loadJSON(callback) {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
-  xobj.open("GET", "/liquiz/getAnswers", true);
+  xobj.open("GET", "getAnswers", true);
   xobj.onreadystatechange = function () {
     if (xobj.readyState === 4 && xobj.status === "200") {
       callback(xobj.responseText);
@@ -135,7 +135,7 @@ function showResult() {
     }
   }
 
-  getJSON("/liquiz/getAnswers?qID="+encodeURI(quizID), function (
+  getJSON("getAnswers?qID="+encodeURI(quizID), function (
     err,
     data
   ) {
