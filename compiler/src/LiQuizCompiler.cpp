@@ -344,18 +344,7 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
 
     html << R"(
     </div>
-
-    <div class='answer'>
-      )";
-    html << preStart;
-    html << R"(
-)";
-    html << answerText << preEnd;
-    html << R"(
-    </div>
-  </div>
-  
-  )";
+    )";
     questionNum++;
   } else {
     string defs = lookup(question,"values", emptystr, lineNum);
@@ -457,7 +446,7 @@ void LiQuizCompiler::generateQuiz(const char liquizFileName[]) {
   cursor = 0;
   html.open(outputDir + baseFileName + "html");
   answers.open(outputDir + baseFileName + "ans");
-  xml.open(outputDir + baseFileName + "xml");
+  //xml.open(outputDir + baseFileName + "xml");
   generateHeader();
   grabQuestions();
   generateFooter();
