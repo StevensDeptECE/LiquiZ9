@@ -185,29 +185,19 @@ public class QuizController {
      */
     @RequestMapping("/deleteQuizzes")
     public ModelAndView deleteQuizzes(HttpServletRequest request) throws NoLtiSessionException {
-        LtiLaunchData ltiLaunchData = getTeacherSession();
-        String courseId = ltiLaunchData.getCustom_canvas_course_id();
+        getTeacherSession();
 
         String[] quizDeleteArray = request.getParameterValues("quiz");
 
-        String Outcome = "The quizzes with the following IDs have been deleted: ";
         for(String quizIdString : quizDeleteArray){
             long quizId = Long.parseLong(quizIdString);
-            if(cqs.delete(quizId))
-                Outcome += "(" + quizIdString + ") ";
+            cqs.delete(quizId);
         }
+        String outcome = "The quizzes with the following IDs have been " +
+            "deleted: "
+            + String.join(",", quizDeleteArray);
 
-
-        ArrayList<Quiz> quizList = cqs.getList(new Document("classId", courseId));
-        double[] avgGrades = new double[quizList.size()];
-        int index = 0;
-        for(Quiz q : quizList)
-            avgGrades[index++] = cqss.getAvgQuizScore(q.getQuizId());
-
-        ModelAndView mav = new ModelAndView("quizzesToEdit", "Outcome", Outcome);
-        mav.addObject("quizList", quizList);
-        mav.addObject("avgGrades", avgGrades);
-        return mav;
+        return new ModelAndView("redirect:/teacherView", "outcome", outcome);
     }
 
     /**
