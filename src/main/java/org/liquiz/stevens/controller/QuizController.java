@@ -95,7 +95,7 @@ public class QuizController {
     public ModelAndView basePath(HttpServletRequest request) {
         LOG.info("Showing Activity Reporting configuration XML");
         String appUrl = OauthController.getApplicationBaseUrl(request, true);
-        String domain = OauthController.getApplicationBaseUrl(request, false);
+        String  domain = OauthController.getApplicationBaseUrl(request, false);
         LOG.debug("LTI launch URL: " + appUrl);
         HashMap<String, String> data = new HashMap<>();
         data.put("url", appUrl);
@@ -128,23 +128,6 @@ public class QuizController {
         return new ModelAndView("chooseQuiz", "courseId", ltiLaunchData.getCustom_canvas_course_id());
     }
 
-    /**
-     * Initial page for professors where they can choose to view/edit their quizzes, add a new quiz or view grades
-     *
-     * @return
-     * @throws NoLtiSessionException
-     */
-
-    /*
-    TODO: delete
-    @RequestMapping("/teacherView")
-    public ModelAndView teacherView() throws NoLtiSessionException {
-        LtiLaunchData ltiLaunchData = getTeacherSession();
-        lti.ensureApiTokenPresent();
-        ModelAndView mav = new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
-        return mav;
-    }
-*/
     /**
      * Provides a list of the quizzes a professor can edit,delete or view from their course
      * @return
@@ -407,11 +390,13 @@ public class QuizController {
         String
             course_id =
             ltiLaunchData.getCustom_canvas_course_id();
+        String courseName = ltiLaunchData.getCustom_canvas_course_name();
         LOG.info(canvasService.getEid() + " is seeking to add a quiz to class" +
             " " + course_id);
 //        Map<String, String> data = Map.of("courseId", course_id);
         HashMap<String, String> data = new HashMap<>();
         data.put("courseId", course_id);
+        data.put("courseName", courseName);
         ModelAndView mav = new ModelAndView("addQuiz", data);
         return mav;
     }
@@ -434,6 +419,7 @@ public class QuizController {
      */
     @RequestMapping("/uploadQuiz")
     public RedirectView uploadQuiz(
+        @RequestParam("quizName") String quizName,
         @RequestParam("classId") String classId,
         @RequestParam("className") String className,
         @RequestParam("numTries") int numTries,
@@ -448,7 +434,6 @@ public class QuizController {
 
         String content = fileToString(jspFile);
         String answers = fileToString(ansFile);
-        String quizName = jspFile.getOriginalFilename().replaceFirst(".jsp","");
 
         Quiz
             quiz =
@@ -555,16 +540,17 @@ public class QuizController {
 
     /**
      * Provides a quiz based the long id in the url. Meant to be used for students.
-     * @param id
      * @return
      * @throws NoLtiSessionException
      * @throws IOException
      */
     @RequestMapping(value = {"/quizResult"})
-    public ModelAndView showQuiz(
-        @RequestParam("qID") @DefaultValue("-1") Long id) throws NoLtiSessionException{
-
-        Quiz quiz = cqs.getOne(new Document("quizId", id));
+    public ModelAndView showQuiz() throws NoLtiSessionException{
+        LtiSession ltiSession = ltiSessionService.getLtiSession();
+        LtiLaunchData ltiLaunchData = ltiSession.getLtiLaunchData();
+        Integer assignmentId = ltiLaunchData.getCustom_canvas_assignment_id();
+        LOG.info("assignment ID is: " + assignmentId);
+        Quiz quiz = cqs.getOne(new Document("assignmentId", assignmentId));
         if (quiz == null) {
             throw new RuntimeException("quiz does not exist");
         }
@@ -595,7 +581,8 @@ public class QuizController {
      */
     @RequestMapping(value = {"/publishQuiz", "/publishQuiz{id:[\\d]+}"},
                     method = RequestMethod.POST)
-    public ModelAndView publishQuiz(@PathVariable("id") long id) throws NoLtiSessionException{
+    public ModelAndView publishQuiz(@PathVariable("id") long id,
+                                    HttpServletRequest request) throws NoLtiSessionException{
         lti.ensureApiTokenPresent();
         LtiLaunchData teacherSession = getTeacherSession();
         OauthToken
@@ -613,16 +600,16 @@ public class QuizController {
             assignment.setName(quiz.getQuizName());
             assignment.setPointsPossible(quiz.getMaxGrade());
             assignment.setSubmissionTypes(Collections.singletonList("external_tool"));
-            assignment.setDescription(String.valueOf(id));
 
             edu.ksu.canvas.model.assignment.Assignment.ExternalToolTagAttribute
                 toolAttributes = assignment.new ExternalToolTagAttribute();
 
             toolAttributes.setNewTab(true);
-            toolAttributes.setUrl("http://localhost:8090/liquiz" +
-                "/student/launch");//?qID="+id);
-            toolAttributes.setResourceLinkId(teacherSession.getResource_link_id());
 
+            toolAttributes.setUrl(String.format("%s/student/launch",
+                OauthController.getApplicationBaseUrl(request, true)
+            ));
+            toolAttributes.setResourceLinkId(teacherSession.getResource_link_id());
             assignment.setExternalToolTagAttributes(
                 toolAttributes
             );
@@ -782,7 +769,8 @@ public class QuizController {
         List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
         if(roleList == null || !(roleList.contains(LtiLaunchData.InstitutionRole.Instructor)))
         {
-            throw new AccessDeniedException("You are not an instructor and you cannot view this page. Roles: " + roleList.toString());
+            throw new AccessDeniedException("You are not an instructor and you cannot view this page. Roles: " + (roleList != null
+                ? roleList.toString() : "[]"));
         }
         return ltiLaunchData;
     }

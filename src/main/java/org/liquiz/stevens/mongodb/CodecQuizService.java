@@ -9,7 +9,9 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import org.apache.log4j.Logger;
 import org.bson.Document;
+import org.liquiz.stevens.controller.QuizController;
 import org.liquiz.stevens.quiz.Quiz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,6 +30,7 @@ import static com.mongodb.client.model.Filters.eq;
 @Repository
 @ApplicationScoped
 public class CodecQuizService {
+    private static final Logger LOG = Logger.getLogger(QuizController.class);
 
     @Autowired
     private MongoClient mongoClient;
@@ -64,7 +67,7 @@ public class CodecQuizService {
             getCollection().deleteOne(new Document( "_id", quiz.getId() ));
         }
         catch(Exception e){
-            System.out.println(e);
+            LOG.error("Could not delete quiz", e);
         }
     }
 
@@ -97,22 +100,13 @@ public class CodecQuizService {
      */
     public Quiz getOne(Document doc){
         FindIterable<Quiz> iterable = getCollection().find(doc).limit(1);
-        Iterator iterator = iterable.iterator();
+        Iterator<Quiz> iterator = iterable.iterator();
         Quiz quiz = null;
         if(iterator.hasNext())
-            quiz =(Quiz) iterator.next();
+            quiz = iterator.next();
         return quiz;
     }
 
-    public Quiz getOne(long id) {
-        FindIterable<Quiz> iterable = getCollection().find(eq("quizId", id)).limit(1);
-        Iterator iterator = iterable.iterator();
-        Quiz quiz = null;
-        if(iterator.hasNext())
-            quiz =(Quiz) iterator.next();
-        return quiz;
-    }
-    
     /**
      * Returns a list of every Quiz that matches the search arguments.
      * Can be used to find every quiz for a class.
@@ -120,7 +114,7 @@ public class CodecQuizService {
      * @return List of Quizzes matching search arguments
      */
     public ArrayList<Quiz> getList(Document doc) {
-        ArrayList<Quiz> submissionList = new ArrayList();
+        ArrayList<Quiz> submissionList = new ArrayList<>();
         try (MongoCursor<Quiz> cursor = getCollection().find(doc).iterator()) {
          while (cursor.hasNext()) {
                 submissionList.add(cursor.next());
