@@ -9,7 +9,9 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import org.apache.log4j.Logger;
 import org.bson.Document;
+import org.liquiz.stevens.controller.QuizController;
 import org.liquiz.stevens.quiz.Quiz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,6 +30,7 @@ import static com.mongodb.client.model.Filters.eq;
 @Repository
 @ApplicationScoped
 public class CodecQuizService {
+    private static final Logger LOG = Logger.getLogger(QuizController.class);
 
     @Autowired
     private MongoClient mongoClient;
@@ -64,7 +67,7 @@ public class CodecQuizService {
             getCollection().deleteOne(new Document( "_id", quiz.getId() ));
         }
         catch(Exception e){
-            System.out.println(e);
+            LOG.error("Could not delete quiz", e);
         }
     }
 
@@ -111,7 +114,7 @@ public class CodecQuizService {
      * @return List of Quizzes matching search arguments
      */
     public ArrayList<Quiz> getList(Document doc) {
-        ArrayList<Quiz> submissionList = new ArrayList();
+        ArrayList<Quiz> submissionList = new ArrayList<>();
         try (MongoCursor<Quiz> cursor = getCollection().find(doc).iterator()) {
          while (cursor.hasNext()) {
                 submissionList.add(cursor.next());

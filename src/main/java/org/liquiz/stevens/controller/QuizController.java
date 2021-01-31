@@ -95,11 +95,11 @@ public class QuizController {
     public ModelAndView basePath(HttpServletRequest request) {
         LOG.info("Showing Activity Reporting configuration XML");
         String appUrl = OauthController.getApplicationBaseUrl(request, true);
-        String domain = OauthController.getApplicationBaseUrl(request, false);
+        String  domain = OauthController.getApplicationBaseUrl(request, false);
         LOG.debug("LTI launch URL: " + appUrl);
         HashMap<String, String> data = new HashMap<>();
         data.put("url", appUrl);
-        data.put("domain", request.getServerName());
+        data.put("domain", domain);
         return new ModelAndView("ltiConfigure", data);
     }
 
@@ -128,23 +128,6 @@ public class QuizController {
         return new ModelAndView("chooseQuiz", "courseId", ltiLaunchData.getCustom_canvas_course_id());
     }
 
-    /**
-     * Initial page for professors where they can choose to view/edit their quizzes, add a new quiz or view grades
-     *
-     * @return
-     * @throws NoLtiSessionException
-     */
-
-    /*
-    TODO: delete
-    @RequestMapping("/teacherView")
-    public ModelAndView teacherView() throws NoLtiSessionException {
-        LtiLaunchData ltiLaunchData = getTeacherSession();
-        lti.ensureApiTokenPresent();
-        ModelAndView mav = new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
-        return mav;
-    }
-*/
     /**
      * Provides a list of the quizzes a professor can edit,delete or view from their course
      * @return
@@ -622,9 +605,10 @@ public class QuizController {
                 toolAttributes = assignment.new ExternalToolTagAttribute();
 
             toolAttributes.setNewTab(true);
-            toolAttributes.setUrl("https://" + request.getServerName() + "/" +
-                request.getContextPath() +
-                "/student/launch");
+
+            toolAttributes.setUrl(String.format("%s/student/launch",
+                OauthController.getApplicationBaseUrl(request, true)
+            ));
             toolAttributes.setResourceLinkId(teacherSession.getResource_link_id());
             assignment.setExternalToolTagAttributes(
                 toolAttributes
@@ -785,7 +769,8 @@ public class QuizController {
         List<LtiLaunchData.InstitutionRole> roleList = canvasService.getRoles();
         if(roleList == null || !(roleList.contains(LtiLaunchData.InstitutionRole.Instructor)))
         {
-            throw new AccessDeniedException("You are not an instructor and you cannot view this page. Roles: " + roleList.toString());
+            throw new AccessDeniedException("You are not an instructor and you cannot view this page. Roles: " + (roleList != null
+                ? roleList.toString() : "[]"));
         }
         return ltiLaunchData;
     }
