@@ -1,5 +1,14 @@
 import java.io.InputStream;
 
+/**
+  @author: Joseph Insalaco
+  @author: Brian Ng
+  @author: Kayleen Chin
+  @author: William Zheng
+  @author: Bernard Tran
+  @author: Dov Kruger
+*/
+
 public class Main {
     public static void main(String[] args) {
         try {
