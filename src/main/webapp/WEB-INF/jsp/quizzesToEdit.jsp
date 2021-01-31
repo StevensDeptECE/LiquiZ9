@@ -27,8 +27,10 @@
 
 <h1>Editing quizzes</h1>
 <h3>${outcome}</h3>
+<form action="${context}/addQuiz" method="post">
+    <input class='controls' type='submit' value='Add new quiz'/>
+</form>
 <form method="get" action="deleteQuizzes">
-    <input class="controls" type="submit" value="Return to teacher view" formaction="teacherView"/>
     <h2>Pick which quizzes you want to delete, edit or view</h2>
     <div class='choice' id='choice'>
         <table class=''>
@@ -43,6 +45,7 @@
                 <th>Answers Release Date</th>
                 <th>Preview Quiz</th>
                 <th>View Submissions</th>
+                <th>Submissions</th>
                 <th>Edit Quiz</th>
             </tr>
             <c:if test="${not empty quizList}">
@@ -58,6 +61,7 @@
                     <td> ${Pref.getDateFormat().format(quiz.getAnswersRelease())}</td>
                     <td> <input class="controls" type="submit" name="${quiz.getQuizId()}" value="Preview Quiz" formaction="quizPreview${quiz.getQuizId()}"></td>
                     <td> <input class="controls" type="submit" name="${quiz.getQuizId()}" value="View Submissions" formaction="viewSubmissions${quiz.getQuizId()}"></td>
+                    <td> ${submissionCounts.get(quiz.getQuizId())}</td>
                     <td> <input class="controls" type="submit" name="${quiz.getQuizId()}" value="Edit Quiz" formaction="editQuiz${quiz.getQuizId()}"></td>
                 </tr>
 

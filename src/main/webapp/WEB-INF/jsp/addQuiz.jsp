@@ -14,7 +14,7 @@
 <body>
 <h1>Upload a Quiz here</h1>
 <form action="teacherView" method="get">
-    <input class="controls" type="submit" value="Return to teacher view"/>
+    <input class="controls" type="submit" value="Cancel"/>
 </form>
 <form action = "uploadQuiz" method = "post" enctype = "multipart/form-data">
 
@@ -37,7 +37,7 @@
         </tr>
         <tr>
             <th>Attempts Allowed: </th>
-            <td><input type = "number" id = "numTries" name = "numTries" required default="1"/></td>
+            <td><input type = "number" id = "numTries" name = "numTries" value="1"/></td>
         </tr>
         <tr>
             <th>Date to show answers after: </th>

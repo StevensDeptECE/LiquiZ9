@@ -327,35 +327,17 @@ void LiQuizCompiler::makeQuestion(nlohmann::json &question) {
 //TODO: What is this?    regex_replace("$", questionText.begin(), questionText.end(), escapedDollar);
     html << R"(
   <div class='section'>
-    <div class='question' id='q)";
-    html << questionNum << "'>";
-    html << R"(
-      <div>
-        )";
-    html << questionNum << "." << "\t" << questionName;
-    html << R"(
-        <span class='pts'>  )";
-    html << "(" << totalPoints<< " points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>";
-    html << R"(
+    <div class='question' id='q)"
+ << questionNum << "'>" << "<div>\n"
+ << questionNum << "." << "\t" << questionName 
+ << "\n<span class='pts'>  " 
+ << "(" << totalPoints<< " points)</span><input type='button' class='protestButton'"
+ " onClick='protestRequest()' value='Click to report a problem'>"
+"\n</div>\n" << preStart << "\n" << questionText << preEnd
+ << R"(
       </div>
-      )";
-    html << preStart << endl;
-    html << questionText << preEnd;
-
-    html << R"(
     </div>
-
-    <div class='answer'>
-      )";
-    html << preStart;
-    html << R"(
-)";
-    html << answerText << preEnd;
-    html << R"(
-    </div>
-  </div>
-  
-  )";
+    )";
     questionNum++;
   } else {
     string defs = lookup(question,"values", emptystr, lineNum);
@@ -457,7 +439,7 @@ void LiQuizCompiler::generateQuiz(const char liquizFileName[]) {
   cursor = 0;
   html.open(outputDir + baseFileName + "html");
   answers.open(outputDir + baseFileName + "ans");
-  xml.open(outputDir + baseFileName + "xml");
+  //xml.open(outputDir + baseFileName + "xml");
   generateHeader();
   grabQuestions();
   generateFooter();

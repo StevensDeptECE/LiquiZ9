@@ -36,6 +36,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
@@ -133,6 +134,9 @@ public class QuizController {
      * @return
      * @throws NoLtiSessionException
      */
+
+    /*
+    TODO: delete
     @RequestMapping("/teacherView")
     public ModelAndView teacherView() throws NoLtiSessionException {
         LtiLaunchData ltiLaunchData = getTeacherSession();
@@ -140,23 +144,28 @@ public class QuizController {
         ModelAndView mav = new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
         return mav;
     }
-
+*/
     /**
      * Provides a list of the quizzes a professor can edit,delete or view from their course
      * @return
      * @throws NoLtiSessionException
      */
-    @RequestMapping("/quizzesToEdit")
+    @RequestMapping("/teacherView")
     public ModelAndView quizzesToEdit() throws NoLtiSessionException {
         LtiLaunchData ltiLaunchData = getTeacherSession();
+        lti.ensureApiTokenPresent();
         String courseId = ltiLaunchData.getCustom_canvas_course_id();
         ArrayList<Quiz> quizList = cqs.getList(new Document("classId", courseId));
         HashMap<Long, Double> avgGrades = new HashMap<Long, Double>();
-        for(Quiz q : quizList)
+        HashMap<Long, Long> submissionCounts = new HashMap<>();
+        for(Quiz q : quizList) {
             avgGrades.put(q.getQuizId(), cqss.getAvgQuizScore(q.getQuizId()));
+            submissionCounts.put(q.getQuizId(), cqss.getNumSubmissions(q.getQuizId()));
+        }
         ModelAndView mav = new ModelAndView("quizzesToEdit");
         mav.addObject("quizList", quizList);
         mav.addObject("avgGrades", avgGrades);
+        mav.addObject("submissionCounts", submissionCounts);
         return mav;
     }
 
@@ -424,7 +433,7 @@ public class QuizController {
      * @throws RuntimeException
      */
     @RequestMapping("/uploadQuiz")
-    public ModelAndView uploadQuiz(
+    public RedirectView uploadQuiz(
         @RequestParam("classId") String classId,
         @RequestParam("className") String className,
         @RequestParam("numTries") int numTries,
@@ -458,9 +467,7 @@ public class QuizController {
             LOG.info(quiz.getQuizName() + "(" + quiz.getQuizId() + ") has been replaced in the mongo database");
         }
         String success = "Your quiz " + quizName + " was added successfully";
-        ModelAndView mav = new ModelAndView("teacherPage", "name", ltiLaunchData.getLis_person_name_family());
-        mav.addObject("success", success);
-        return mav;
+        return new RedirectView("teacherView");
     }
 
     private String fileToString(MultipartFile jspFile) {

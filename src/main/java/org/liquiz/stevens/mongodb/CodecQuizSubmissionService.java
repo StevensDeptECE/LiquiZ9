@@ -117,15 +117,22 @@ public class CodecQuizSubmissionService {
         }
         return submissionList;
     }
-    
+
+    /**
+     * Returns the number of quizSubmissions that matches the search arguments
+     * @return List of quizSubmission matching search arguments
+     */
+    public long getNumSubmissions(long quizId) {
+        return getCollection().countDocuments(new Document("quizId", quizId));
+    }
+
     /**
      * Returns an array of doubles to see the averages scores for each question
      * @param quizId id value of the quiz to search for
      * @return the average scores for each question
      */
     public double[] getAvgQuizScores(String quizId) {
-        ArrayList<QuizSubmission> quizList;
-        quizList = getList(new Document("quizId", quizId));
+        ArrayList<QuizSubmission> quizList = getList(new Document("quizId", quizId));
         int numOfSubmissions = quizList.size();
         double[] avgQuestionScores = new double[quizList.get(0).getQuestionGrades().length];
         Arrays.fill(avgQuestionScores, 0.0);
