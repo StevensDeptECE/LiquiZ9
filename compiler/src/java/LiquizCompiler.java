@@ -15,31 +15,33 @@ import org.json.*;
   @author: Dov Kruger
 */
 
-public class LiquizCompiler extends QuestionType {
-  static final string emptystr;
-  static final string escapedDollar;
-  static final string defaultQuiz;
+public class LiquizCompiler {
+  static String emptystr;
+  static String escapedDollar;
+  static String defaultQuiz;
   static final long defaultFillInBlankSize; // (long is used as an unsigned integer)
+  private static final Random r;
   private static final Pattern questionStart;
   private static final Pattern specials;
   private static final Pattern qID;
-  static Pattern questionPattern;
+  private static final Pattern questionPattern;
   private static long uuid; // (long is used as an unsigned integer)
-  private static final HashMap<String, QuestionType> questionTypes = new HashMap<String, QuestionType>();
-  private Map<String, String> variables = new Map<String, String>();
-  private HashMap<String, String> definitions = new HashMap<String, String>();
+  private static final HashMap<String, QuestionType> questionTypes;
+  private HashMap<String, String> variables;
+  private HashMap<String, String> definitions;
   //class Definition {}
-  private final string DELIM = "---";
-  private string questionText;
-  private string inputText;
-  private string answerText;
-  private string answerInput;
-  private string outputDir; // directory where the public output goes (html)
+  private String DELIM;
+  private String questionText;
+  private String inputText;
+  private String answerText;
+  private String answerInput;
+  private String outputDir; // directory where the public output goes (html)
+  
   //TODO: need to generate randomized numbers for the images so that file names do not 
   //give away answers and place in the output directory
-  private OutputStream html;
+  private PrintWriter html;
   private OutPutStream answers;
-  private OutputStream xml;
+  private OutputStream xml;       //TODO: to export to canvas, generate a qti zip file containing XML
   private InputStream liquizFile;
   private long cursor;            // byte offset into quiz file (long is used as an unsigned integer)
   private char bytes;             // underlying bytes in quiz
@@ -54,10 +56,12 @@ public class LiquizCompiler extends QuestionType {
   private double points;          // total number of points in the quiz
   private int fillSize;           // default number of characters in a fill-in question
   private int timeLimit;          // number of minutes to take the quiz, 0 means untimed
-  private string imgFile, styleSheet, quizName, license, copyright, author, email;
+  private String imgFile, styleSheet, quizName, license, copyright, author, email;
         
   static {
     // ideally everything you do to initialize the class should be in here
+    r = new Random(0); // TODO: once you are done testing, remove the zero, make this initialize from time
+    questionTypes = new HashMap<>();
     questionStart = Pattern.compile("^\\{");
     specials = Pattern.compile("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
     qID = Pattern.compile("name='[q||T||Q||m||s||n||S]_[0-9]*_[0-9]*'");
@@ -71,37 +75,45 @@ public class LiquizCompiler extends QuestionType {
     defaultFillInBlankSize = 6;
   }
 
+  //this is the constructor for Liquiz compiler class
+  public LiquizCompiler(String filename) throws IOException {
+    // style: everything you do to initialize object should be in here
+    variables = new HashMap<>();
+    definitions = new HashMap<>();
+    DELIM = "---";
+  }
+  
   private void setLogLevel(int level) {
     logLevel = level; 
   }
     
-  private void findQuestionType(final string type, double points, string delim, int pos, int len) {
-    QuestionType question = (questionTypes.find(type) != questionTypes.end());
+  private void findQuestionType(String type, double points, String delim, int pos, int len) {
+    QuestionType question = (questionTypes.containsKey(type) != questionTypes.lastEntry());
     if (question != nullptr) {
       question = setText(delim);
       inputText = question.print(this, answers, partNum, questionNum, points);
-      questionText.replace(pos, len, inputText);
+      questionText = questionText.replace(pos, len, inputText); //TODO: fix this
     }
   }
 
-  private string removeExtension(final char fileName[]) {
+  private String removeExtension(final char fileName[]) {
     int i;
     for (i = 0; fileName[i] != '\0'; i++);
     for (; i >= 0 && fileName[i] != '.'; i--);
-    return string(fileName, i + 1);
+    return filename.substring(fileName, i + 1);
   }
 
-  private void findDefinitions(final string name, string defs) {
-    if (definitions.find(name) == definitions.end()) {
+  private void findDefinitions(String name, String defs) {
+    if (!definitions.containsKey(name)) {
       System.out.println("missing definition " + name + " on line " + questionLineNumber);
     } 
     else {
-      defs = definitions.at(name);
+      defs = definitions.get(name);
     }
   }
 
-  private void includeQSpec(JSONObject parentQuizSpec, final string filename) {
-    inputStream specFile = (("spec/" + filename).c_str());
+  private void includeQSpec(JSONObject parentQuizSpec, String filename) throws IOException {
+    inputStream specFile = ("spec/" + filename);
     char dirName[];
     System.err.println( "Current directory: " + getcwd(dirName, sizeof(dirName)) + '\n');
     System.err.println( "filename: " + "spec/" + filename);
@@ -126,7 +138,8 @@ public class LiquizCompiler extends QuestionType {
       parentQuizSpec = specInfo;
       return;
     }
-  // specInfo should now contain the merged specification of all recursive files
+    
+    // specInfo should now contain the merged specification of all recursive files
     if (logLevel >= 3) {
       for (auto i = specInfo.begin(); i != specInfo.end(); ++i)
         System.err.println( i.key() + "==>" + i.value());
@@ -147,10 +160,10 @@ public class LiquizCompiler extends QuestionType {
 
     if (specInfo.find("def") != specInfo.end()) {
       for (JSONArray it = specInfo.at("def").begin(); it != specInfo.at("def").end(); ++it) {
-        string name = it.key();
-        string defs;
+        String name = it.key();
+        String defs;
         for (int i = 0; i < it.value().size(); i++) {
-          string defVal = it.value()[i];
+          String defVal = it.value()[i];
           defs += defVal;
           defs += ",";
         }
@@ -165,8 +178,8 @@ public class LiquizCompiler extends QuestionType {
   }
 
   private void getJSONHeader() {
-    string line;
-    string specName;
+    String line;
+    String specName;
     if (!getline(line)) {
       System.err.println("Unexpected end of file line while getting JSON header");
       return;
@@ -189,24 +202,33 @@ public class LiquizCompiler extends QuestionType {
       answerText = questionText;
       int pos, end;
       while (find(answerText, m, qID)) {
-      pos = m.position();
-        
-        for (int i = m.position(); answerText[i] != '='; i++) {
-          pos++;
-        }
-      answerText.insert(pos+2, "a");
-    }
+        pos = m.position();
+          
+          for (int i = m.position(); answerText[i] != '='; i++) {
+            pos++;
+          }
+        answerText.insert(pos+2, "a");
+      }
   }
 
   private void generateHeader() {
     getJSONHeader();
-    System.out.printf(html + 
-    "("+
-    "<!DOCTYPE html>"+
-    "<html>"+
-    "<head>"+
-    "  <meta charset='UTF-8'/>"+
-    "  <link rel='stylesheet' type='text/css' href='css/%s')" +
+    StringBuilder b = new StringBuilder(32768);
+    b.append("<!DOCTYPE html>\n")
+      .append("<html>\n")
+      .append("<head>\n")
+      .append("  <meta charset='UTF-8'/>\n")
+...
+    .append("  <link rel='stylesheet' type='text/css' href='css/".append(youtrvariable)
+    .append("')\n"
+    html.println(b); // will call b.toString() which is ugly but oh well
+
+    html.printf( 
+    "<!DOCTYPE html>\n"+
+    "<html>\n"+
+    "<head>\n"+
+    "  <meta charset='UTF-8'/>\n"+
+    "  <link rel='stylesheet' type='text/css' href='css/%s')\n" +
         styleSheet +
     "('>"+
     "  <title>"+
@@ -256,9 +278,9 @@ public class LiquizCompiler extends QuestionType {
   }
   
   private void makeQuestion(JSONObject question) {
-    string style;
+    String style;
     require(question, "style", style, lineNum);
-    string preStart, preEnd;
+    String preStart, preEnd;
       if (style == "pcode" || style == "code") {
         preStart = "<pre class='" + style + "'>";
         preEnd = "</pre>";
@@ -267,20 +289,20 @@ public class LiquizCompiler extends QuestionType {
         preEnd = "</pre>";
       }
     if (style != "def") {
-    //    string temp = question.at("points");
+    //    String temp = question.at("points");
     double totalPoints = lookup(question, "points", 0, lineNum);
-    string questionName = lookup(question, "name", emptystr, lineNum);
+    String questionName = lookup(question, "name", emptystr, lineNum);
     Matcher m;
-    final string end = "</p>";
+    String end = "</p>";
     partNum = 0;
     while (find(questionText, m, specials)) {
-      string delim = m[2];
+      String delim = m[2];
 
       int pos = questionText.find("<p hidden>", m.position());
       int endPos = questionText.find(end, m.position());
       long questionLineNum = stoi(questionText.substr(pos+10, endPos-pos-10+1)); //TODO: get rid of this!
 
-      string type;
+      String type;
       if (delim[0] != 'f') {
         for (int i = 0; delim[i] != ':' && delim[i] != '{'; i++) {
           type += delim[i];
@@ -327,27 +349,27 @@ public class LiquizCompiler extends QuestionType {
     
       questionNum++;
     } else {
-      string defs = lookup(question,"values", emptystr, lineNum);
-      string name = lookup(question,"name", emptystr, lineNum);
+      String defs = lookup(question,"values", emptystr, lineNum);
+      String name = lookup(question,"name", emptystr, lineNum);
       definitions[name] = defs;
       answers = "defs"+"\t" + name + "\t" + defs +'\n';
     }
   }
   
   private void grabQuestions() {
-    string line, qID, temp;
+    String line, qID, temp;
     Matcher m;
     lineNumber = 1;
-    while (getline(liquizFile, line) != liquizFile.eof()) {
+    
+    while ((line = liquizFile.readLine()) != null) {
       if (find(line, m, questionStart)) {  // looking for the beginning of a question
-        istringstream s(line);
         JSONObject question;  // gets the question header
         s = question;
         lineNumber++;
         
         while (getline(liquizFile, line) != liquizFile.eof() && line != DELIM) {  // gets line within question section
           lineNumber++;
-          questionText = questionText + line + "<p hidden>" + to_string(lineNumber) + "</p>";
+          questionText = questionText + line + "<p hidden>" + toString(lineNumber) + "</p>";
           questionText += '\n';
         }
         lineNumber++;
@@ -399,7 +421,7 @@ public class LiquizCompiler extends QuestionType {
     f.close();
   }
   
-  private bool getline(string line) {
+  private bool getline(String line) {
     while (cursor < fileSize && bytes[cursor] == '#') { // skip comment
       cursor++;
       while (cursor < fileSize && bytes[cursor] != '\n')
@@ -441,6 +463,12 @@ public class LiquizCompiler extends QuestionType {
   }
 
   public void generateQuiz(final char liquizFileName[]) {
+    String baseName = liquizFilename.substring(0, liquizFilename.length - 2);
+    String htmlFilename = baseName + ".html";
+    String ansFilename = baseName + ".ans";
+    html = new PrintWriter(new BufferedWriter(new FileWriter(htmlFilename)));
+    ans = new PrintWriter(new BufferedWriter(new FileWriter(ansFilename)));
+
     generateHeader();
     grabQuestions();
     generateFooter();
@@ -454,7 +482,7 @@ public class LiquizCompiler extends QuestionType {
   }
 
   // < T > is the template declaration, also knows as Generics in Java
-  public static < T > T lookup(JSONObject json, final string key, final T defaultVal, int lineNum) {
+  public static < T > T lookup(JSONObject json, String key, final T defaultVal, int lineNum) {
     try {
       auto it = json.find(key);
       if (it != json.end())
@@ -465,7 +493,7 @@ public class LiquizCompiler extends QuestionType {
     return defaultVal;
   }
 
-  public static < T > void require(JSONObject json, final string key, T target, int lineNum) {
+  public static < T > void require(JSONObject json, String key, T target, int lineNum) {
     try {
       auto it = json.find(key);
       if (it != json.end())
@@ -475,11 +503,11 @@ public class LiquizCompiler extends QuestionType {
     }
   }
 
-  public string nameof(string a) {
+  public String nameof(String a) {
     return "string";
   }
   
-  public string nameof(int a) {
+  public String nameof(int a) {
     return "int";
   }
 
@@ -495,13 +523,20 @@ public class LiquizCompiler extends QuestionType {
     return "double";
   }
   
-  public static string name(int a) {
+  public static String name(int a) {
     return "int";
   }
+  public static void main(String[] args) {
+  //  for (int i = 0; i < args.length; i++) {
+    String filename = args.length < 1 ? "demo.lq" : args[0];
+    try {
+      LiquizCompiler c = new LiquizCompiler(filename);
+      c.generateQuiz(filename);
 
-  //this is the constructor for Liquiz compiler class
-  public LiquizCompiler(String filename) {
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
-    // style: everything you do to initialize object should be in here
   }
+
 }
