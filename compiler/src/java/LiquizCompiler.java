@@ -2,10 +2,14 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.HashMap;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import org.json.*;
-import QuestionType.java;
+import java.util.Random;
+import java.io.PrintWriter;
+import java.io.IOException;
+import org.json.*; //TODO: import the org.json package into the project directory
+import QuestionType.java; //TODO: QuestionType needs to be a package?
 
 /**
   @author: Joseph Insalaco
@@ -41,7 +45,7 @@ public class LiquizCompiler {
   //give away answers and place in the output directory
   private PrintWriter html;
   private StringBuffer qText;
-  private OutPutStream answers;
+  private OutputStream answers;
   private OutputStream xml;       //TODO: to export to canvas, generate a qti zip file containing XML
   private InputStream liquizFile;
   private long cursor;            // byte offset into quiz file (long is used as an unsigned integer)
@@ -230,15 +234,23 @@ public class LiquizCompiler {
     getJSONHeader();
     StringBuilder b = new StringBuilder(32768);
     b.append("<!DOCTYPE html>\n")
-      .append("<html>\n")
-      .append("<head>\n")
-      .append("  <meta charset='UTF-8'/>\n")
-...
-      .append("  <link rel='stylesheet' type='text/css' href='css/".append(youtrvariable)
-      .append("')\n")
+    .append("<html>\n")
+    .append("<head>\n")
+    .append("  <meta charset='UTF-8'/>\n")
+//...
+    .append("  <link rel='stylesheet' type='text/css' href='css/".append(yourvariable)) //TODO: replace yourvariable
+    .append("')\n")
+    .append(stylesheet)
+    .append("('>")
+    .append("  <title>")
+    .append("    LiQuiz [)")
+    .append(quizName)
+    .append("(]")
+    .append("  </title>")
+    .append()
     html.println(b); // will call b.toString() which is ugly but oh well
 
-    html.printf( 
+    html.println( 
     "<!DOCTYPE html>\n"+
     "<html>\n"+
     "<head>\n"+
@@ -296,77 +308,90 @@ public class LiquizCompiler {
     String style;
     require(question, "style", style, lineNum);
     String preStart, preEnd;
+
     if (style == "pcode" || style == "code") {
       preStart = "<pre class='" + style + "'>";
       preEnd = "</pre>";
     } else {
-        preStart = "<pre class='text'>";
-        preEnd = "</pre>";
-      }
-    if (style != "def") {
-    //    String temp = question.at("points");
-    double totalPoints = lookup(question, "points", 0, lineNum);
-    String questionName = lookup(question, "name", emptystr, lineNum);
-    Matcher m;
-    String end = "</p>";
-    partNum = 0;
-    while (find(questionText, m, specials)) {
-      String delim = m[2];
-
-      int pos = questionText.find("<p hidden>", m.position());
-      int endPos = questionText.find(end, m.position());
-      long questionLineNum = stoi(questionText.substr(pos+10, endPos-pos-10+1)); //TODO: get rid of this!
-
-      String type;
-      if (delim.charAt(0) != 'f') {
-        for (int i = 0; delim.charAt(i) != ':' && delim.charAt(i) != '{'; i++) {
-          type += delim.charAt(i);
-        }
-      } else {
-        type = delim.charAt(0);
-      }
-      findQuestionType(type, points, delim, m.position(), m.length());
+      preStart = "<pre class='text'>";
+      preEnd = "</pre>";
     }
 
-    double points = totalPoints != 0 ? totalPoints / questionCount : partNum;
+    if (style != "def") {
+      //String temp = question.at("points");
+      double totalPoints = lookup(question, "points", 0, lineNum);
+      String questionName = lookup(question, "name", emptystr, lineNum);
+      Matcher m;
+      String end = "</p>";
+      partNum = 0;
+
+      while (find(questionText, m, specials)) {
+        String delim = m[2];
+        int pos = questionText.find("<p hidden>", m.position());
+        int endPos = questionText.find(end, m.position());
+        long questionLineNum = stoi(questionText.substr(pos+10, endPos-pos-10+1)); //TODO: get rid of this!
+        String type;
+
+        if (delim.charAt(0) != 'f') {
+          for (int i = 0; delim.charAt(i) != ':' && delim.charAt(i) != '{'; i++) {
+            type += delim.charAt(i);
+          }
+        } else {
+          type = delim.charAt(0);
+        }
+
+        findQuestionType(type, points, delim, m.position(), m.length());
+      }
+
+      double points = totalPoints != 0 ? totalPoints / questionCount : partNum;
       questionText.pop_back();  
       setAnswer();
-      
-    System.out.printf(html + "("+
-    "<div class='section'>"+
-    "  <div class='question' id='q)"+
-      html + questionNum + "'>"+
-      html + "("+
-    "    <div>"+
-    "      )"+
-      html + questionNum + "." + "\t" + questionName+
-      html + "("+
-    "      <span class='pts'>  )"+
-      html + "(" + totalPoints+ " points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>"+
-      html + "("+
-    "    </div>"+
-    "    )"+
-      html + preStart + '\n'+
-      html + questionText + preEnd+
 
-      html + "("+
-    "  </div>"+
-    "  <div class='answer'>"+
-    "    )"+
-      html + preStart+
-      html + "("+
-    ")"+
-      html + answerText + preEnd+
-      html + "("+
-    "  </div>"+
-    "</div>"+
-    ")");
-    
+      StringBuilder b = new StringBuilder(32768);
+      b.append("(\n")
+        .append("<div class='section'>\n")
+        .append("  <div class='question' id='q)\n")
+        .append(questionNum)
+        .append("'>\n")
+        .append("("\n)
+      
+      html.println(html + "("+
+      "<div class='section'>"+
+      "  <div class='question' id='q)"+
+        html + questionNum + "'>"+
+        html + "("+
+      "    <div>"+
+      "      )"+
+        html + questionNum + "." + "\t" + questionName+
+        html + "("+
+      "      <span class='pts'>  )"+
+        html + "(" + totalPoints+ " points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>"+
+        html + "("+
+      "    </div>"+
+      "    )"+
+        html + preStart + '\n'+
+        html + questionText + preEnd+
+
+        html + "("+
+      "  </div>"+
+      "  <div class='answer'>"+
+      "    )"+
+        html + preStart+
+        html + "("+
+      ")"+
+        html + answerText + preEnd+
+        html + "("+
+      "  </div>"+
+      "</div>"+
+      ")");
+      
       questionNum++;
+
     } else {
       String defs = lookup(question,"values", emptystr, lineNum);
       String name = lookup(question,"name", emptystr, lineNum);
-      definitions[name] = defs;
+      //definitions[name] = defs;
+      definitions.put("name", defs);
       answers = "defs"+"\t" + name + "\t" + defs +'\n';
     }
   }
@@ -387,9 +412,11 @@ public class LiquizCompiler {
           questionText = questionText + line + "<p hidden>" + toString(lineNumber) + "</p>";
           questionText += '\n';
         }
+
         lineNumber++;
+
         for (int i = 0; i < questionText.length(); i++) {
-          if (questionText[i] == '$') {
+          if (questionText.charAt[i] == '$') {
             questionCount++;
           }
         }
@@ -404,14 +431,14 @@ public class LiquizCompiler {
   
   private void generateFooter() {
     StringBuilder x = new StringBuilder(32768);
-      x.append("<!DOCTYPE html>\n")
-        .append("<div class='footer'>\n")
-        .append("<pre id='bottomTime'></pre>\n")
-        .append("<input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>\n")
-        .append("</div>\n") 
-        .append("</form>\n")
-        .append("</body>\n")
-        .append("</html>");
+    x.append("<!DOCTYPE html>\n")
+      .append("<div class='footer'>\n")
+      .append("<pre id='bottomTime'></pre>\n")
+      .append("<input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>\n")
+      .append("</div>\n") 
+      .append("</form>\n")
+      .append("</body>\n")
+      .append("</html>");
   } 
   
   private void closeFile() {
@@ -434,8 +461,10 @@ public class LiquizCompiler {
     //f.reset();
     //bytes = new char[fileSize];
     //f.read();
+    //f.close();
     br.close();
   }
+
   //TODO: Rewrite this function I am not even sure I understand where we are using it if we are at all
   //It is certainly not even close to being in Java right now? Why can't we use readLine?
   private bool getline(String line) {
