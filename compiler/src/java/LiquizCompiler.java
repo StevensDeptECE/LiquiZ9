@@ -80,6 +80,7 @@ public class LiquizCompiler {
     // style: everything you do to initialize object should be in here
     variables = new HashMap<>();
     definitions = new HashMap<>();
+    buildQuestionHashMap();
     DELIM = "---";
   }
   
@@ -113,28 +114,32 @@ public class LiquizCompiler {
   }
 
   private void includeQSpec(JSONObject parentQuizSpec, String filename) throws IOException {
-    inputStream specFile = ("spec/" + filename);
-    char dirName[];
-    System.err.println( "Current directory: " + getcwd(dirName, sizeof(dirName)) + '\n');
-    System.err.println( "filename: " + "spec/" + filename);
-    if (!specFile.good()) {
-      System.err.println( "Cannot open file " + filename);
-    }
-    JSONObject specInfo = parse(specFile);
+    FileInputStream spec = new FileInputStream("spec/" + filename);
+    BufferedReader specFile = new BufferedReader(new InputStreamReader(spec));
+    //Half of these functions look like they only exist because of C++ see what we can remove
+    //char dirName[];
+    //System.err.println( "Current directory: " + getcwd(dirName, sizeof(dirName)) + '\n');
+    //System.err.println( "filename: " + "spec/" + filename);
+    //if (!specFile.good()) {
+    //  System.err.println( "Cannot open file " + filename);
+    //}
+    JSONObject specInfo = new JSONOBject(specFile);
+    //Not sure what we're parsing in here, seems to be handled by above
+    //specInfo = parse(specFile);
 
     if (logLevel >= 3) {
       System.err.println( "dumping qspec json before merge");
       for (auto i = specInfo.begin(); i != specInfo.end(); ++i)
         System.err.println( i.key() + "==>" + i.value());
     }
-
-    if (specInfo.find("parent") != specInfo.end()) {
+      //TODO: Looks like this function doesn't work atm in C++ either, find a way to merge the qspec files
+    if (specInfo.get("parent") != specInfo.end()) {
       includeQSpec(parentQuizSpec, specInfo.at("parent")); //TODO: merge specInfo on top of parentQuizSpec
       //TODO: merge isn't working, so comment out?
       merge(parentQuizSpec, specInfo);
       specInfo = parentQuizSpec;
     }
-    if (parentQuizSpec != nullptr) {// only the first level sets all the variables below
+    if (parentQuizSpec != Null) {// only the first level sets all the variables below
       parentQuizSpec = specInfo;
       return;
     }
@@ -203,8 +208,7 @@ public class LiquizCompiler {
       int pos, end;
       while (find(answerText, m, qID)) {
         pos = m.position();
-          
-          for (int i = m.position(); answerText[i] != '='; i++) {
+          for (int i = m.position(); answerText.charAt(i) != '='; i++) {
             pos++;
           }
         answerText.insert(pos+2, "a");
@@ -281,9 +285,9 @@ public class LiquizCompiler {
     String style;
     require(question, "style", style, lineNum);
     String preStart, preEnd;
-      if (style == "pcode" || style == "code") {
-        preStart = "<pre class='" + style + "'>";
-        preEnd = "</pre>";
+    if (style == "pcode" || style == "code") {
+      preStart = "<pre class='" + style + "'>";
+      preEnd = "</pre>";
     } else {
         preStart = "<pre class='text'>";
         preEnd = "</pre>";
@@ -439,7 +443,7 @@ public class LiquizCompiler {
     return true;
   }
 
-  private void QuestionHashMap() { //hashmap for question types
+  private void buildQuestionHashMap() { //hashmap for question types
     questionTypes.put("mch", new MultipleChoiceHorizontal());
     questionTypes.put("mcv", new MultipleChoiceVertical());
     questionTypes.put("mah", new MultipleAnswerHorizontal());
@@ -495,7 +499,7 @@ public class LiquizCompiler {
 
   public static < T > void require(JSONObject json, String key, T target, int lineNum) {
     try {
-      auto it = json.find(key);
+      auto it = json.get(key);
       if (it != json.end())
         target = it.value();
       } catch (Exception e) {
