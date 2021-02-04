@@ -54,12 +54,12 @@ public abstract class QuestionType {
   //template <typename... Args>
   public void buildString(string dest, final Args ... args) {
     dest.clear();
-    int[] unpack = {0, (dest += toString(args), 0)...};
+    int[] unpack = {0, (dest += to_string(args), 0)...};
     (void)(unpack);
   }
 
   public void appendString(string dest, final Args ... args) {
-    int[] unpack = {0, (dest += toString(args), 0)...};
+    int[] unpack = {0, (dest += to_string(args), 0)...};
     (void)(unpack);
   }
 

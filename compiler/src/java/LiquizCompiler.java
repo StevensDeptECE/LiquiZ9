@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import org.json.*;
+import QuestionType.java;
 
 /**
   @author: Joseph Insalaco
@@ -19,7 +20,7 @@ public class LiquizCompiler {
   static String emptystr;
   static String escapedDollar;
   static String defaultQuiz;
-  static final long defaultFillInBlankSize; // (long is used as an unsigned integer)
+  static final long defaultFillInBlankSize = 6; // (long is used as an unsigned integer)
   private static final Random r;
   private static final Pattern questionStart;
   private static final Pattern specials;
@@ -36,10 +37,10 @@ public class LiquizCompiler {
   private String answerText;
   private String answerInput;
   private String outputDir; // directory where the public output goes (html)
-  
   //TODO: need to generate randomized numbers for the images so that file names do not 
   //give away answers and place in the output directory
   private PrintWriter html;
+  private StringBuffer qText;
   private OutPutStream answers;
   private OutputStream xml;       //TODO: to export to canvas, generate a qti zip file containing XML
   private InputStream liquizFile;
@@ -66,9 +67,7 @@ public class LiquizCompiler {
     specials = Pattern.compile("\\$([a-z]*\\(|\\d+[cs]?\\{)?([^\\$]+)\\$");
     qID = Pattern.compile("name='[q||T||Q||m||s||n||S]_[0-9]*_[0-9]*'");
     questionPattern = Pattern.compile("\\$(?:mch|mcv|dro|mah|mav|fQ|fq|fn|fs|fS)\\$");
-
     uuid = 1;
-
     emptystr = "";
     escapedDollar = "\\$";
     defaultQuiz = "quiz.css";
@@ -87,13 +86,25 @@ public class LiquizCompiler {
   private void setLogLevel(int level) {
     logLevel = level; 
   }
-    
+  
+  /**
+   * TODO: Replace seems to only be used here, should still write a function called replace for the future
+   */
   private void findQuestionType(String type, double points, String delim, int pos, int len) {
-    QuestionType question = (questionTypes.containsKey(type) != questionTypes.lastEntry());
-    if (question != nullptr) {
+    //  if (questionTypes.find(type) == questionTypes.end()) {
+    //  cerr << "Undefined question type " << type << " at line: " << lineNum << '\n';
+    //  return;
+    //}
+    //QuestionType *question = questionTypes[type];
+    //QuestionType question = (questionTypes.containsKey(type) != questionTypes.lastEntry());
+    if (questionType.containsKey(type)) {
+      QuestionType question = questionTypes.get(type); //pretty sure this one just grabbed the value associated with the key type
       question = setText(delim);
       inputText = question.print(this, answers, partNum, questionNum, points);
-      questionText = questionText.replace(pos, len, inputText); //TODO: fix this
+      questionText = qText.replace(pos, len, inputText); 
+    }
+    else{
+      System.out.println("Undefined question type " + type + " at line: " + lineNum + '\n');
     }
   }
 
@@ -128,9 +139,9 @@ public class LiquizCompiler {
     //specInfo = parse(specFile);
 
     if (logLevel >= 3) {
-      System.err.println( "dumping qspec json before merge");
+      System.out.println( "dumping qspec json before merge");
       for (auto i = specInfo.begin(); i != specInfo.end(); ++i)
-        System.err.println( i.key() + "==>" + i.value());
+        System.out.println( i.key() + "==>" + i.value());
     }
       //TODO: Looks like this function doesn't work atm in C++ either, find a way to merge the qspec files
     if (specInfo.get("parent") != specInfo.end()) {
@@ -139,7 +150,7 @@ public class LiquizCompiler {
       merge(parentQuizSpec, specInfo);
       specInfo = parentQuizSpec;
     }
-    if (parentQuizSpec != Null) {// only the first level sets all the variables below
+    if (parentQuizSpec != null) {// only the first level sets all the variables below
       parentQuizSpec = specInfo;
       return;
     }
@@ -147,7 +158,7 @@ public class LiquizCompiler {
     // specInfo should now contain the merged specification of all recursive files
     if (logLevel >= 3) {
       for (auto i = specInfo.begin(); i != specInfo.end(); ++i)
-        System.err.println( i.key() + "==>" + i.value());
+        System.out.println( i.key() + "==>" + i.value());
     }
 
     lineNum = 1;
@@ -173,9 +184,9 @@ public class LiquizCompiler {
           defs += ",";
         }
         defs.erase(defs.size()-1, 1);
-        definitions[name] = defs;
+        definitions[name] = defs; //TODO: look at this, causing error 
         if (logLevel >= 3) {
-          System.err.println( "DEF " + name + "==>" + defs);
+          System.out.println( "DEF " + name + "==>" + defs);
         }
         answers += "defs" + "\t" + name + "\t" + defs + "\n";
       }
@@ -186,7 +197,7 @@ public class LiquizCompiler {
     String line;
     String specName;
     if (!getline(line)) {
-      System.err.println("Unexpected end of file line while getting JSON header");
+      System.out.println("Unexpected end of file line while getting JSON header");
       return;
     }
     JSONObject header = parse(line);
@@ -223,8 +234,8 @@ public class LiquizCompiler {
       .append("<head>\n")
       .append("  <meta charset='UTF-8'/>\n")
 ...
-    .append("  <link rel='stylesheet' type='text/css' href='css/".append(youtrvariable)
-    .append("')\n"
+      .append("  <link rel='stylesheet' type='text/css' href='css/".append(youtrvariable)
+      .append("')\n")
     html.println(b); // will call b.toString() which is ugly but oh well
 
     html.printf( 
@@ -307,12 +318,12 @@ public class LiquizCompiler {
       long questionLineNum = stoi(questionText.substr(pos+10, endPos-pos-10+1)); //TODO: get rid of this!
 
       String type;
-      if (delim[0] != 'f') {
-        for (int i = 0; delim[i] != ':' && delim[i] != '{'; i++) {
-          type += delim[i];
+      if (delim.charAt(0) != 'f') {
+        for (int i = 0; delim.charAt(i) != ':' && delim.charAt(i) != '{'; i++) {
+          type += delim.charAt(i);
         }
       } else {
-        type = delim[0];
+        type = delim.charAt(0);
       }
       findQuestionType(type, points, delim, m.position(), m.length());
     }
@@ -367,7 +378,7 @@ public class LiquizCompiler {
     
     while ((line = liquizFile.readLine()) != null) {
       if (find(line, m, questionStart)) {  // looking for the beginning of a question
-        JSONObject question;  // gets the question header
+        JSONObject question = new JSONObject();  // gets the question header
         s = question;
         lineNumber++;
         
@@ -392,18 +403,19 @@ public class LiquizCompiler {
   }
   
   private void generateFooter() {
-    System.out.printf(
-      "<div class='footer'>" +
-      "<pre id='bottomTime'></pre>" +
-      "<input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>" +
-      "</div>" + 
-      "</form>" +
-      "</body>" +
-      "</html>");
+    StringBuilder x = new StringBuilder(32768);
+      x.append("<!DOCTYPE html>\n")
+        .append("<div class='footer'>\n")
+        .append("<pre id='bottomTime'></pre>\n")
+        .append("<input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>\n")
+        .append("</div>\n") 
+        .append("</form>\n")
+        .append("</body>\n")
+        .append("</html>");
   } 
   
   private void closeFile() {
-    bytes = null;
+    //bytes = null;
     liquizFile.close();
     html.close();
     answers.close();
@@ -411,20 +423,21 @@ public class LiquizCompiler {
   
   private void readFile(final char filename[], char bytes, long fileSize) { // (long is used as an unsigned integer)
     //ifstream f(fileName, ios::in | ios::ate);
-    InputStream f = new FileInputStream(fileName);
-    
+    FileInputStream f = new FileInputStream(filename);
+    BufferedReader br = new BufferedReader(new InputStreamReader(f));
     /*if (!f.good()) {
       throw fileName; //TODO: add Ex object
     }*/
 
-    fileSize = f.available();
+    //fileSize = f.available();
     //f.seekg(0, ios::beg);
-    f.reset();
-    bytes = new char[fileSize];
-    f.read();
-    f.close();
+    //f.reset();
+    //bytes = new char[fileSize];
+    //f.read();
+    br.close();
   }
-  
+  //TODO: Rewrite this function I am not even sure I understand where we are using it if we are at all
+  //It is certainly not even close to being in Java right now? Why can't we use readLine?
   private bool getline(String line) {
     while (cursor < fileSize && bytes[cursor] == '#') { // skip comment
       cursor++;
@@ -466,13 +479,12 @@ public class LiquizCompiler {
     return lineNumber;
   }
 
-  public void generateQuiz(final char liquizFileName[]) {
+  public void generateQuiz(String liquizFileName) {
     String baseName = liquizFilename.substring(0, liquizFilename.length - 2);
-    String htmlFilename = baseName + ".html";
-    String ansFilename = baseName + ".ans";
+    String htmlFilename = baseName + "html";
+    String ansFilename = baseName + "ans";
     html = new PrintWriter(new BufferedWriter(new FileWriter(htmlFilename)));
     ans = new PrintWriter(new BufferedWriter(new FileWriter(ansFilename)));
-
     generateHeader();
     grabQuestions();
     generateFooter();
@@ -492,16 +504,16 @@ public class LiquizCompiler {
       if (it != json.end())
         return T(it.value());
       } catch (Exception e) {
-        System.out.println( "Error parsing json value "+ key + " of type " + nameof(defaultVal) + e.what());
+        System.out.println( "Error parsing json value "+ key + " of type " + nameof(defaultVal) + e.printStackTrace());
       }
     return defaultVal;
   }
 
   public static < T > void require(JSONObject json, String key, T target, int lineNum) {
     try {
-      auto it = json.get(key);
-      if (it != json.end())
-        target = it.value();
+      String it = json.get(key);
+      if (json.containsKey(it))
+        target = it.get();
       } catch (Exception e) {
         System.out.println("Expected " + key + " at line " + lineNum);
     }
@@ -536,7 +548,6 @@ public class LiquizCompiler {
     try {
       LiquizCompiler c = new LiquizCompiler(filename);
       c.generateQuiz(filename);
-
     } catch (Exception e) {
       e.printStackTrace();
     }
