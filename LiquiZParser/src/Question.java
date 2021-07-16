@@ -17,4 +17,7 @@ public abstract class Question extends DisplayElement {
         b.append(qId).append("\t");
         buildAnswers(b);
     }
+    public Question(int questionNumber, int partNumber) {
+        qId = "q" + questionNumber + "_" + partNumber;
+    }
 }

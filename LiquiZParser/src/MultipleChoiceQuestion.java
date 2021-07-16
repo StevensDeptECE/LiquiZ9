@@ -5,5 +5,8 @@ public abstract class MultipleChoiceQuestion extends Question {
     public void buildAnswers(StringBuilder b) {
         //TODO:
     }
+    public MultipleChoiceQuestion(int questionNumber, int partNumber) {
+        super(questionNumber, partNumber);
+    }
 
 }

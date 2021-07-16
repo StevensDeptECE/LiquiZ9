@@ -7,5 +7,8 @@ public class FillinQuestion extends Question {
     public void buildAnswers(StringBuilder b) {
         //TODO:
     }
+    public FillinQuestion(int questionNumber, int partNumber) {
+        super(questionNumber, partNumber);
+    }
 
 }

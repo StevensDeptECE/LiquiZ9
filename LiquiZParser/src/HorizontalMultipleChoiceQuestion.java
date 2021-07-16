@@ -4,4 +4,7 @@ public class HorizontalMultipleChoiceQuestion extends MultipleChoiceQuestion {
         b.append(answers[i]); //TODO: maket his decent format! displays all answers
 
     }
+    public HorizontalMultipleChoiceQuestion(int questionNumber, int partNumber) {
+        super(questionNumber, partNumber);
+    }
 }

@@ -4,7 +4,7 @@ public class Text extends DisplayElement {
         //TODO: what if your text contains funky characters? Do we escape them? & < >   &amp;  &lt;
         b.append(text);
     }
-    public Text(String text) {
-
+    public Text(String t) {
+        text = t;
     }
 }

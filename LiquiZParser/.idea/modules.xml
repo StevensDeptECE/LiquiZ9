@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/LiquiZParser.iml" filepath="$PROJECT_DIR$/LiquiZParser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LiquizParser.iml" filepath="$PROJECT_DIR$/LiquizParser.iml" />
     </modules>
   </component>
 </project>

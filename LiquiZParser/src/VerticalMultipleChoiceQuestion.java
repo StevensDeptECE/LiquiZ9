@@ -6,4 +6,7 @@ public class VerticalMultipleChoiceQuestion extends MultipleChoiceQuestion {
         }
         b.append("</table>\n");
     }
+    public VerticalMultipleChoiceQuestion(int questionNumber, int partNumber) {
+        super(questionNumber, partNumber);
+    }
 }

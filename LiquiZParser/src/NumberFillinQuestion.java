@@ -1,18 +1,20 @@
 public class NumberFillinQuestion extends FillinQuestion {
-    //TODO: This class has only what all multiplechoice questions have in common
+    private double min;
+    private double max;
     public void buildHTML(StringBuilder b) {
         //TODO:
+        b.append("<input class='' type='number' name='").append(qId).append("'>\n");
     }
 
     public void buildAnswers(StringBuilder b) {
         //TODO:
     }
-    public NumberFillinQuestion(double val) {
-        //TODO: Store the answer!
-
+    public NumberFillinQuestion(int questionNumber, int partNumber, double val) {
+        this(questionNumber, partNumber, val, val);
     }
-    public NumberFillinQuestion(double minVal, double maxVal) { // TODO: implement range of right answers
-        //TODO: Store the answer!
-
+    public NumberFillinQuestion(int questionNumber, int partNumber, double minVal, double maxVal) { // TODO: implement range of right answers
+        super(questionNumber, partNumber);
+        min = minVal;
+        max = maxVal;
     }
 }

@@ -1,13 +1,14 @@
 public class EssayQuestion extends Question {
-    //TODO: This class has only what all multiplechoice questions have in common
+    private String defaultText;
     public void buildHTML(StringBuilder b) {
-        //TODO:
+        b.append("<textarea name='").append(qId).append("'>\n").append(defaultText).append("</textarea>\n");
     }
 
     public void buildAnswers(StringBuilder b) {
         //TODO:
     }
-    public EssayQuestion(String defaultText) {
-
+    public EssayQuestion(int questionNumber, int partNumber, String defaultText) {
+        super(questionNumber, partNumber);
+        this.defaultText = defaultText;
     }
 }
