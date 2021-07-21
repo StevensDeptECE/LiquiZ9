@@ -1,6 +1,6 @@
 public class FillinQuestion extends Question {
     //TODO: This class has only what all multiplechoice questions have in common
-    public void buildHTML(StringBuilder b) {
+    public void buildHTML(StringBuilder b, boolean isQuestion) {
         //TODO:
     }
 

@@ -1,9 +1,8 @@
 public class NumberFillinQuestion extends FillinQuestion {
     private double min;
     private double max;
-    public void buildHTML(StringBuilder b) {
-        //TODO:
-        b.append("<input class='' type='number' name='").append(qId).append("'>\n");
+    public void buildHTML(StringBuilder b, boolean isQuestion) {
+        b.append("<input class='' type='number' name='").append(getQuestionId(isQuestion)).append("'>\n");
     }
 
     public void buildAnswers(StringBuilder b) {

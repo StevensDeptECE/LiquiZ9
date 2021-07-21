@@ -1,6 +1,6 @@
 public class EssayQuestion extends Question {
     private String defaultText;
-    public void buildHTML(StringBuilder b) {
+    public void buildHTML(StringBuilder b, boolean isQuestion) {
         b.append("<textarea name='").append(qId).append("'>\n").append(defaultText).append("</textarea>\n");
     }
 
