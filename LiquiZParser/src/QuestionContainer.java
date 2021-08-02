@@ -7,6 +7,11 @@ public class QuestionContainer {
     private ArrayList<DisplayElement> displayElements;
 
     public QuestionContainer() { displayElements = new ArrayList<>(); name = ""; }
+    public QuestionContainer(float points, String name) {
+        displayElements = new ArrayList<>();
+        this.name = name;
+        this.points = points;
+    }
     private final void writeQuestionOrAnswer(StringBuilder b, int questionNum, boolean isQuestion) {
         String className = isQuestion ? "question" : "answer";
         b.append("<div class='")
@@ -34,6 +39,9 @@ public class QuestionContainer {
     public void writeHTML(StringBuilder b, int questionNum) {
         writeQuestionOrAnswer(b, questionNum, true);
         writeQuestionOrAnswer(b, questionNum, false);
+    }
+    public void addPoints(float points){
+        this.points+=points;
     }
     public void add(DisplayElement e) {
         displayElements.add(e);

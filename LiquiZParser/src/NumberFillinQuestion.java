@@ -1,12 +1,15 @@
-public class NumberFillinQuestion extends FillinQuestion {
+public class NumberFillinQuestion extends Question {
     private double min;
     private double max;
     public void buildHTML(StringBuilder b, boolean isQuestion) {
-        b.append("<input class='' type='number' name='").append(getQuestionId(isQuestion)).append("'>\n");
+        b.append("<input class='input' type='number' name='")
+                .append(getQuestionId(isQuestion)).append("'>\n");
     }
 
     public void buildAnswers(StringBuilder b) {
-        //TODO:
+        //TODO: how to get points for question in container
+        b.append("getPoints()").append("\t")
+                .append(min).append(",").append(max).append("\n");
     }
     public NumberFillinQuestion(int questionNumber, int partNumber, double val) {
         this(questionNumber, partNumber, val, val);

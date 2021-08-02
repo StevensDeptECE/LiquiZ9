@@ -36,12 +36,14 @@ public class Quiz {
 
   public void writeHTML() {
     html.append("<!DOCTYPE html>\n")
-        .append(
-            "<html>\n<head>\n<link rel='stylesheet' type='text/css' href='css/quiz.css'>\n<title>")
+        .append("<html>\n<head>\n<link rel='stylesheet' type='text/css' href='css/quiz.css'>\n")
+        .append("<script src='js/quiz.js'></script>\n")
+        .append("\n<title>")
         .append(name)
         .append("</title>\n</head>\n\n\n<body>\n")
         .append(
-            "<div id='header' class='header'>\n"
+                "<form method='post' action='submitQuiz'>\n"
+            + "<div id='header' class='header'>\n"
             + "    <img class='logo' src='media/StevensLogo.png'/>\n"
             + "    <div class='headerText'>\n"
             + "      <div class='quizTitle'>\n"
@@ -76,7 +78,12 @@ public class Quiz {
       qc.writeHTML(html, questionNumber);
       questionNumber++;
     }
-    html.append("</body>\n</html>\n");
+    html.append(
+            "    <div class='footer'>\n"
+            + "      <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>\n"
+            + "      <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>\n"
+            + "    </div>"
+            + "</form>\n</body>\n</html>\n");
     //     while (Entry<...> q = questions.next()) {
     //         String qId = q.key(); QuestionContainer q = q.value();
     //        q.writeHTML(html);

@@ -6,9 +6,10 @@ public abstract class Question extends DisplayElement {
     }
     public abstract void buildHTML(StringBuilder b, boolean isQuestion);
     public abstract void buildAnswers(StringBuilder b);
+    //public abstract String getqIdType(); use an abstract function or a new qId class?
 
     public final void writeEnclosingDiv(StringBuilder b) {
-        b.append("<div");
+        b.append("<div>");
     }
 
     public final void writeHTML(StringBuilder b, boolean isQuestion) {
@@ -23,4 +24,5 @@ public abstract class Question extends DisplayElement {
     public Question(int questionNumber, int partNumber) {
         qId = "q_" + questionNumber + "_" + partNumber; //TODO change first letter to match Ethan's question code
     }
+
 }
