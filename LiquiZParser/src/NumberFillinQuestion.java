@@ -5,11 +5,13 @@ public class NumberFillinQuestion extends Question {
         b.append("<input class='input' type='number' name='")
                 .append(getQuestionId(isQuestion)).append("'>\n");
     }
-
     public void buildAnswers(StringBuilder b) {
         //TODO: how to get points for question in container
         b.append(getPoints()).append("\t")
                 .append(min).append(",").append(max).append("\n");
+    }
+    public String getqIdType() {
+        return "n_";
     }
     public NumberFillinQuestion(int questionNumber, int partNumber, double points, double val) {
         this(questionNumber, partNumber, points, val, val);

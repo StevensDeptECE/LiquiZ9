@@ -13,6 +13,8 @@ public class Quiz {
   private StringBuilder html;
   private StringBuilder answerText;
   private String name;
+  private double points;
+  private Preferences pref;
   //    private StringBuilder xml;
 
   public Quiz() {
@@ -22,11 +24,13 @@ public class Quiz {
     html = new StringBuilder(65536);
     answerText = new StringBuilder(65536);
     name = "TODO";
+    points = 0.0;
     //        xml = new StringBuilder(65536)
   }
 
   public void add(QuestionContainer qc) {
     questionContainers.add(qc);
+    points+=qc.getPoints();
     // TODO: for each question in the question container, add to the treemap
     // questions.add()
   }
@@ -90,6 +94,9 @@ public class Quiz {
     //    }
   }
   public void writeAnswers() {
+    for(QuestionContainer qc : questionContainers) {
+      qc.writeAnswers(answerText);
+    }
     //  while (Entry<...> q = questions.next()) {
     //      String qId = q.key(); Question q = q.value();
     //      q.writeAnswers(answerText);

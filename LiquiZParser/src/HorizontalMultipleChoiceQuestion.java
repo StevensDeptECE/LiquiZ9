@@ -13,11 +13,16 @@ public class HorizontalMultipleChoiceQuestion extends MultipleChoiceQuestion {
         b.append("</div>\n");
     }
 
-    public HorizontalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, String[] choices, String[] answers, boolean multiAns) {
-        super(questionNumber, partNumber, points, choices, answers, multiAns);
+    public static HorizontalMultipleChoiceQuestion lookUpPreDefined(int questionNumber, int partNumber, double points, Preferences prefs, String answerName, String answers) {
+        String preDefinedAnswers = prefs.get(answerName);//TODO: put stars in next to right answers
+        return new HorizontalMultipleChoiceQuestion(questionNumber, partNumber, points, preDefinedAnswers);
     }
 
-    public HorizontalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, String[] choices, String[] answers) {
-        super(questionNumber, partNumber, points, choices, answers, false);
+    public HorizontalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, String answers, boolean multiAns) {
+        super(questionNumber, partNumber, points, answers, multiAns);
+    }
+
+    public HorizontalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, String answers) {
+        super(questionNumber, partNumber, points, answers, false);
     }
 }

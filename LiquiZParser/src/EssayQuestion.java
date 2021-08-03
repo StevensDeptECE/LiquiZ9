@@ -6,9 +6,11 @@ public class EssayQuestion extends Question {
                 .append(defaultText)
                 .append("</textarea>\n");
     }
-
     public void buildAnswers(StringBuilder b) {
-        b.append(getPoints()).append("\t").append(answer).append("\n");//TODO: how to get points
+        b.append(getPoints()).append("\t").append(answer).append("\n");
+    }
+    public String getqIdType() {
+        return "q_";
     }
     public EssayQuestion(int questionNumber, int partNumber, double points, String defaultText, String answer) {
         super(questionNumber, partNumber, points);

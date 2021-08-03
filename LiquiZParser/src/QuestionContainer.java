@@ -40,13 +40,14 @@ public class QuestionContainer {
         writeQuestionOrAnswer(b, questionNum, true);
         writeQuestionOrAnswer(b, questionNum, false);
     }
-    public void addPoints(float points){
-        this.points+=points;
+    public void writeAnswers(StringBuilder b) {
+        for(DisplayElement e : displayElements){
+            e.writeAnswers(b);
+        }
     }
     public void add(DisplayElement e) {
         displayElements.add(e);
-        if(e instanceof Question){
-            //this.points+=e.getPoints();
-        }
+        points+=e.getPoints();
     }
+    public double getPoints() { return points; }
 }
