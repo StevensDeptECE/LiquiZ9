@@ -45,5 +45,8 @@ public class QuestionContainer {
     }
     public void add(DisplayElement e) {
         displayElements.add(e);
+        if(e instanceof Question){
+            //this.points+=e.getPoints();
+        }
     }
 }

@@ -8,10 +8,10 @@ public class EssayQuestion extends Question {
     }
 
     public void buildAnswers(StringBuilder b) {
-        b.append("getPoints()").append("\t").append(answer).append("\n");//TODO: how to get points
+        b.append(getPoints()).append("\t").append(answer).append("\n");//TODO: how to get points
     }
-    public EssayQuestion(int questionNumber, int partNumber, String defaultText, String answer) {
-        super(questionNumber, partNumber);
+    public EssayQuestion(int questionNumber, int partNumber, double points, String defaultText, String answer) {
+        super(questionNumber, partNumber, points);
         this.defaultText = defaultText;
         this.answer = answer;
     }

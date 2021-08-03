@@ -7,10 +7,10 @@ public class FillinQuestion extends Question {
     }
 
     public void buildAnswers(StringBuilder b) {
-        b.append("getPoints()").append("\t").append(answer).append("\n");//TODO: how to get points
+        b.append(getPoints()).append("\t").append(answer).append("\n");//TODO: how to get points
     }
-    public FillinQuestion(int questionNumber, int partNumber, String answer) {
-        super(questionNumber, partNumber);
+    public FillinQuestion(int questionNumber, int partNumber, double points, String answer) {
+        super(questionNumber, partNumber, points);
         this.answer = answer;
     }
 

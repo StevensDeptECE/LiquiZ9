@@ -13,11 +13,11 @@ public class HorizontalMultipleChoiceQuestion extends MultipleChoiceQuestion {
         b.append("</div>\n");
     }
 
-    public HorizontalMultipleChoiceQuestion(int questionNumber, int partNumber, boolean multiAns, String[] choices, String[] answers) {
-        super(questionNumber, partNumber, multiAns, choices, answers);
+    public HorizontalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, String[] choices, String[] answers, boolean multiAns) {
+        super(questionNumber, partNumber, points, choices, answers, multiAns);
     }
 
-    public HorizontalMultipleChoiceQuestion(int questionNumber, int partNumber, String[] choices, String[] answers) {
-        super(questionNumber, partNumber, false, choices, answers);
+    public HorizontalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, String[] choices, String[] answers) {
+        super(questionNumber, partNumber, points, choices, answers, false);
     }
 }

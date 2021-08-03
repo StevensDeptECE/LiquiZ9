@@ -8,14 +8,14 @@ public class NumberFillinQuestion extends Question {
 
     public void buildAnswers(StringBuilder b) {
         //TODO: how to get points for question in container
-        b.append("getPoints()").append("\t")
+        b.append(getPoints()).append("\t")
                 .append(min).append(",").append(max).append("\n");
     }
-    public NumberFillinQuestion(int questionNumber, int partNumber, double val) {
-        this(questionNumber, partNumber, val, val);
+    public NumberFillinQuestion(int questionNumber, int partNumber, double points, double val) {
+        this(questionNumber, partNumber, points, val, val);
     }
-    public NumberFillinQuestion(int questionNumber, int partNumber, double minVal, double maxVal) { // TODO: implement range of right answers
-        super(questionNumber, partNumber);
+    public NumberFillinQuestion(int questionNumber, int partNumber, double points, double minVal, double maxVal) { // TODO: implement range of right answers
+        super(questionNumber, partNumber, points);
         min = minVal;
         max = maxVal;
     }
