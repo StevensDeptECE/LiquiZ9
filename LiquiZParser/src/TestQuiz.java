@@ -32,7 +32,7 @@ public class TestQuiz {
     quiz.add(qc);
 
     qc = new QuestionContainer();
-    String vMCAns = "1st Ans,2nd Ans,*3rd Ans";
+    String vMCAns = "1st Ans,*2nd Ans,*3rd Ans";
     qc.add(new VerticalMultipleChoiceQuestion(5, 1, 5.5, vMCAns));
     quiz.add(qc);
 
@@ -46,13 +46,13 @@ public class TestQuiz {
     quiz.add(qc);
 
     qc = new QuestionContainer();
-    //qc.add(new MatrixQuestion(7, 1, 10.0, 2, 3, "1,2,3,4,5,_6_7"));
+    qc.add(new MatrixQuestion(7, 1, 10.0, 2, 3, "1,2,3,4,5,_6"));
     qc.add(new Instructions("Create a 2x2 identity matrix"));
-    //qc.add(new MatrixQuestion(7, 2, 10.0, 2, 2, "_,0,_,_"));
+    qc.add(new MatrixQuestion(7, 2, 10.0, 2, 2, "_1,0,_1,_1"));
     quiz.add(qc);
 
     qc = new QuestionContainer();
-    qc.add(HorizontalMultipleChoiceQuestion.lookUpPreDefined(8, 1, 3.5, prefs, "I like ice cream?", "likert5"));
+    qc.add(HorizontalMultipleChoiceQuestion.lookUpPreDefined(8, 1, 3.5, prefs, "likert5", "I like ice cream?"));
     quiz.add(qc);//TODO: add survey -> no right answer
 
     quiz.writeHTML();

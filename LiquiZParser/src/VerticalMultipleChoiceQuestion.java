@@ -13,6 +13,16 @@ public class VerticalMultipleChoiceQuestion extends MultipleChoiceQuestion {
         b.append("</div>\n");
     }
 
+    public static VerticalMultipleChoiceQuestion lookUpPreDefined(int questionNumber, int partNumber, double points, Preferences prefs, String answerName, String answers) {
+        String preDefinedAnswers = "";
+        try {
+            preDefinedAnswers = prefs.getDefinition(answerName);//TODO: put stars in next to right answers
+        } catch (IllegalArgumentException e){
+
+        }
+        return new VerticalMultipleChoiceQuestion(questionNumber, partNumber, points, preDefinedAnswers);
+    }
+
     public VerticalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, boolean multiAns, String answers) {
         super(questionNumber, partNumber, points, answers, multiAns);
     }

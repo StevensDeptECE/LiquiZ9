@@ -14,7 +14,12 @@ public class HorizontalMultipleChoiceQuestion extends MultipleChoiceQuestion {
     }
 
     public static HorizontalMultipleChoiceQuestion lookUpPreDefined(int questionNumber, int partNumber, double points, Preferences prefs, String answerName, String answers) {
-        String preDefinedAnswers = prefs.get(answerName);//TODO: put stars in next to right answers
+        String preDefinedAnswers = "";
+        try {
+            preDefinedAnswers = prefs.getDefinition(answerName);//TODO: put stars in next to right answers
+        } catch (IllegalArgumentException e){
+
+        }
         return new HorizontalMultipleChoiceQuestion(questionNumber, partNumber, points, preDefinedAnswers);
     }
 

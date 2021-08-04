@@ -9,7 +9,7 @@ public abstract class MultipleChoiceQuestion extends Question {
     public void buildAnswers(StringBuilder b) {
         b.append(getPoints());
         if(answers.length > 0) {
-            b.append("\t").append(answers[0]);//TODO: figure out how to get points
+            b.append("\t").append(answers[0]);
             for (int i = 1; i < answers.length; i++) {
                 b.append(",").append(answers[i]);
             }

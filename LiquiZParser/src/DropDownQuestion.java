@@ -15,8 +15,11 @@ public class DropDownQuestion extends MultipleChoiceQuestion {
         }
         b.append("\n");
     }
-    public DropDownQuestion(int questionNumber, int partNumber, boolean multiAns, String choices, String answers) {
-        super(questionNumber, partNumber);
+    public String getqIdType() {
+        return "q_";
+    }
+    public DropDownQuestion(int questionNumber, int partNumber, double points, boolean multiAns, String choices, String answers) {
+        super(questionNumber, partNumber, points);
         this.choices = choices.split(",");
         this.answers = answers.split(",");
     }
