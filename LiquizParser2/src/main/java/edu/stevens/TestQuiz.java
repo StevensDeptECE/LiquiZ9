@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 
 public class TestQuiz {
-  public static void main(String[] args) throws Exception {
+  public static void main(String arg[]) throws Exception {
     Quiz quiz = new Quiz();
 
     QuestionContainer qc = new QuestionContainer((float)10.0, "Enter a number");

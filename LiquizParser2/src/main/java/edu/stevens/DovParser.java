@@ -1,5 +1,7 @@
 package edu.stevens;
 
+import com.google.gson.Gson;
+
 import java.io.*;
 
 class ParseException extends Exception {
@@ -9,40 +11,41 @@ class ParseException extends Exception {
 public class DovParser {
     private BufferedReader br;
     private Quiz quiz;
+    private int lineNumber;
+    private Gson gson = new Gson();
 
-    public String expectLine() throws Exception {
+    public String expectLine(String message) throws Exception {
         String line;
         do {
             line = br.readLine();
             if (line == null)
-                throw new ParseException("Expected line");
-        } while (!line.startsWith("#"));
+                throw new ParseException("Expected line" + lineNumber + message);
+        } while (line.startsWith("#"));
         // if line starts with # it's a comment, just return
         return line;
     }
     public Quiz expectQuizJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
-        String line = expectLine();
-        if (line == null)
-            throw new ParseException("did not find quiz json, bail or try to go on?");
+        String line = expectLine("did not find quiz json, bail or try to go on?");
+        final QuizSpec qs = gson.fromJson(line, QuizSpec.class);
         // if you successfully parse out json, return a new Quiz configured
         // gson.fromJSON(...);
         return new Quiz(); //TODO: configure
     }
 
-    public Question findNextQuestionJSON() throws Exception {
+    public QuestionContainer findNextQuestionJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
-        String line = expectLine();
+        String line = expectLine("message");
         if (line == null) {
             return null; // end quiz cleanly
         }
         // if you successfully parse out json, return a new question configured
         // gson.fromtJSON
-        Question q = null; // new Question(); // if end of file, break out cleanly?
+        QuestionContainer q = new QuestionContainer(); // new Question(); // if end of file, break out cleanly?
         return null; //TODO: new Question(); //TODO: configure the question
     }
 
-    public void addToQuestion(Question q) {
+    public void addToQuestion(QuestionContainer q) {
   /*
         while (true) {
 
@@ -56,17 +59,18 @@ public class DovParser {
        // quiz.add(q);
     }
     public void generateHTML() {
+
     }
     public DovParser(String liquiZFilename) throws Exception {
         // open file
         // read in 1st line --> convert using gson to Java Object
         //        QuizConf conf = new QuizConf();
-
+        lineNumber = 0;
         br = new BufferedReader(new FileReader(liquiZFilename));
 
         quiz = expectQuizJSON();
         while (true) {
-            Question q = findNextQuestionJSON();
+            QuestionContainer q = findNextQuestionJSON();
             if (q == null)
                 break;
             addToQuestion(q);

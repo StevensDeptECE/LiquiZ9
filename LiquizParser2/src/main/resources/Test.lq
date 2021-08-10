@@ -1,0 +1,5 @@
+{"qspec":"cpe390.qspec", "name":"test"}
+{"type":"code", "name":"math", "points":1}
+what is 2+2?
+$fn:4$
+---
