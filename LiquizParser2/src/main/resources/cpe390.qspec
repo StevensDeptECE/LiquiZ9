@@ -1,7 +1,7 @@
 {
   "course": "CPE390",
   "desc": "Computer Architecture",
-  "#parent":     "DovKruger.qspec",
+  "parent":     "DovKruger.qspec",
   "defaults": {
      "numberOfTries":4,
      "timeLimit":0,

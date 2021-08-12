@@ -1,8 +1,17 @@
 package edu.stevens;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 class ParseException extends Exception {
     public ParseException(String message) {}
@@ -24,10 +33,42 @@ public class DovParser {
         // if line starts with # it's a comment, just return
         return line;
     }
+    public void transformQuizSpec(QuizSpec qs) {
+        for (Map.Entry<String, Object> entry : qs.def.entrySet()) {
+            String key = entry.getKey();
+            try {
+                ArrayList<String> value = (ArrayList<String>)entry.getValue();
+                for (String v: value) {
+                    System.out.println(v);
+                }
+            }
+            catch(Exception e) {
+                System.out.println(e);
+            }
+        }
+    }
+    private String readFile(String filename) throws IOException{
+        File file = new File(filename);
+        FileInputStream fis = new FileInputStream(file);
+        byte[] data = new byte[(int) file.length()];
+        fis.read(data);
+        fis.close();
+        return new String(data, "UTF-8");
+    }
     public Quiz expectQuizJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
-        String line = expectLine("did not find quiz json, bail or try to go on?");
-        final QuizSpec qs = gson.fromJson(line, QuizSpec.class);
+        //String line = expectLine("did not find quiz json, bail or try to go on?");
+        String json = expectLine("Expect JSON");
+        final QuizSpecInclude qsi = gson.fromJson(json, QuizSpecInclude.class);
+        //String qSpecFileJson = Files.readString(Paths.get("resources/"+qsi.qspec));
+        String currentPath = new java.io.File(".").getCanonicalPath();
+        System.out.println("Current dir:" + currentPath);
+
+        String currentDir = System.getProperty("user.dir");
+        System.out.println("Current dir using System:" + currentDir);
+        String qSpecFileJson = readFile("src/main/resources/"+qsi.qspec);
+        final QuizSpec qs = gson.fromJson(qSpecFileJson, QuizSpec.class);
+        transformQuizSpec(qs);
         // if you successfully parse out json, return a new Quiz configured
         // gson.fromJSON(...);
         return new Quiz(); //TODO: configure
