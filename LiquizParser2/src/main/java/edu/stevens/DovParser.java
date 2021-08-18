@@ -34,10 +34,10 @@ public class DovParser {
         return line;
     }
     public void transformQuizSpec(QuizSpec qs) {
-        for (Map.Entry<String, Object> entry : qs.def.entrySet()) {
+        for (Map.Entry<String, String[]> entry : qs.def.entrySet()) {
             String key = entry.getKey();
             try {
-                ArrayList<String> value = (ArrayList<String>)entry.getValue();
+                String[] value = (String[]) entry.getValue();
                 for (String v: value) {
                     System.out.println(v);
                 }
@@ -61,11 +61,7 @@ public class DovParser {
         String json = expectLine("Expect JSON");
         final QuizSpecInclude qsi = gson.fromJson(json, QuizSpecInclude.class);
         //String qSpecFileJson = Files.readString(Paths.get("resources/"+qsi.qspec));
-        String currentPath = new java.io.File(".").getCanonicalPath();
-        System.out.println("Current dir:" + currentPath);
 
-        String currentDir = System.getProperty("user.dir");
-        System.out.println("Current dir using System:" + currentDir);
         String qSpecFileJson = readFile("src/main/resources/"+qsi.qspec);
         final QuizSpec qs = gson.fromJson(qSpecFileJson, QuizSpec.class);
         transformQuizSpec(qs);

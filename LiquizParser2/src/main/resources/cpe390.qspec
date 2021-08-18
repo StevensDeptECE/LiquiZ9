@@ -24,5 +24,23 @@
     "circ": ["", "resistor", "capacitor", "electrolytic capacitor", "inductor", "diode", "N-channel MOSFET", "P channel MOSFET", "NPN bipolar junction transistor", "PNP bipolar junction transistor", "transformer", "iron core transformer", "center-tap transformer", "battery", "cell", "ground", "AC voltage source", "DC voltage source", "crystal oscillator"],
     "logic": ["", "D-type flip flop", "half-adder", "4-bit adder", "multiplexer", "demultiplexer", "NOT", "NOR", "NAND"],
     "base": ["", "binary", "octal", "hexadecimal", "decimal"]
+  },
+  "schoolInfo": {
+    "stevens": {
+        "color" : "#A32638",
+        "logo" : "StevensLogo.png"
+    },
+    "rutgers": {
+        "color" : "#CC0033",
+        "logo" : "RutgersLogo.png"
+    },
+    "columbia": {
+        "color" : "#003865",
+        "logo" : "ColumbiaLogo.png"
+    },
+    "dartmouth": {
+        "color" : "#046A38",
+        "logo" : "DartmouthLogo.png"
+    }
   }
 }

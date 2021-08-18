@@ -1,11 +1,16 @@
 package edu.stevens;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 public class TestQuiz {
-  public static void main(String[] args) throws Exception {
+  @Test
+  public void generateSampleQuiz() throws IOException{
     Quiz quiz = new Quiz();
+    //quiz.timeForClock("30");
 
     QuestionContainer qc = new QuestionContainer((float)10.0, "Enter a number");
     qc.add(new Text("What is 3+3?"));
@@ -49,7 +54,7 @@ public class TestQuiz {
     quiz.writeHTML();
     System.out.println(quiz.getHTML());
     System.out.println(EssayQuestion.class);
-    PrintWriter pw = new PrintWriter(new FileWriter("src/main/java/edu/stevens/Quiz.html"));
+    PrintWriter pw = new PrintWriter(new FileWriter("Quiz.html"));
     pw.println(quiz.getHTML());
     pw.close();
   }

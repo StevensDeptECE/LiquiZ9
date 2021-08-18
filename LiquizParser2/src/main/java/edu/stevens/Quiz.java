@@ -38,7 +38,7 @@ public class Quiz {
 
   public void writeHTML() {
     html.append("<!DOCTYPE html>\n")
-        .append("<html>\n<head>\n<link rel='stylesheet' type='text/css' href='css/quiz.css'>\n")
+        .append("<html>\n<head>\n<link rel='stylesheet' type='text/css' href='src/main/resources/css/quiz.css'>\n")
         .append("<script src='js/quiz.js'></script>\n")
         .append("\n<title>")
         .append(name)
@@ -46,7 +46,7 @@ public class Quiz {
         .append(
                 "<form method='post' action='submitQuiz'>\n"
             + "<div id='header' class='header'>\n"
-            + "    <img class='logo' src='media/StevensLogo.png'/>\n"
+            + "    <img class='logo' src='src/main/resources/media/StevensLogo.png'/>\n"
             + "    <div class='headerText'>\n"
             + "      <div class='quizTitle'>\n"
             + "        Loops\n"
