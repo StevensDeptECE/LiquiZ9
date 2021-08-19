@@ -1,4 +1,4 @@
-{"qspec":"cpe390.qspec", "name":"test"}
+{"qspec":"cpe390.qspec", "name":"test", "school":"columbia",}
 {"type":"code", "name":"math", "points":1}
 what is 2+2?
 $fn:4$

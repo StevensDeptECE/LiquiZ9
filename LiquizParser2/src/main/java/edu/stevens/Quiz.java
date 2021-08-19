@@ -1,6 +1,12 @@
 package edu.stevens;
 
+import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class Quiz {
@@ -15,9 +21,10 @@ public class Quiz {
   private StringBuilder html;
   private StringBuilder answerText;
   private String name;
-  //    private StringBuilder xml;
+  private String schoolColor;
+  private String schoolLogo;
 
-  public Quiz() {
+  public Quiz() throws Exception {
     questionContainers = new ArrayList<>();
     questions = new TreeMap<>();
     answers = new TreeMap<>();
@@ -33,8 +40,12 @@ public class Quiz {
     // questions.add()
   }
 
-  public StringBuilder getHTML() { return html; }
-  public StringBuilder getAnswers() { return answerText; }
+  public StringBuilder getHTML() {
+    return html;
+  }
+  public StringBuilder getAnswers() {
+    return answerText;
+  }
 
   public void writeHTML() {
     html.append("<!DOCTYPE html>\n")
@@ -46,7 +57,7 @@ public class Quiz {
         .append(
                 "<form method='post' action='submitQuiz'>\n"
             + "<div id='header' class='header'>\n"
-            + "    <img class='logo' src='src/main/resources/media/StevensLogo.png'/>\n"
+            + "    <img class='logo' src='src/main/resources/media/StevensLogo'/>\n"
             + "    <div class='headerText'>\n"
             + "      <div class='quizTitle'>\n"
             + "        Loops\n"
@@ -106,4 +117,8 @@ public class Quiz {
       }
   }
   */
+  public Quiz(String schoolColor, String schoolLogo) {
+    this.schoolColor = schoolColor;
+    this.schoolLogo = schoolLogo;
+  }
 }

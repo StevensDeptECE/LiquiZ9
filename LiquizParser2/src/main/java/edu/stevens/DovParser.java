@@ -1,17 +1,12 @@
 package edu.stevens;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
-import java.lang.reflect.Type;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 class ParseException extends Exception {
     public ParseException(String message) {}
@@ -22,6 +17,8 @@ public class DovParser {
     private Quiz quiz;
     private int lineNumber;
     private Gson gson = new Gson();
+    private String schoolColor;
+    private String schoolLogo;
 
     public String expectLine(String message) throws Exception {
         String line;
@@ -55,6 +52,32 @@ public class DovParser {
         fis.close();
         return new String(data, "UTF-8");
     }
+    public String schoolInformationColor(QuizSpecInclude qsi, QuizSpec qs) {
+        String schoolColor = null;
+        String school = qsi.school;
+        SchoolInformation schoolInfom = null;
+        Set<String> differentSchools = qs.schoolInfo.keySet();
+        for (String s : differentSchools) {
+            if (school.equals(s)) {
+                schoolInfom = qs.schoolInfo.get(school);
+                schoolColor = schoolInfom.color;
+            }
+        }
+        return schoolColor;
+    }
+    public String schoolInformationLogo(QuizSpecInclude qsi, QuizSpec qs) {
+        String schoolLogo = null;
+        String school = qsi.school;
+        SchoolInformation schoolInfom = null;
+        Set<String> differentSchools = qs.schoolInfo.keySet();
+        for (String s : differentSchools) {
+            if (school.equals(s)) {
+                schoolInfom = qs.schoolInfo.get(school);
+                schoolLogo = schoolInfom.logo;
+            }
+        }
+        return schoolLogo;
+    }
     public Quiz expectQuizJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
         //String line = expectLine("did not find quiz json, bail or try to go on?");
@@ -65,9 +88,11 @@ public class DovParser {
         String qSpecFileJson = readFile("src/main/resources/"+qsi.qspec);
         final QuizSpec qs = gson.fromJson(qSpecFileJson, QuizSpec.class);
         transformQuizSpec(qs);
+        schoolColor = schoolInformationColor(qsi, qs);
+        schoolLogo = schoolInformationLogo(qsi, qs);
         // if you successfully parse out json, return a new Quiz configured
         // gson.fromJSON(...);
-        return new Quiz(); //TODO: configure
+        return new Quiz(schoolColor, schoolLogo); //TODO: configure
     }
 
     public QuestionContainer findNextQuestionJSON() throws Exception {

@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 
 public class TestQuiz {
   @Test
-  public void generateSampleQuiz() throws IOException{
+  public void generateSampleQuiz() throws Exception {
     Quiz quiz = new Quiz();
     //quiz.timeForClock("30");
 
