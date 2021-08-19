@@ -25,22 +25,9 @@
     "logic": ["", "D-type flip flop", "half-adder", "4-bit adder", "multiplexer", "demultiplexer", "NOT", "NOR", "NAND"],
     "base": ["", "binary", "octal", "hexadecimal", "decimal"]
   },
-  "schoolInfo": {
-    "stevens": {
-        "color" : "#A32638",
-        "logo" : "StevensLogo.png"
-    },
-    "rutgers": {
-        "color" : "#CC0033",
-        "logo" : "RutgersLogo.png"
-    },
-    "columbia": {
-        "color" : "#003865",
-        "logo" : "ColumbiaLogo.png"
-    },
-    "dartmouth": {
-        "color" : "#046A38",
-        "logo" : "DartmouthLogo.png"
-    }
-  }
+  "school" : "Stevens Institute of Technology",
+  "department" : "ECE",
+  "instructor" : "Dov Kruger",
+  "color" : "#A32638",
+  "logo" : "StevensLogo.png"
 }

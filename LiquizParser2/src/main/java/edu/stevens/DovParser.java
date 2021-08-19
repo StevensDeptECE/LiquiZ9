@@ -52,32 +52,6 @@ public class DovParser {
         fis.close();
         return new String(data, "UTF-8");
     }
-    public String schoolInformationColor(QuizSpecInclude qsi, QuizSpec qs) {
-        String schoolColor = null;
-        String school = qsi.school;
-        SchoolInformation schoolInfom = null;
-        Set<String> differentSchools = qs.schoolInfo.keySet();
-        for (String s : differentSchools) {
-            if (school.equals(s)) {
-                schoolInfom = qs.schoolInfo.get(school);
-                schoolColor = schoolInfom.color;
-            }
-        }
-        return schoolColor;
-    }
-    public String schoolInformationLogo(QuizSpecInclude qsi, QuizSpec qs) {
-        String schoolLogo = null;
-        String school = qsi.school;
-        SchoolInformation schoolInfom = null;
-        Set<String> differentSchools = qs.schoolInfo.keySet();
-        for (String s : differentSchools) {
-            if (school.equals(s)) {
-                schoolInfom = qs.schoolInfo.get(school);
-                schoolLogo = schoolInfom.logo;
-            }
-        }
-        return schoolLogo;
-    }
     public Quiz expectQuizJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
         //String line = expectLine("did not find quiz json, bail or try to go on?");
@@ -87,12 +61,12 @@ public class DovParser {
 
         String qSpecFileJson = readFile("src/main/resources/"+qsi.qspec);
         final QuizSpec qs = gson.fromJson(qSpecFileJson, QuizSpec.class);
-        transformQuizSpec(qs);
-        schoolColor = schoolInformationColor(qsi, qs);
-        schoolLogo = schoolInformationLogo(qsi, qs);
+        //transformQuizSpec(qs);
+        //schoolColor = schoolInformationColor(qsi, qs);
+        //schoolLogo = schoolInformationLogo(qsi, qs);
         // if you successfully parse out json, return a new Quiz configured
         // gson.fromJSON(...);
-        return new Quiz(schoolColor, schoolLogo); //TODO: configure
+        return new Quiz(qsi, qs); //TODO: configure
     }
 
     public QuestionContainer findNextQuestionJSON() throws Exception {
@@ -120,8 +94,13 @@ public class DovParser {
    */
        // quiz.add(q);
     }
-    public void generateHTML() {
-
+    public void generateHTML() throws IOException{
+        quiz.writeHTML();
+        System.out.println(quiz.getHTML());
+        System.out.println(EssayQuestion.class);
+        PrintWriter pw = new PrintWriter(new FileWriter("Quiz.html"));
+        pw.println(quiz.getHTML());
+        pw.close();
     }
     public DovParser(String liquiZFilename) throws Exception {
         // open file

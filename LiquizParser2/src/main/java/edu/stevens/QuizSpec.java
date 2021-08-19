@@ -11,7 +11,12 @@ public class QuizSpec {
     public String parent;
     public HashMap<String, Object> defaults;
     public HashMap<String, String[]> def;
-    public HashMap<String, SchoolInformation> schoolInfo;
+    public String school;
+    public String department;
+    public String instructor;
+    public String color;
+    public String logo;
+    //public HashMap<String, SchoolInformation> schoolInfo;
 }
 
 class SchoolInformation {

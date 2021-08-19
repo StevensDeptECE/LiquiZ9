@@ -3,3 +3,9 @@
 what is 2+2?
 $fn:4$
 ---
+{"type":"code", "name":"arm", "points":1}
+Complete the following code to compute 3+5.
+      $fQ{6}:mov$ r0, #3
+      add   r0, #5
+      //r0 = $fQ:8$
+---

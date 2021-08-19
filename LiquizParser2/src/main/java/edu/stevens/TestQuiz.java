@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 
 public class TestQuiz {
   public static void main(String[] args) throws Exception {
-    Quiz quiz = new Quiz();
+    Quiz quiz = new Quiz(new QuizSpecInclude(), new QuizSpec());
 
     QuestionContainer qc = new QuestionContainer((float)10.0, "Enter a number");
     qc.add(new Text("What is 3+3?"));

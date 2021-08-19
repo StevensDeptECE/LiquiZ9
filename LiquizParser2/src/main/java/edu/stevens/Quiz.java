@@ -21,19 +21,19 @@ public class Quiz {
   private StringBuilder html;
   private StringBuilder answerText;
   private String name;
-  private String schoolColor;
-  private String schoolLogo;
+  private QuizSpecInclude qsi;
+  private QuizSpec qs;
 
-  public Quiz() throws Exception {
+  public Quiz(QuizSpecInclude qsi, QuizSpec qs) throws Exception {
     questionContainers = new ArrayList<>();
     questions = new TreeMap<>();
     answers = new TreeMap<>();
     html = new StringBuilder(65536);
     answerText = new StringBuilder(65536);
-    name = "TODO";
+    this.qsi = qsi;
+    this.qs = qs;
     //        xml = new StringBuilder(65536)
   }
-
   public void add(QuestionContainer qc) {
     questionContainers.add(qc);
     // TODO: for each question in the question container, add to the treemap
@@ -56,11 +56,11 @@ public class Quiz {
         .append("</title>\n</head>\n\n\n<body>\n")
         .append(
                 "<form method='post' action='submitQuiz'>\n"
-            + "<div id='header' class='header'>\n"
-            + "    <img class='logo' src='src/main/resources/media/StevensLogo'/>\n"
+            + "<div id='header' class='header' style='background-color:").append(qs.color).append(";'>\n"
+            + "    <img class='logo' src='src/main/resources/media/").append(qs.logo).append("'/>\n"
             + "    <div class='headerText'>\n"
             + "      <div class='quizTitle'>\n"
-            + "        Loops\n"
+            + "        ").append(qsi.name).append("\n"
             + "      </div>\n"
             + "\n"
             + "      <div class='headerDetails'>\n"
@@ -117,8 +117,4 @@ public class Quiz {
       }
   }
   */
-  public Quiz(String schoolColor, String schoolLogo) {
-    this.schoolColor = schoolColor;
-    this.schoolLogo = schoolLogo;
-  }
 }

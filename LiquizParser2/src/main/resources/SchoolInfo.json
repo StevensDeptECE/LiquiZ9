@@ -1,0 +1,20 @@
+{
+  "schoolInfo": {
+    "stevens": {
+      "color" : "#A32638",
+      "logo" : "StevensLogo.png"
+    },
+    "rutgers": {
+      "color" : "#CC0033",
+      "logo" : "RutgersLogo.png"
+    },
+    "columbia": {
+      "color" : "#003865",
+      "logo" : "ColumbiaLogo.png"
+    },
+    "dartmouth": {
+      "color" : "#046A38",
+      "logo" : "DartmouthLogo.png"
+    }
+  }
+}

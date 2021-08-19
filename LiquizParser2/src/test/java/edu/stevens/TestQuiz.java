@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 public class TestQuiz {
   @Test
   public void generateSampleQuiz() throws Exception {
-    Quiz quiz = new Quiz();
+    Quiz quiz = new Quiz(new QuizSpecInclude(), new QuizSpec());
     //quiz.timeForClock("30");
 
     QuestionContainer qc = new QuestionContainer((float)10.0, "Enter a number");
