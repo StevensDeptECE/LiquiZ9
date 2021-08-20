@@ -61,43 +61,39 @@ public class DovParser {
 
         String qSpecFileJson = readFile("src/main/resources/"+qsi.qspec);
         final QuizSpec qs = gson.fromJson(qSpecFileJson, QuizSpec.class);
-        //transformQuizSpec(qs);
-        //schoolColor = schoolInformationColor(qsi, qs);
-        //schoolLogo = schoolInformationLogo(qsi, qs);
         // if you successfully parse out json, return a new Quiz configured
         // gson.fromJSON(...);
         return new Quiz(qsi, qs); //TODO: configure
     }
-
-    public QuestionContainer findNextQuestionJSON() throws Exception {
+    public QuestionContainer findNextQuestionContainerJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
-        String line = expectLine("message");
+        //Find out how to tell json apart from different text
+        String line = expectLine("Expect JSON");
         if (line == null) {
             return null; // end quiz cleanly
         }
+        final QuestionContainerSpec qcs = gson.fromJson(line, QuestionContainerSpec.class);
         // if you successfully parse out json, return a new question configured
         // gson.fromtJSON
-        QuestionContainer q = new QuestionContainer(); // new Question(); // if end of file, break out cleanly?
-        return null; //TODO: new Question(); //TODO: configure the question
+        // if end of file, break out cleanly?
+        return new QuestionContainer(qcs);
     }
-
-    public void addToQuestion(QuestionContainer q) {
-  /*
+    public void addToQuestion(QuestionContainer q) throws Exception{
+        //this function adds the questions of a question container to the question container
         while (true) {
-
-            String line = nextToken(); // either #comment (throw out) or text (add to question) or "---"
-            if (line .eq ("---"))
+            String line = expectLine("Expected Question"); // either #comment (throw out) or text (add to question) or "---"
+            if (line.equals("---"))
                 break;
-            q.add(line);
-        }
 
-   */
-       // quiz.add(q);
+            //q.add(line);
+        }
+        //this part of the code then adds the question container to the quiz
+        //it does not need to return anything
+        quiz.add(q);
     }
     public void generateHTML() throws IOException{
         quiz.writeHTML();
         System.out.println(quiz.getHTML());
-        System.out.println(EssayQuestion.class);
         PrintWriter pw = new PrintWriter(new FileWriter("Quiz.html"));
         pw.println(quiz.getHTML());
         pw.close();
@@ -111,7 +107,7 @@ public class DovParser {
 
         quiz = expectQuizJSON();
         while (true) {
-            QuestionContainer q = findNextQuestionJSON();
+            QuestionContainer q = findNextQuestionContainerJSON();
             if (q == null)
                 break;
             addToQuestion(q);

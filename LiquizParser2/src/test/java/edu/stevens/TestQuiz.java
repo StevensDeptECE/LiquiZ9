@@ -3,7 +3,6 @@ package edu.stevens;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 public class TestQuiz {

@@ -7,12 +7,16 @@ public class QuestionContainer {
     private String name;
     private float points;
     private ArrayList<DisplayElement> displayElements;
+    private QuestionContainerSpec qcs;
 
     public QuestionContainer() { displayElements = new ArrayList<>(); name = ""; }
     public QuestionContainer(float points, String name) {
         displayElements = new ArrayList<>();
         this.name = name;
         this.points = points;
+    }
+    public QuestionContainer(QuestionContainerSpec qcs) {
+        this.qcs = qcs;
     }
     private final void writeQuestionOrAnswer(StringBuilder b, int questionNum, boolean isQuestion) {
         String className = isQuestion ? "question" : "answer";
@@ -24,9 +28,9 @@ public class QuestionContainer {
            b.append("<div>")
             .append(questionNum)
             .append(". ")
-            .append(name)
+            .append(qcs.name)
             .append("<span class='pts'>  (")
-            .append(points)
+            .append(qcs.points)
             .append(" points)</span>" +
                     "<input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'>" +
                     "</div>\n")
