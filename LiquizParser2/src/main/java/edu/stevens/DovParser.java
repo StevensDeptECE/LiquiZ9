@@ -24,10 +24,14 @@ public class DovParser {
         String line;
         do {
             line = br.readLine();
-            if (line == null)
-                throw new ParseException("Expected line" + lineNumber + message);
+            if (line == null) {
+                //throw new ParseException("Expected line" + lineNumber + message);
+                lineNumber++;
+                return line;
+            }
         } while (line.startsWith("#"));
         // if line starts with # it's a comment, just return
+        lineNumber++;
         return line;
     }
     public void transformQuizSpec(QuizSpec qs) {
@@ -52,6 +56,22 @@ public class DovParser {
         fis.close();
         return new String(data, "UTF-8");
     }
+    public boolean isJSONValidQuiz(String test) {
+        try {
+            gson.fromJson(test, QuizSpecInclude.class);
+            return true;
+        } catch(com.google.gson.JsonSyntaxException ex) {
+            return false;
+        }
+    }
+    public boolean isJSONValidQuestionContainer(String test) {
+        try {
+            gson.fromJson(test, QuestionContainer.class);
+            return true;
+        } catch(com.google.gson.JsonSyntaxException ex) {
+            return false;
+        }
+    }
     public Quiz expectQuizJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
         //String line = expectLine("did not find quiz json, bail or try to go on?");
@@ -67,16 +87,29 @@ public class DovParser {
     }
     public QuestionContainer findNextQuestionContainerJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
-        //Find out how to tell json apart from different text
         String line = expectLine("Expect JSON");
+        boolean jsonValue = isJSONValidQuestionContainer(line);
+        //We have to have this if statement because it represents if we have reached the end of the quiz of not
+        //It ends the while loop down below, which allows generateHTML() to run
         if (line == null) {
-            return null; // end quiz cleanly
+            return null; //
         }
-        final QuestionContainerSpec qcs = gson.fromJson(line, QuestionContainerSpec.class);
-        // if you successfully parse out json, return a new question configured
-        // gson.fromtJSON
-        // if end of file, break out cleanly?
-        return new QuestionContainer(qcs);
+        //this line checks to see if a line is json or not
+        if (jsonValue == false) {
+            while (jsonValue == false) {
+                line = expectLine("Expect JSON");
+                jsonValue = isJSONValidQuestionContainer(line);
+                if (jsonValue == true) {
+                    break;
+                }
+            }
+            final QuestionContainerSpec qcs = gson.fromJson(line, QuestionContainerSpec.class);
+            return new QuestionContainer(qcs);
+        }
+        else {
+            final QuestionContainerSpec qcs = gson.fromJson(line, QuestionContainerSpec.class);
+            return new QuestionContainer(qcs);
+        }
     }
     public void addToQuestion(QuestionContainer q) throws Exception{
         //this function adds the questions of a question container to the question container
@@ -84,8 +117,9 @@ public class DovParser {
             String line = expectLine("Expected Question"); // either #comment (throw out) or text (add to question) or "---"
             if (line.equals("---"))
                 break;
-
-            //q.add(line);
+            //See if you can check if line is only text
+            //Maybe see if line does not contain pattern $...$
+            q.add(new Text(line));
         }
         //this part of the code then adds the question container to the quiz
         //it does not need to return anything

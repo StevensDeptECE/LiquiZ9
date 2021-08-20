@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel='stylesheet' type='text/css' href='css/quiz.css'>
+<script src='js/quiz.js'></script>
+
+<title>TODO</title>
+</head>
+
+
+<body>
+<form method='post' action='submitQuiz'>
+<div id='header' class='header'>
+    <img class='logo' src='media/StevensLogo.png'/>
+    <div class='headerText'>
+      <div class='quizTitle'>
+        Loops
+      </div>
+
+      <div class='headerDetails'>
+        <div class='headerRow'>
+          
+        </div>
+        <div class='headerRow'>
+          Email    if you have any questions!
+        </div>
+        <div class='headerRow'>
+          <input id='pledge' type='checkbox' name='pledged' value='pledged'/>
+          <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>
+        </div>
+        <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>
+<script>
+const startingMinutes = 30;
+let timeMinutes = startingMinutes * 60;
+const countdownEl = document.getElementById('topTime');
+setInterval(updateCountDown, 1000);
+function updateCountDown() {
+const minutes = Math.floor(timeMinutes / 60);
+let seconds = time % 60;
+seconds = seconds < 10 ? '0' + seconds : seconds;
+countdownEl.innerHTML = '${minutes}: ${seconds}';
+timeMinutes--;
+}
+</script>
+        <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+      </div>
+    </div>
+    <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
+  </div>
+
+<div class='question'>
+<div>1. Enter a number<span class='pts'>  (10.0 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'></div>
+
+What is 2+2?<div><input class='input' type='number' name='n_1_1'>
+</div></div>
+
+<div class='answer'>
+What is 2+2?<div><input class='input' type='number' name='an_1_1'>
+</div></div>
+
+<div class='question'>
+<div>2. <span class='pts'>  (0.0 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'></div>
+
+Where is Stevens?<div><input class='input' type='text' name='q_2_1'>
+</div></div>
+
+<div class='answer'>
+Where is Stevens?<div><input class='input' type='text' name='aq_2_1'>
+</div></div>
+
+<div class='question'>
+<div>3. <span class='pts'>  (0.0 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'></div>
+
+<div><textarea name='q_3_1'>
+default text goes here. Type something!</textarea>
+</div></div>
+
+<div class='answer'>
+<div><textarea name='aq_3_1'>
+default text goes here. Type something!</textarea>
+</div></div>
+
+<div class='question'>
+<div>4. <span class='pts'>  (0.0 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'></div>
+
+<video controls width='320' height='240'><source src='media/TacomaNarrowsBridge.mp4' type='video/mp4'></video><div><textarea name='q_4_1'>
+type your essay here</textarea>
+</div></div>
+
+<div class='answer'>
+<video controls width='320' height='240'><source src='media/TacomaNarrowsBridge.mp4' type='video/mp4'></video><div><textarea name='aq_4_1'>
+type your essay here</textarea>
+</div></div>
+
+<div class='question'>
+<div>5. <span class='pts'>  (0.0 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'></div>
+
+<div><div class='vertical'>
+<label><input type='radio' name='m_5_1' value='1st Ans'>1st Ans</label>
+<label><input type='radio' name='m_5_1' value='2nd Ans'>2nd Ans</label>
+<label><input type='radio' name='m_5_1' value='3rd Ans'>3rd Ans</label>
+</div>
+</div></div>
+
+<div class='answer'>
+<div><div class='vertical'>
+<label><input type='radio' name='am_5_1' value='1st Ans'>1st Ans</label>
+<label><input type='radio' name='am_5_1' value='2nd Ans'>2nd Ans</label>
+<label><input type='radio' name='am_5_1' value='3rd Ans'>3rd Ans</label>
+</div>
+</div></div>
+
+<div class='question'>
+<div>6. <span class='pts'>  (0.0 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'></div>
+
+<div><div class='horizontal'>
+<label><input type='checkbox' name='m_6_1' value='1st Ans'>1st Ans</label>
+<label><input type='checkbox' name='m_6_1' value='2nd Ans'>2nd Ans</label>
+<label><input type='checkbox' name='m_6_1' value='3rd Ans'>3rd Ans</label>
+</div>
+</div></div>
+
+<div class='answer'>
+<div><div class='horizontal'>
+<label><input type='checkbox' name='am_6_1' value='1st Ans'>1st Ans</label>
+<label><input type='checkbox' name='am_6_1' value='2nd Ans'>2nd Ans</label>
+<label><input type='checkbox' name='am_6_1' value='3rd Ans'>3rd Ans</label>
+</div>
+</div></div>
+
+<div class='question'>
+<div>7. <span class='pts'>  (0.0 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'></div>
+
+<audio controls>
+<source src='over.ogg' type='audio/ogg'>Your browser does not support the audio element. </audio></div>
+
+<div class='answer'>
+<audio controls>
+<source src='over.ogg' type='audio/ogg'>Your browser does not support the audio element. </audio></div>
+
+    <div class='footer'>
+      <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>
+      <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>
+    </div></form>
+</body>
+</html>
+
