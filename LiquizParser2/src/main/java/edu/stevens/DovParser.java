@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class ParseException extends Exception {
     public ParseException(String message) {}
@@ -19,6 +21,12 @@ public class DovParser {
     private Gson gson = new Gson();
     private String schoolColor;
     private String schoolLogo;
+    //these are just test variables for now
+    private int questionNumber = 1;
+    private int partNumber = 1;
+    private String defaultText = "default text";
+    private String answerText = "Answer text";
+    private double points = 1.0;
 
     public String expectLine(String message) throws Exception {
         String line;
@@ -72,6 +80,48 @@ public class DovParser {
             return false;
         }
     }
+    public void questionType(String line, QuestionContainer q) {
+        Pattern essayQuestion = Pattern.compile("\\$eq:[^\\$]*\\$");
+        Pattern numberFillInQuestion = Pattern.compile("\\$f[^\\$]+\\$");
+        Pattern fillInQuestion = Pattern.compile("\\$f[^\\$]+\\$");
+        Pattern horizontal = Pattern.compile("\\$mch:[^\\$]*\\$");
+        Pattern vertical = Pattern.compile("\\$mcv:[^\\$]*\\$");
+        Pattern video = Pattern.compile("\\$vid:[^\\$]*\\$");
+        Matcher eqm = essayQuestion.matcher(line);
+        Matcher nfqm = numberFillInQuestion.matcher(line);
+        Matcher fqm = fillInQuestion.matcher(line);
+        Matcher hm = horizontal.matcher(line);
+        Matcher vm = vertical.matcher(line);
+        Matcher v = video.matcher(line);
+        boolean eqmatches = eqm.matches();
+        boolean nfqmatches = nfqm.matches();
+        boolean fqmatches = fqm.matches();
+        boolean hmatches = hm.matches();
+        boolean vmatches = vm.matches();
+        boolean videomatches = v.matches();
+
+
+        if (eqmatches == true){
+            q.add(new EssayQuestion(questionNumber, partNumber, points, defaultText, answerText));
+            partNumber++;
+        }
+//        if (nfqmatches == true) {
+//            q.add(new NumberFillinQuestion());
+//        }
+        if (fqmatches == true) {
+            q.add(new FillinQuestion(questionNumber, partNumber, points, answerText));
+            partNumber++;
+        }
+//        if (hmatches == true) {
+//            q.add(new HorizontalMultipleChoiceQuestion());
+//        }
+//        if (vmatches == true) {
+//            q.add(new VerticalMultipleChoiceQuestion());
+//        }
+//        if (videomatches == true){
+//           q.add(new Video());
+//        }
+    }
     public Quiz expectQuizJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
         //String line = expectLine("did not find quiz json, bail or try to go on?");
@@ -115,15 +165,23 @@ public class DovParser {
         //this function adds the questions of a question container to the question container
         while (true) {
             String line = expectLine("Expected Question"); // either #comment (throw out) or text (add to question) or "---"
+            Pattern p = Pattern.compile("\\$[^\\$]+\\$");
+            Matcher m = p.matcher(line);
+            boolean matches = m.matches();;
             if (line.equals("---"))
                 break;
-            //See if you can check if line is only text
-            //Maybe see if line does not contain pattern $...$
-            q.add(new Text(line));
+            if(matches == true) {
+                questionType(line, q);
+            }
+            else {
+                q.add(new Text(line));
+            }
         }
         //this part of the code then adds the question container to the quiz
         //it does not need to return anything
         quiz.add(q);
+        partNumber = 1;
+        questionNumber++;
     }
     public void generateHTML() throws IOException{
         quiz.writeHTML();

@@ -14,7 +14,7 @@
     <img class='logo' src='src/main/resources/media/StevensLogo.png'/>
     <div class='headerText'>
       <div class='quizTitle'>
-        test
+        Test Quiz
       </div>
 
       <div class='headerDetails'>
@@ -35,6 +35,28 @@
     </div>
     <button id='audioControl' class='audioControl' onClick='scheduleAudio()'>Turn audio ON</button>
   </div>
+
+<div class='question'>
+<div>1. Fillin Question<span class='pts'>  (1 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'></div>
+
+What is 2+2?<div><input class='input' type='text' name='q_1_1'>
+</div></div>
+
+<div class='answer'>
+What is 2+2?<div><input class='input' type='text' name='aq_1_1'>
+</div></div>
+
+<div class='question'>
+<div>2. Essay Question<span class='pts'>  (5 points)</span><input type='button' class='protestButton' onClick='protestRequest()' value='Click to report a problem'></div>
+
+Write the declaration of independence<div><textarea name='q_2_1'>
+default text</textarea>
+</div></div>
+
+<div class='answer'>
+Write the declaration of independence<div><textarea name='aq_2_1'>
+default text</textarea>
+</div></div>
 
     <div class='footer'>
       <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>

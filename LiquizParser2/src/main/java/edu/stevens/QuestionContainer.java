@@ -16,6 +16,7 @@ public class QuestionContainer {
         this.points = points;
     }
     public QuestionContainer(QuestionContainerSpec qcs) {
+        displayElements = new ArrayList<>();
         this.qcs = qcs;
     }
     private final void writeQuestionOrAnswer(StringBuilder b, int questionNum, boolean isQuestion) {
