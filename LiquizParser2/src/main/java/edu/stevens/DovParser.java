@@ -2,6 +2,7 @@ package edu.stevens;
 
 import com.google.gson.Gson;
 
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,11 +23,16 @@ public class DovParser {
     private String schoolColor;
     private String schoolLogo;
     //these are just test variables for now
-    private int questionNumber = 1;
-    private int partNumber = 1;
-    private String defaultText = "default text";
+    private int questionNumber = 1; //Keep this value
+    private int partNumber = 1;  //Keep this value
+    private String defaultText = "Please input response here"; //Keep this value
     private String answerText = "Answer text";
     private double points = 1.0;
+    private double value = 0.0;
+    private String url = "https://youtu.be/PLk8Pm_XBJE";
+    private String[] choices = {"Choice 1", "Choice 2", "Choice 3"};
+    private String[] answers = {"Choice 1"};
+
 
     public String expectLine(String message) throws Exception {
         String line;
@@ -81,9 +87,10 @@ public class DovParser {
         }
     }
     public void questionType(String line, QuestionContainer q) {
+        //Figure out a better way to accomplish this
         Pattern essayQuestion = Pattern.compile("\\$eq:[^\\$]*\\$");
-        Pattern numberFillInQuestion = Pattern.compile("\\$f[^\\$]+\\$");
-        Pattern fillInQuestion = Pattern.compile("\\$f[^\\$]+\\$");
+        Pattern numberFillInQuestion = Pattern.compile("\\$fn[^\\$]+\\$");
+        Pattern fillInQuestion = Pattern.compile("\\$fq[^\\$]+\\$");
         Pattern horizontal = Pattern.compile("\\$mch:[^\\$]*\\$");
         Pattern vertical = Pattern.compile("\\$mcv:[^\\$]*\\$");
         Pattern video = Pattern.compile("\\$vid:[^\\$]*\\$");
@@ -105,22 +112,26 @@ public class DovParser {
             q.add(new EssayQuestion(questionNumber, partNumber, points, defaultText, answerText));
             partNumber++;
         }
-//        if (nfqmatches == true) {
-//            q.add(new NumberFillinQuestion());
-//        }
+        if (nfqmatches == true) {
+            q.add(new NumberFillinQuestion(questionNumber, partNumber, points, value));
+            partNumber++;
+        }
         if (fqmatches == true) {
             q.add(new FillinQuestion(questionNumber, partNumber, points, answerText));
             partNumber++;
         }
-//        if (hmatches == true) {
-//            q.add(new HorizontalMultipleChoiceQuestion());
-//        }
-//        if (vmatches == true) {
-//            q.add(new VerticalMultipleChoiceQuestion());
-//        }
-//        if (videomatches == true){
-//           q.add(new Video());
-//        }
+        if (hmatches == true) {
+            q.add(new HorizontalMultipleChoiceQuestion(questionNumber, partNumber, points, choices, answers));
+            partNumber++;
+        }
+        if (vmatches == true) {
+            q.add(new VerticalMultipleChoiceQuestion(questionNumber, partNumber, points, choices, answers));
+            partNumber++;
+        }
+        if (videomatches == true){
+           q.add(new Video(url));
+           partNumber++;
+        }
     }
     public Quiz expectQuizJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
@@ -133,7 +144,7 @@ public class DovParser {
         final QuizSpec qs = gson.fromJson(qSpecFileJson, QuizSpec.class);
         // if you successfully parse out json, return a new Quiz configured
         // gson.fromJSON(...);
-        return new Quiz(qsi, qs); //TODO: configure
+        return new Quiz(qsi, qs);
     }
     public QuestionContainer findNextQuestionContainerJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
@@ -170,6 +181,8 @@ public class DovParser {
             boolean matches = m.matches();;
             if (line.equals("---"))
                 break;
+            //For this if statement see whether or not there is text with the given $...$ tag
+            //If there is split the text fragments into a string array and return need functions
             if(matches == true) {
                 questionType(line, q);
             }
