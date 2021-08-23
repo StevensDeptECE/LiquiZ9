@@ -36,15 +36,15 @@ public class TestQuiz {
     qc.add(new EssayQuestion(4, 1, 6.0, "type your essay here", "Answer Here"));
     quiz.add(qc);
 
-    qc = new QuestionContainer();
-    String[] vMCAns = {"1st Ans", "2nd Ans", "3rd Ans"};
-    qc.add(new VerticalMultipleChoiceQuestion(5, 1, 5.5, vMCAns, vMCAns));
-    quiz.add(qc);
-
-    qc = new QuestionContainer();
-    qc.add(new Instructions("choose one"));
-    qc.add(new HorizontalMultipleChoiceQuestion(6, 1, 3.2, vMCAns, vMCAns, true));
-    quiz.add(qc);
+//    qc = new QuestionContainer();
+//    String[] vMCAns = {"1st Ans", "2nd Ans", "3rd Ans"};
+//    qc.add(new VerticalMultipleChoiceQuestion(5, 1, 5.5, vMCAns, vMCAns));
+//    quiz.add(qc);
+//
+//    qc = new QuestionContainer();
+//    qc.add(new Instructions("choose one"));
+//    qc.add(new HorizontalMultipleChoiceQuestion(6, 1, 3.2, vMCAns, vMCAns, true));
+//    quiz.add(qc);
 
     qc = new QuestionContainer();
     qc.add(new Audio("over.ogg"));

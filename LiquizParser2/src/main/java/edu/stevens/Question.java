@@ -28,9 +28,7 @@ public abstract class Question extends DisplayElement {
     }
 
     public final void writeHTML(StringBuilder b, boolean isQuestion) {
-        writeEnclosingDiv(b);
         buildHTML(b, isQuestion);
-        b.append("</div>");
     }
     public final void writeAnswers(StringBuilder b) {
         b.append(qId).append("\t");

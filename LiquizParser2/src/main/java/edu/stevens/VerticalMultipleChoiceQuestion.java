@@ -1,5 +1,7 @@
 package edu.stevens;
 
+import java.util.ArrayList;
+
 public class VerticalMultipleChoiceQuestion extends MultipleChoiceQuestion {
 
     public void buildHTML(StringBuilder b, boolean isQuestion) {
@@ -15,11 +17,11 @@ public class VerticalMultipleChoiceQuestion extends MultipleChoiceQuestion {
         b.append("</div>\n");
     }
 
-    public VerticalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, boolean multiAns, String[] choices, String[] answers) {
+    public VerticalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, boolean multiAns, String[] choices, ArrayList<String> answers) {
         super(questionNumber, partNumber, points, choices, answers, multiAns);
     }
 
-    public VerticalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, String[] choices, String[] answers) {
+    public VerticalMultipleChoiceQuestion(int questionNumber, int partNumber, double points, String[] choices, ArrayList<String> answers) {
         super(questionNumber, partNumber, points, choices, answers, false);
     }
 }

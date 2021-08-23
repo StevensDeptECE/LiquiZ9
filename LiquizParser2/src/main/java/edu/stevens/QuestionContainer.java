@@ -44,8 +44,10 @@ public class QuestionContainer {
         b.append("</div>\n\n");
     }
     public void writeHTML(StringBuilder b, int questionNum) {
+        b.append("<div>\n");
         writeQuestionOrAnswer(b, questionNum, true);
         writeQuestionOrAnswer(b, questionNum, false);
+        b.append("</div>\n");
     }
     public void addPoints(float points){
         this.points+=points;

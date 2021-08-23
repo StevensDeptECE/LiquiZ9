@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +19,24 @@ public class DovParser {
     private Gson gson = new Gson();
     private String schoolColor;
     private String schoolLogo;
+    private static Pattern questionPattern = Pattern.compile("\\$(eq|f[nqQ]|mc[hvd]|vid|mat|aud)(\\{[^\\}]*\\})?:([^\\$]+(?:\\\\\\$[^\\$]+)*)\\$");
+    private static Pattern essayQuestion = Pattern.compile("\\$eq:[^\\$]*\\$");
+    private static Pattern numberFillInQuestion = Pattern.compile("\\$fn[^\\$]+\\$");
+    private static Pattern fillInQuestion = Pattern.compile("\\$fq[^\\$]+\\$");
+    private static Pattern horizontal = Pattern.compile("\\$mch:[^\\$]*\\$");
+    private static Pattern vertical = Pattern.compile("\\$mcv:[^\\$]*\\$");
+    private static Pattern video = Pattern.compile("\\$vid:[^\\$]*\\$");
+    private static HashMap<String, QuestionFactory> questionTypes = new HashMap<>();
+    static {
+        questionTypes = new HashMap<>();
+        questionTypes.put("mch", new HorizontalMultipleChoiceQuestionFactory());
+        questionTypes.put("mcv", new VerticalMultipleChoiceQuestionFactory());
+        //questionTypes.put("mcd", new HorizontalMultipleChoiceQuestionFactory());
+        questionTypes.put("fn", new NumberFillInQuestionFactory());
+        questionTypes.put("fq", new FillInQuestionFactory());
+        //questionTypes.put("fQ", new HorizontalMultipleChoiceQuestionFactory());
+        //questionTypes.put("eq", new HorizontalMultipleChoiceQuestionFactory());
+    }
     //these are just test variables for now
     private int questionNumber = 1; //Keep this value
     private int partNumber = 1;  //Keep this value
@@ -32,7 +47,6 @@ public class DovParser {
     private String url = "https://youtu.be/PLk8Pm_XBJE";
     private String[] choices = {"Choice 1", "Choice 2", "Choice 3"};
     private String[] answers = {"Choice 1"};
-
 
     public String expectLine(String message) throws Exception {
         String line;
@@ -70,6 +84,12 @@ public class DovParser {
         fis.close();
         return new String(data, "UTF-8");
     }
+    public int getQuestionNumber() {
+        return questionNumber;
+    }
+    public int getPartNumber() {
+        return partNumber;
+    }
     public boolean isJSONValidQuiz(String test) {
         try {
             gson.fromJson(test, QuizSpecInclude.class);
@@ -88,50 +108,65 @@ public class DovParser {
     }
     public void questionType(String line, QuestionContainer q) {
         //Figure out a better way to accomplish this
-        Pattern essayQuestion = Pattern.compile("\\$eq:[^\\$]*\\$");
-        Pattern numberFillInQuestion = Pattern.compile("\\$fn[^\\$]+\\$");
-        Pattern fillInQuestion = Pattern.compile("\\$fq[^\\$]+\\$");
-        Pattern horizontal = Pattern.compile("\\$mch:[^\\$]*\\$");
-        Pattern vertical = Pattern.compile("\\$mcv:[^\\$]*\\$");
-        Pattern video = Pattern.compile("\\$vid:[^\\$]*\\$");
-        Matcher eqm = essayQuestion.matcher(line);
-        Matcher nfqm = numberFillInQuestion.matcher(line);
-        Matcher fqm = fillInQuestion.matcher(line);
-        Matcher hm = horizontal.matcher(line);
-        Matcher vm = vertical.matcher(line);
-        Matcher v = video.matcher(line);
-        boolean eqmatches = eqm.matches();
-        boolean nfqmatches = nfqm.matches();
-        boolean fqmatches = fqm.matches();
-        boolean hmatches = hm.matches();
-        boolean vmatches = vm.matches();
-        boolean videomatches = v.matches();
-
-
-        if (eqmatches == true){
-            q.add(new EssayQuestion(questionNumber, partNumber, points, defaultText, answerText));
-            partNumber++;
+//        Matcher eqm = essayQuestion.matcher(line);
+//        Matcher nfqm = numberFillInQuestion.matcher(line);
+//        Matcher fqm = fillInQuestion.matcher(line);
+//        Matcher hm = horizontal.matcher(line);
+//        Matcher vm = vertical.matcher(line);
+//        Matcher v = video.matcher(line);
+//        boolean eqmatches = eqm.matches();
+//        boolean nfqmatches = nfqm.matches();
+//        boolean fqmatches = fqm.matches();
+//        boolean hmatches = hm.matches();
+//        boolean vmatches = vm.matches();
+//        boolean videomatches = v.matches();
+        Matcher qm = questionPattern.matcher(line);
+        if (qm.matches()) {
+            String questionType = qm.group(1);
+            String parameters = qm.group(2);
+            String answers = qm.group(3);
+            QuestionFactory qf = questionTypes.get(questionType);
+            if (qf == null) {
+                System.out.println("Error creating question");
+            }
+            else {
+                if (qm.start() != 0) {
+                    q.add(new Text(line.substring(0, qm.start()-1)));
+                }
+                Question question = qf.makeQuestion(this, qm);
+                if (question == null) {
+                    System.out.println("Error creating question");
+                } else {
+                    q.add(question);
+                    partNumber++;
+                }
+                q.add(new Text(line.substring(qm.end())));
+            }
         }
-        if (nfqmatches == true) {
-            q.add(new NumberFillinQuestion(questionNumber, partNumber, points, value));
-            partNumber++;
-        }
-        if (fqmatches == true) {
-            q.add(new FillinQuestion(questionNumber, partNumber, points, answerText));
-            partNumber++;
-        }
-        if (hmatches == true) {
-            q.add(new HorizontalMultipleChoiceQuestion(questionNumber, partNumber, points, choices, answers));
-            partNumber++;
-        }
-        if (vmatches == true) {
-            q.add(new VerticalMultipleChoiceQuestion(questionNumber, partNumber, points, choices, answers));
-            partNumber++;
-        }
-        if (videomatches == true){
-           q.add(new Video(url));
-           partNumber++;
-        }
+//        if (eqmatches == true){
+//            q.add(new EssayQuestion(questionNumber, partNumber, points, defaultText, answerText));
+//            partNumber++;
+//        }
+//        if (nfqmatches == true) {
+//            q.add(new NumberFillinQuestion(questionNumber, partNumber, points, value));
+//            partNumber++;
+//        }
+//        if (fqmatches == true) {
+//            q.add(new FillinQuestion(questionNumber, partNumber, points, answerText));
+//            partNumber++;
+//        }
+//        if (hmatches == true) {
+//            q.add(new HorizontalMultipleChoiceQuestion(questionNumber, partNumber, points, choices, answers));
+//            partNumber++;
+//        }
+//        if (vmatches == true) {
+//            q.add(new VerticalMultipleChoiceQuestion(questionNumber, partNumber, points, choices, answers));
+//            partNumber++;
+//        }
+//        if (videomatches == true){
+//           q.add(new Video(url));
+//           partNumber++;
+//        }
     }
     public Quiz expectQuizJSON() throws Exception {
         // if this line is not json, give error, find next line that is json
@@ -176,16 +211,32 @@ public class DovParser {
         //this function adds the questions of a question container to the question container
         while (true) {
             String line = expectLine("Expected Question"); // either #comment (throw out) or text (add to question) or "---"
-            Pattern p = Pattern.compile("\\$[^\\$]+\\$");
-            Matcher m = p.matcher(line);
-            boolean matches = m.matches();;
             if (line.equals("---"))
                 break;
+            Matcher m = questionPattern.matcher(line);
+            if (m.matches()) {
+                String questionType = m.group(1);
+                String parameters = m.group(2);
+                String answers = m.group(3);
+                QuestionFactory qf = questionTypes.get(questionType);
+                if (qf == null) {
+                    System.out.println("Error creating question");
+                } else {
+                    if (m.start() != 0) {
+                        q.add(new Text(line.substring(0, m.start() - 1)));
+                    }
+                    Question question = qf.makeQuestion(this, m);
+                    if (question == null) {
+                        System.out.println("Error creating question");
+                    } else {
+                        q.add(question);
+                        partNumber++;
+                    }
+                    q.add(new Text(line.substring(m.end())));
+                }
+            }
             //For this if statement see whether or not there is text with the given $...$ tag
             //If there is split the text fragments into a string array and return need functions
-            if(matches == true) {
-                questionType(line, q);
-            }
             else {
                 q.add(new Text(line));
             }
