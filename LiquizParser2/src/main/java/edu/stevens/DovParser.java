@@ -31,22 +31,15 @@ public class DovParser {
         questionTypes = new HashMap<>();
         questionTypes.put("mch", new HorizontalMultipleChoiceQuestionFactory());
         questionTypes.put("mcv", new VerticalMultipleChoiceQuestionFactory());
-        //questionTypes.put("mcd", new HorizontalMultipleChoiceQuestionFactory());
+        questionTypes.put("mcd", new DropDownQuestionFacotry());
         questionTypes.put("fn", new NumberFillInQuestionFactory());
         questionTypes.put("fq", new FillInQuestionFactory());
         //questionTypes.put("fQ", new HorizontalMultipleChoiceQuestionFactory());
-        //questionTypes.put("eq", new HorizontalMultipleChoiceQuestionFactory());
+        questionTypes.put("eq", new EssayQuestionFactory());
     }
-    //these are just test variables for now
-    private int questionNumber = 1; //Keep this value
-    private int partNumber = 1;  //Keep this value
+    private int questionNumber = 1;
+    private int partNumber = 1;
     private String defaultText = "Please input response here"; //Keep this value
-    private String answerText = "Answer text";
-    private double points = 1.0;
-    private double value = 0.0;
-    private String url = "https://youtu.be/PLk8Pm_XBJE";
-    private String[] choices = {"Choice 1", "Choice 2", "Choice 3"};
-    private String[] answers = {"Choice 1"};
 
     public String expectLine(String message) throws Exception {
         String line;
@@ -107,19 +100,6 @@ public class DovParser {
         }
     }
     public void questionType(String line, QuestionContainer q) {
-        //Figure out a better way to accomplish this
-//        Matcher eqm = essayQuestion.matcher(line);
-//        Matcher nfqm = numberFillInQuestion.matcher(line);
-//        Matcher fqm = fillInQuestion.matcher(line);
-//        Matcher hm = horizontal.matcher(line);
-//        Matcher vm = vertical.matcher(line);
-//        Matcher v = video.matcher(line);
-//        boolean eqmatches = eqm.matches();
-//        boolean nfqmatches = nfqm.matches();
-//        boolean fqmatches = fqm.matches();
-//        boolean hmatches = hm.matches();
-//        boolean vmatches = vm.matches();
-//        boolean videomatches = v.matches();
         Matcher qm = questionPattern.matcher(line);
         if (qm.matches()) {
             String questionType = qm.group(1);
@@ -143,30 +123,6 @@ public class DovParser {
                 q.add(new Text(line.substring(qm.end())));
             }
         }
-//        if (eqmatches == true){
-//            q.add(new EssayQuestion(questionNumber, partNumber, points, defaultText, answerText));
-//            partNumber++;
-//        }
-//        if (nfqmatches == true) {
-//            q.add(new NumberFillinQuestion(questionNumber, partNumber, points, value));
-//            partNumber++;
-//        }
-//        if (fqmatches == true) {
-//            q.add(new FillinQuestion(questionNumber, partNumber, points, answerText));
-//            partNumber++;
-//        }
-//        if (hmatches == true) {
-//            q.add(new HorizontalMultipleChoiceQuestion(questionNumber, partNumber, points, choices, answers));
-//            partNumber++;
-//        }
-//        if (vmatches == true) {
-//            q.add(new VerticalMultipleChoiceQuestion(questionNumber, partNumber, points, choices, answers));
-//            partNumber++;
-//        }
-//        if (videomatches == true){
-//           q.add(new Video(url));
-//           partNumber++;
-//        }
     }
     public Quiz expectQuizJSON() throws Exception {
         // if this line is not json, give error, find next line that is json

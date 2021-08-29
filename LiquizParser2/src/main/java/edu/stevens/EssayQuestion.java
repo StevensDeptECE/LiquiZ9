@@ -4,9 +4,9 @@ public class EssayQuestion extends Question {
     private String defaultText;
     private String answer;
     public void buildHTML(StringBuilder b, boolean isQuestion) {
-        b.append("<textarea name='").append(getQuestionId(isQuestion)).append("'>\n")
+        b.append("<div><textarea name='").append(getQuestionId(isQuestion)).append("'>\n")
                 .append(defaultText)
-                .append("</textarea>\n");
+                .append("</textarea></div>\n");
     }
 
     public void buildAnswers(StringBuilder b) {

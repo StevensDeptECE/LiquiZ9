@@ -23,6 +23,7 @@ public class Quiz {
   private String name;
   private QuizSpecInclude qsi;
   private QuizSpec qs;
+  public int time;
 
   public Quiz(QuizSpecInclude qsi, QuizSpec qs) throws Exception {
     questionContainers = new ArrayList<>();
@@ -32,6 +33,7 @@ public class Quiz {
     answerText = new StringBuilder(65536);
     this.qsi = qsi;
     this.qs = qs;
+    this.time = qsi.time;
     //        xml = new StringBuilder(65536)
   }
   public void add(QuestionContainer qc) {
@@ -103,6 +105,7 @@ public class Quiz {
     //        q.writeHTML(html);
     //    }
   }
+
   public void writeAnswers() {
     //  while (Entry<...> q = questions.next()) {
     //      String qId = q.key(); Question q = q.value();

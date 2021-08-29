@@ -4,8 +4,8 @@ public class NumberFillinQuestion extends Question {
     private double min;
     private double max;
     public void buildHTML(StringBuilder b, boolean isQuestion) {
-        b.append("<input class='input' type='number' name='")
-                .append(getQuestionId(isQuestion)).append("'>\n");
+        b.append("<div><input class='input' type='number' name='")
+                .append(getQuestionId(isQuestion)).append("'></div>\n");
     }
 
     public void buildAnswers(StringBuilder b) {
