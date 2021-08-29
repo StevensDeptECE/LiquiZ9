@@ -20,12 +20,6 @@ public class DovParser {
     private String schoolColor;
     private String schoolLogo;
     private static Pattern questionPattern = Pattern.compile("\\$(eq|f[nqQ]|mc[hvd]|vid|mat|aud)(\\{[^\\}]*\\})?:([^\\$]+(?:\\\\\\$[^\\$]+)*)\\$");
-    private static Pattern essayQuestion = Pattern.compile("\\$eq:[^\\$]*\\$");
-    private static Pattern numberFillInQuestion = Pattern.compile("\\$fn[^\\$]+\\$");
-    private static Pattern fillInQuestion = Pattern.compile("\\$fq[^\\$]+\\$");
-    private static Pattern horizontal = Pattern.compile("\\$mch:[^\\$]*\\$");
-    private static Pattern vertical = Pattern.compile("\\$mcv:[^\\$]*\\$");
-    private static Pattern video = Pattern.compile("\\$vid:[^\\$]*\\$");
     private static HashMap<String, QuestionFactory> questionTypes = new HashMap<>();
     static {
         questionTypes = new HashMap<>();
