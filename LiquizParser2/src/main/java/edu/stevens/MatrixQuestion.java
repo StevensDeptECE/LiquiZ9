@@ -12,7 +12,7 @@ public class MatrixQuestion extends Question{
         for(int i=0; i<rows; i++) {
             b.append("<tr>\n");
             for(int j=0; j<columns; j++) {
-                if (matrixElements[j+columns*i].contains("_") && isQuestion) {
+                if (matrixElements[j+columns*i].contains("*") && isQuestion) {
                     b.append("<td style='text-align:center; padding:15px'><input type='number' style='width:50px'/></td>\n");
                 }
                 else {
@@ -43,7 +43,7 @@ public class MatrixQuestion extends Question{
         this.columns = columns;
         ArrayList<String> tempArr = new ArrayList<String>();
         for(String ans : this.matrixElements) {
-            if(ans.contains("_")){
+            if(ans.contains("*")){
                 tempArr.add(ans.substring(1));
             }
         }

@@ -30,6 +30,7 @@ public class DovParser {
         questionTypes.put("fq", new FillInQuestionFactory());
         //questionTypes.put("fQ", new HorizontalMultipleChoiceQuestionFactory());
         questionTypes.put("eq", new EssayQuestionFactory());
+        questionTypes.put("mat", new MatrixQuestionFactory());
     }
     private int questionNumber = 1;
     private int partNumber = 1;
