@@ -23,7 +23,7 @@ public class LiquiZParser {
         questionTypes = new HashMap<>(64);
         questionTypes.put("mch", new HorizontalMultipleChoiceQuestionFactory());
         questionTypes.put("mcv", new VerticalMultipleChoiceQuestionFactory());
-        questionTypes.put("mcd", new DropDownQuestionFacotry());
+        questionTypes.put("mcd", new DropDownQuestionFactory());
         questionTypes.put("fn", new NumberFillInQuestionFactory());
         questionTypes.put("fq", new FillInQuestionFactory());
         questionTypes.put("fQ", new FillInQuestionFactory()); //TODO: this needs to be case insensitive
