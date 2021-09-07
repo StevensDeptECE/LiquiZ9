@@ -3,5 +3,5 @@ package edu.stevens;
 import java.util.regex.Matcher;
 
 public abstract class QuestionFactory {
-    public abstract Question makeQuestion(DovParser p, Matcher m);
+    public abstract Question makeQuestion(LiquiZParser p, Matcher m);
 }

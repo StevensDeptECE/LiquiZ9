@@ -4,8 +4,8 @@ public class FillinQuestion extends Question {
     private String answer;
     //TODO: This class has only what all multiplechoice questions have in common
     public void buildHTML(StringBuilder b, boolean isQuestion) {
-        b.append("<div><input class='input' type='text' name='")
-                .append(getQuestionId(isQuestion)).append("'></div>\n");
+        b.append("<input class='input' type='text' name='")
+                .append(getQuestionId(isQuestion)).append("'>\n");
     }
 
     public void buildAnswers(StringBuilder b) {

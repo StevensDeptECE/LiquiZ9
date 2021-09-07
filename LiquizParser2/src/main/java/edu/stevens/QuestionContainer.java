@@ -16,10 +16,14 @@ public class QuestionContainer {
         this.points = points;
     }
     public QuestionContainer(QuestionContainerSpec qcs) {
+        //type = qcs.type;
+        name = qcs.name;
+        if (qcs.points != 0)
+            points = qcs.points;
         displayElements = new ArrayList<>();
         this.qcs = qcs;
     }
-    private final void writeQuestionOrAnswer(StringBuilder b, int questionNum, boolean isQuestion) {
+    private void writeQuestionOrAnswer(StringBuilder b, int questionNum, boolean isQuestion) {
         String className = isQuestion ? "question" : "answer";
         b.append("<div class='")
             .append(className)

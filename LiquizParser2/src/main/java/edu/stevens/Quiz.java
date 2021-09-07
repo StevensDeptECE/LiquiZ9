@@ -51,7 +51,7 @@ public class Quiz {
 
   public void writeHTML() {
     html.append("<!DOCTYPE html>\n")
-        .append("<html>\n<head>\n<link rel='stylesheet' type='text/css' href='src/main/resources/css/quiz.css'>\n")
+        .append("<html>\n<head>\n<link rel='stylesheet' type='text/css' href='css/quiz.css'>\n")
         .append("<script src='js/quiz.js'></script>\n")
         .append("\n<title>")
         .append(name)
@@ -59,7 +59,7 @@ public class Quiz {
         .append(
                 "<form method='post' action='submitQuiz'>\n"
             + "<div id='header' class='header' style='background-color:").append(qs.color).append(";'>\n"
-            + "    <img class='logo' src='src/main/resources/media/").append(qs.logo).append("'/>\n"
+            + "    <img class='logo' src='media/").append(qs.logo).append("'/>\n"
             + "    <div class='headerText'>\n"
             + "      <div class='quizTitle'>\n"
             + "        ").append(qsi.name).append("\n"
@@ -79,8 +79,7 @@ public class Quiz {
             "          <label for='pledge'>I pledge my honor that I have abided by the Stevens Honor System</label>\n"
             + "        </div>\n"
             +
-            "        <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>\n" + ""
-            +        "<script src='JavaScript/Timer.js'></script>\n" +
+            "        <span class='headerRow'>Time Remaining:</span><span id='topTime'></span>\n" +
             "        <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>\n"
             + "      </div>\n"
             + "    </div>\n"
@@ -96,7 +95,6 @@ public class Quiz {
     html.append(
             "    <div class='footer'>\n"
             + "      <span class='footer'>Time Remaining:</span><span id='bottomTime'></span>\n"
-            +        "<script src='JavaScript/Timer.js'></script>"
             + "      <input class='controls' type='button' value='Submit Quiz' onClick='showResult()'/>\n"
             + "    </div>"
             + "</form>\n</body>\n</html>\n");

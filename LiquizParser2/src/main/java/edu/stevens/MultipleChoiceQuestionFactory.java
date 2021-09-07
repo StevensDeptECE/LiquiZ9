@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 public abstract class MultipleChoiceQuestionFactory extends QuestionFactory{
     protected String[] choices;
     protected ArrayList<String> answers;
-    protected void parseQuestion(DovParser p, Matcher m) {
+    protected void parseQuestion(LiquiZParser p, Matcher m) {
         String choiceString = m.group(3); //$mch:answer1,answer2,answer3$
         choices = choiceString.split(",");
         ArrayList<String> answers = new ArrayList<>();
